@@ -9,6 +9,11 @@ public class NaiveNumber implements Number {
     }
 
     @Override
+    public int precision() {
+        return 4;
+    }
+
+    @Override
     public Number multiply(Number multiplier) {
         if(!(multiplier instanceof NaiveNumber)) throw new IllegalArgumentException();
         return new NaiveNumber(value * ((NaiveNumber)multiplier).value);
