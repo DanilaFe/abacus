@@ -48,5 +48,10 @@ public class NaiveNumber implements Number {
         return new NaiveNumber(1);
     }
 
+    @Override
+    public Number promoteTo(Class<? extends Number> toClass) {
+        if(toClass == this.getClass()) return this;
+        return null;
+    }
 }
 

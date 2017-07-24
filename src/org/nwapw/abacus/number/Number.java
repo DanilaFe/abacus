@@ -12,4 +12,6 @@ public interface Number {
     Number zero();
     Number one();
 
+    Number promoteTo(Class<? extends Number> toClass);
+
 }
