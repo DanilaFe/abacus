@@ -9,4 +9,10 @@ public interface Number {
     Number subtract(Number subtrahend);
     Number negate();
 
+    Number zero();
+    Number one();
+
+    Number valueOf(int val);
+    Number valueOf(double val);
+
 }

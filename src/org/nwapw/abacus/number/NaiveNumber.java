@@ -37,4 +37,24 @@ public class NaiveNumber implements Number {
     public Number negate() {
         return new NaiveNumber(-value);
     }
+
+    @Override
+    public Number zero() {
+        return new NaiveNumber(0);
+    }
+
+    @Override
+    public Number one() {
+        return new NaiveNumber(1);
+    }
+
+    @Override
+    public Number valueOf(int val) {
+        return new NaiveNumber(value);
+    }
+
+    @Override
+    public Number valueOf(double val) {
+        return new NaiveNumber(value);
+    }
 }
