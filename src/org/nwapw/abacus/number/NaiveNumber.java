@@ -15,26 +15,22 @@ public class NaiveNumber implements Number {
 
     @Override
     public Number multiply(Number multiplier) {
-        if(!(multiplier instanceof NaiveNumber)) throw new IllegalArgumentException();
         return new NaiveNumber(value * ((NaiveNumber)multiplier).value);
     }
 
     @Override
     public Number divide(Number divisor) {
-        if(!(divisor instanceof NaiveNumber)) throw new IllegalArgumentException();
-        return new NaiveNumber(value * ((NaiveNumber)divisor).value);
+        return new NaiveNumber(value / ((NaiveNumber)divisor).value);
     }
 
     @Override
     public Number add(Number summand) {
-        if(!(summand instanceof NaiveNumber)) throw new IllegalArgumentException();
-        return new NaiveNumber(value * ((NaiveNumber)summand).value);
+        return new NaiveNumber(value + ((NaiveNumber)summand).value);
     }
 
     @Override
     public Number subtract(Number subtrahend) {
-        if(!(subtrahend instanceof NaiveNumber)) throw new IllegalArgumentException();
-        return new NaiveNumber(value * ((NaiveNumber)subtrahend).value);
+        return new NaiveNumber(value - ((NaiveNumber)subtrahend).value);
     }
 
     @Override
