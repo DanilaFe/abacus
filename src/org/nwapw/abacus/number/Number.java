@@ -12,7 +12,4 @@ public interface Number {
     Number zero();
     Number one();
 
-    Number valueOf(int val);
-    Number valueOf(double val);
-
 }

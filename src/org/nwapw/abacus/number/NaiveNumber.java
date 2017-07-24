@@ -48,13 +48,5 @@ public class NaiveNumber implements Number {
         return new NaiveNumber(1);
     }
 
-    @Override
-    public Number valueOf(int val) {
-        return new NaiveNumber(value);
-    }
-
-    @Override
-    public Number valueOf(double val) {
-        return new NaiveNumber(value);
-    }
 }
+
