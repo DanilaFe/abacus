@@ -111,6 +111,7 @@ public class Pattern<T> {
                 orChain.push(fullChain);
                 currentChain = null;
                 fullChain = new PatternChain<>();
+                if(++index >= source.length()) return null;
             } else if(currentChar == '('){
                 if(currentChain != null) {
                     fullChain.append(currentChain);
