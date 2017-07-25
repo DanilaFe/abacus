@@ -1,13 +1,14 @@
 package org.nwapw.abacus.lexing.pattern;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class PatternNode<T> {
 
-    protected ArrayList<PatternNode<T>> outputStates;
+    protected HashSet<PatternNode<T>> outputStates;
 
     public PatternNode(){
-        outputStates = new ArrayList<>();
+        outputStates = new HashSet<>();
     }
 
     public boolean matches(char other){
