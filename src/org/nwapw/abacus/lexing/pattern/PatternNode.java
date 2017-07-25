@@ -1,6 +1,7 @@
 package org.nwapw.abacus.lexing.pattern;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 
 public class PatternNode<T> {
@@ -19,8 +20,12 @@ public class PatternNode<T> {
         return '\0';
     }
 
-    public void addInto(ArrayList<PatternNode<T>> into){
+    public void addInto(Collection<PatternNode<T>> into){
         into.add(this);
+    }
+
+    public void addOutputsInto(Collection<PatternNode<T>> into){
+        outputStates.forEach(e -> e.addInto(into));
     }
 
 }
