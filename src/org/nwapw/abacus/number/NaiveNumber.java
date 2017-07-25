@@ -1,6 +1,6 @@
 package org.nwapw.abacus.number;
 
-public class NaiveNumber implements Number {
+public class NaiveNumber implements NumberInterface {
 
     private double value;
 
@@ -8,8 +8,8 @@ public class NaiveNumber implements Number {
         this.value = value;
     }
 
-    static final NaiveNumber ZERO = new NaiveNumber(0);
-    static final NaiveNumber ONE = new NaiveNumber(1);
+    public static final NaiveNumber ZERO = new NaiveNumber(0);
+    public static final NaiveNumber ONE = new NaiveNumber(1);
 
     @Override
     public int precision() {
@@ -17,33 +17,33 @@ public class NaiveNumber implements Number {
     }
 
     @Override
-    public Number multiply(Number multiplier) {
+    public NumberInterface multiply(NumberInterface multiplier) {
         return new NaiveNumber(value * ((NaiveNumber)multiplier).value);
     }
 
     @Override
-    public Number divide(Number divisor) {
+    public NumberInterface divide(NumberInterface divisor) {
         return new NaiveNumber(value / ((NaiveNumber)divisor).value);
     }
 
     @Override
-    public Number add(Number summand) {
+    public NumberInterface add(NumberInterface summand) {
         return new NaiveNumber(value + ((NaiveNumber)summand).value);
     }
 
     @Override
-    public Number subtract(Number subtrahend) {
+    public NumberInterface subtract(NumberInterface subtrahend) {
         return new NaiveNumber(value - ((NaiveNumber)subtrahend).value);
     }
 
     @Override
-    public Number negate() {
+    public NumberInterface negate() {
         return new NaiveNumber(-value);
     }
 
     @Override
-    public Number intPow(int exponent) {
-        Number power = this;
+    public NumberInterface intPow(int exponent) {
+        NumberInterface power = this;
         for(int currentExponent = 1; currentExponent <= exponent; currentExponent++){
             power = power.multiply(this);
         }
@@ -51,7 +51,7 @@ public class NaiveNumber implements Number {
     }
 
     @Override
-    public int compareTo(Number number) {
+    public int compareTo(NumberInterface number) {
         NaiveNumber num = (NaiveNumber) number;
         return Double.compare(value, num.value);
     }
@@ -62,9 +62,13 @@ public class NaiveNumber implements Number {
     }
 
     @Override
-    public Number promoteTo(Class<? extends Number> toClass) {
+    public NumberInterface promoteTo(Class<? extends NumberInterface> toClass) {
         if(toClass == this.getClass()) return this;
         return null;
+    }
+
+    public String toString(){
+        return Double.toString(value);
     }
 
 }

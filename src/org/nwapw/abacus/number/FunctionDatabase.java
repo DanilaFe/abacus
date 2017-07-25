@@ -9,13 +9,13 @@ public class FunctionDatabase {
     private void registerDefault(){
         functions.put("+", new Function() {
             @Override
-            protected boolean matchesParams(Number[] params) {
+            protected boolean matchesParams(NumberInterface[] params) {
                 return params.length >= 1;
             }
 
             @Override
-            protected Number applyInternal(Number[] params) {
-                Number sum = params[0];
+            protected NumberInterface applyInternal(NumberInterface[] params) {
+                NumberInterface sum = params[0];
                 for(int i = 1; i < params.length; i++){
                     sum = sum.add(params[i]);
                 }
@@ -25,25 +25,25 @@ public class FunctionDatabase {
 
         functions.put("-", new Function() {
             @Override
-            protected boolean matchesParams(Number[] params) {
+            protected boolean matchesParams(NumberInterface[] params) {
                 return params.length == 2;
             }
 
             @Override
-            protected Number applyInternal(Number[] params) {
+            protected NumberInterface applyInternal(NumberInterface[] params) {
                 return params[0].subtract(params[1]);
             }
         });
 
         functions.put("*", new Function() {
             @Override
-            protected boolean matchesParams(Number[] params) {
+            protected boolean matchesParams(NumberInterface[] params) {
                 return params.length >= 1;
             }
 
             @Override
-            protected Number applyInternal(Number[] params) {
-                Number product = params[1];
+            protected NumberInterface applyInternal(NumberInterface[] params) {
+                NumberInterface product = params[1];
                 for(int i = 1; i < params.length; i++){
                     product = product.multiply(params[i]);
                 }
@@ -53,29 +53,28 @@ public class FunctionDatabase {
 
         functions.put("/", new Function() {
             @Override
-            protected boolean matchesParams(Number[] params) {
+            protected boolean matchesParams(NumberInterface[] params) {
                 return params.length == 2;
             }
 
             @Override
-            protected Number applyInternal(Number[] params) {
+            protected NumberInterface applyInternal(NumberInterface[] params) {
                 return params[0].divide(params[1]);
             }
         });
 
         functions.put("!", new Function() {
             @Override
-            protected boolean matchesParams(Number[] params) {
+            protected boolean matchesParams(NumberInterface[] params) {
                 return params.length == 1;
             }
 
             @Override
-            protected Number applyInternal(Number[] params) {
-                Number factorial = params[0];
-                Number multiplier = params[0];
+            protected NumberInterface applyInternal(NumberInterface[] params) {
+                NumberInterface factorial = params[0];
+                NumberInterface multiplier = params[0];
                 //It is necessary to later prevent calls of factorial on anything but non-negative integers.
-                while(multiplier.signum() == 1){
-                    multiplier = multiplier.subtract(NaiveNumber.ONE.promoteTo(multiplier.getClass()));
+                while((multiplier = multiplier.subtract(NaiveNumber.ONE.promoteTo(multiplier.getClass()))).signum() == 1){
                     factorial = factorial.multiply(multiplier);
                 }
                 return factorial;

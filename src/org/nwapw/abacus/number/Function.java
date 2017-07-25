@@ -4,15 +4,15 @@ import java.util.HashMap;
 
 public abstract class Function {
 
-    private static final HashMap<Class<? extends Number>, Integer> priorityMap =
-            new HashMap<Class<? extends Number>, Integer>() {{
+    private static final HashMap<Class<? extends NumberInterface>, Integer> priorityMap =
+            new HashMap<Class<? extends NumberInterface>, Integer>() {{
                 put(NaiveNumber.class, 0);
             }};
 
-    protected abstract boolean matchesParams(Number[] params);
-    protected abstract Number applyInternal(Number[] params);
+    protected abstract boolean matchesParams(NumberInterface[] params);
+    protected abstract NumberInterface applyInternal(NumberInterface[] params);
 
-    public Number apply(Number...params) {
+    public NumberInterface apply(NumberInterface...params) {
         if(!matchesParams(params)) return null;
         return applyInternal(params);
     }
