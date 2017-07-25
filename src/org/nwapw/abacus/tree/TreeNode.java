@@ -78,8 +78,26 @@ public abstract class TreeNode {
         return output;
     }
 
-    public static TreeNode fromString(String string){
+    public static TreeNode fromStringRecursive(String source, ArrayList<Match<TokenType>> matches){
+        if(matches.size() == 0) return null;
+        Match<TokenType> match = matches.remove(0);
+        if(match.getType() == TokenType.OP){
+            TreeNode right = fromStringRecursive(source, matches);
+            TreeNode left = fromStringRecursive(source, matches);
+            if(left == null || right == null) return null;
+            else return new OpNode(source.substring(match.getFrom(), match.getTo()), left, right);
+        } else if(match.getType() == TokenType.NUM){
+            return new NumberNode(Double.parseDouble(source.substring(match.getFrom(), match.getTo())));
+        }
         return null;
+    }
+
+    public static TreeNode fromString(String string){
+        ArrayList<Match<TokenType>> matches = intoPostfix(string, tokenize(string));
+        if(matches == null) return null;
+
+        Collections.reverse(matches);
+        return fromStringRecursive(string, matches);
     }
 
 }
