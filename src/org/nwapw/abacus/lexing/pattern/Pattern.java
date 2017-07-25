@@ -68,6 +68,7 @@ public class Pattern<T> {
 
     private PatternChain<T> parseOr(){
         Stack<PatternChain<T>> orStack = new Stack<>();
+        index++;
         while(index < source.length() && source.charAt(index) != ']'){
             if(source.charAt(index) == '-'){
                 index++;
@@ -82,10 +83,9 @@ public class Pattern<T> {
                 if(newChain == null) return null;
                 orStack.push(newChain);
             }
-            index++;
         }
-        if(index >= source.length()) return null;
-        return combineChains(orStack);
+        if(index++ >= source.length()) return null;
+        return (orStack.size() == 1) ? orStack.pop() : combineChains(orStack);
     }
 
     private PatternChain<T> parseSegment(boolean isSubsegment){
@@ -124,6 +124,12 @@ public class Pattern<T> {
                 }
                 currentChain = parseOr();
                 if(currentChain == null) return null;
+            } else if(currentChar == '.'){
+                if(currentChain != null){
+                    fullChain.append(currentChain);
+                }
+                currentChain = new PatternChain<>(new AnyNode<>());
+                index++;
             } else {
                 if(currentChain != null){
                     fullChain.append(currentChain);
@@ -159,4 +165,7 @@ public class Pattern<T> {
         }
     }
 
+    public PatternNode<T> getHead() {
+        return head;
+    }
 }
