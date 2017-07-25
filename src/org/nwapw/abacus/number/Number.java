@@ -8,6 +8,7 @@ public interface Number {
     Number add(Number summand);
     Number subtract(Number subtrahend);
     Number negate();
+    Number intPow(int exponent);
     int compareTo(Number number);
     int signum();
 

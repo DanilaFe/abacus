@@ -42,6 +42,15 @@ public class NaiveNumber implements Number {
     }
 
     @Override
+    public Number intPow(int exponent) {
+        Number power = this;
+        for(int currentExponent = 1; currentExponent <= exponent; currentExponent++){
+            power = power.multiply(this);
+        }
+        return power;
+    }
+
+    @Override
     public int compareTo(Number number) {
         NaiveNumber num = (NaiveNumber) number;
         return Double.compare(value, num.value);
