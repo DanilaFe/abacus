@@ -43,7 +43,7 @@ public class FunctionDatabase {
 
             @Override
             protected NumberInterface applyInternal(NumberInterface[] params) {
-                NumberInterface product = params[1];
+                NumberInterface product = params[0];
                 for(int i = 1; i < params.length; i++){
                     product = product.multiply(params[i]);
                 }
