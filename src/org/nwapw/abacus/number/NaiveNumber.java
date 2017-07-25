@@ -43,9 +43,17 @@ public class NaiveNumber implements NumberInterface {
 
     @Override
     public NumberInterface intPow(int exponent) {
+        if(exponent == 0){
+            return NaiveNumber.ONE;
+        }
+        boolean takeReciprocal = exponent < 0;
+        exponent = Math.abs(exponent);
         NumberInterface power = this;
         for(int currentExponent = 1; currentExponent < exponent; currentExponent++){
             power = power.multiply(this);
+        }
+        if(takeReciprocal){
+            power = NaiveNumber.ONE.divide(power);
         }
         return power;
     }
