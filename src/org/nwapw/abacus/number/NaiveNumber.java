@@ -44,7 +44,7 @@ public class NaiveNumber implements NumberInterface {
     @Override
     public NumberInterface intPow(int exponent) {
         NumberInterface power = this;
-        for(int currentExponent = 1; currentExponent <= exponent; currentExponent++){
+        for(int currentExponent = 1; currentExponent < exponent; currentExponent++){
             power = power.multiply(this);
         }
         return power;
