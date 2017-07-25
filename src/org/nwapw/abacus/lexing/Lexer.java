@@ -6,7 +6,6 @@ import org.nwapw.abacus.lexing.pattern.Pattern;
 import org.nwapw.abacus.lexing.pattern.PatternNode;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 
@@ -31,10 +30,9 @@ public class Lexer<T> {
         for(Pattern<T> pattern : patterns){
             pattern.getHead().addInto(currentSet);
         }
-        while(!currentSet.isEmpty() && index < from.length()){
-            char currentChar = from.charAt(index);
+        while(!currentSet.isEmpty()){
             for(PatternNode<T> node : currentSet){
-                if(node.matches(currentChar)) {
+                if(index < from.length() && node.matches(from.charAt(index))) {
                     node.addOutputsInto(futureSet);
                 } else if(node instanceof EndNode){
                     matches.add(new Match<>(startAt, index, ((EndNode<T>) node).getPatternId()));
