@@ -8,9 +8,8 @@ public interface Number {
     Number add(Number summand);
     Number subtract(Number subtrahend);
     Number negate();
-
-    Number zero();
-    Number one();
+    int compareTo(Number number);
+    int signum();
 
     Number promoteTo(Class<? extends Number> toClass);
 
