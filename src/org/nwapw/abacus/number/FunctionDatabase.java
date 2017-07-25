@@ -7,7 +7,6 @@ public class FunctionDatabase {
     private HashMap<String, Function> functions;
 
     private void registerDefault(){
-
         functions.put("+", new Function() {
             @Override
             protected boolean matchesParams(Number[] params) {
@@ -61,6 +60,25 @@ public class FunctionDatabase {
             @Override
             protected Number applyInternal(Number[] params) {
                 return params[0].divide(params[1]);
+            }
+        });
+
+        functions.put("!", new Function() {
+            @Override
+            protected boolean matchesParams(Number[] params) {
+                return params.length == 1;
+            }
+
+            @Override
+            protected Number applyInternal(Number[] params) {
+                Number factorial = params[0];
+                Number multiplier = params[0];
+                //It is necessary to later prevent calls of factorial on anything but non-negative integers.
+                while(multiplier.signum() == 1){
+                    multiplier = multiplier.subtract(NaiveNumber.ONE.promoteTo(multiplier.getClass()));
+                    factorial = factorial.multiply(multiplier);
+                }
+                return factorial;
             }
         });
     }

@@ -8,6 +8,9 @@ public class NaiveNumber implements Number {
         this.value = value;
     }
 
+    static final NaiveNumber ZERO = new NaiveNumber(0);
+    static final NaiveNumber ONE = new NaiveNumber(1);
+
     @Override
     public int precision() {
         return 4;
@@ -39,13 +42,14 @@ public class NaiveNumber implements Number {
     }
 
     @Override
-    public Number zero() {
-        return new NaiveNumber(0);
+    public int compareTo(Number number) {
+        NaiveNumber num = (NaiveNumber) number;
+        return Double.compare(value, num.value);
     }
 
     @Override
-    public Number one() {
-        return new NaiveNumber(1);
+    public int signum() {
+        return this.compareTo(ZERO);
     }
 
     @Override
@@ -53,5 +57,6 @@ public class NaiveNumber implements Number {
         if(toClass == this.getClass()) return this;
         return null;
     }
+
 }
 
