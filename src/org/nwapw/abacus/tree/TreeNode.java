@@ -14,7 +14,6 @@ public abstract class TreeNode {
      * The lexer used to lex tokens.
      */
     private static Lexer<TokenType> lexer = new Lexer<TokenType>(){{
-        register(".", TokenType.ANY);
         register("\\+|-|\\*|/|^", TokenType.OP);
         register("[0-9]+(\\.[0-9]+)?", TokenType.NUM);
         register("[a-zA-Z]+", TokenType.WORD);
