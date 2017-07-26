@@ -7,6 +7,7 @@ import org.nwapw.abacus.tree.TreeNode;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -127,7 +128,7 @@ public class Window extends JFrame {
         inputPanel = new JPanel();
         inputPanel.setLayout(new BorderLayout());
         inputPanel.add(inputField, BorderLayout.CENTER);
-        inputPanel.add(inputEnterButton, BorderLayout.EAST);
+        inputPanel.add(inputEnterButton, BorderLayout.SOUTH);
 
         historyModel = new HistoryTableModel();
         historyTable = new JTable(historyModel);
@@ -165,7 +166,7 @@ public class Window extends JFrame {
         add(sidePanel, BorderLayout.EAST);
         add(inputPanel, BorderLayout.SOUTH);
 
-        inputEnterButton.addActionListener((event) -> {
+        ActionListener actionListener = (event) -> {
             TreeNode parsedExpression = TreeNode.fromString(inputField.getText());
             if(parsedExpression == null){
                 lastOutputArea.setText(SYNTAX_ERR_STRING);
@@ -178,8 +179,9 @@ public class Window extends JFrame {
             historyModel.addEntry(new HistoryTableModel.HistoryEntry(inputField.getText(), parsedExpression, lastOutput));
             historyTable.invalidate();
             lastOutputArea.setText(lastOutput);
-            inputField.setText(lastOutput);
-        });
+        };
+        inputEnterButton.addActionListener(actionListener);
+        inputField.addActionListener(actionListener);
         historyTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
