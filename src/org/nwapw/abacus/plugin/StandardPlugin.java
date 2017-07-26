@@ -80,6 +80,9 @@ public class StandardPlugin extends Plugin {
 
             @Override
             protected NumberInterface applyInternal(NumberInterface[] params) {
+                if(params[0].signum() == 0){
+                    return (new NaiveNumber(1)).promoteTo(params[0].getClass());
+                }
                 NumberInterface factorial = params[0];
                 NumberInterface multiplier = params[0];
                 //It is necessary to later prevent calls of factorial on anything but non-negative integers.
@@ -89,6 +92,18 @@ public class StandardPlugin extends Plugin {
                 return factorial;
             }
         });
+
+        System.out.println(getExpSeriesTerm(4, new NaiveNumber(3)));
+    }
+
+    /**
+     * Returns the nth term of the Taylor series (centered at 0) of e^x
+     * @param n the term required (n >= 0).
+     * @param x the real number at which the series is evaluated.
+     * @return
+     */
+    private NumberInterface getExpSeriesTerm(int n, NumberInterface x){
+        return x.intPow(n).divide(this.getFunction("!").apply((new NaiveNumber(n)).promoteTo(x.getClass())));
     }
 
 }
