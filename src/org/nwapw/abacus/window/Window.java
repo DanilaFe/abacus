@@ -45,13 +45,17 @@ public class Window extends JFrame {
      */
     private JTextArea lastOutputArea;
     /**
-     * The text area used for all history output.
+     * The table used for storing history results.
      */
-    private JTextArea historyArea;
+    private JTable historyTable;
+    /**
+     * The table model used for managing history.
+     */
+    private HistoryTableModel historyModel;
     /**
      * The scroll pane for the history area.
      */
-    private JScrollPane historyAreaScroll;
+    private JScrollPane historyScroll;
 
     /**
      * The panel where the input occurs.
@@ -109,7 +113,6 @@ public class Window extends JFrame {
     private Window() {
         super();
 
-
         history = "";
         lastOutput = "";
 
@@ -123,15 +126,15 @@ public class Window extends JFrame {
         inputPanel.add(inputField, BorderLayout.CENTER);
         inputPanel.add(inputEnterButton, BorderLayout.EAST);
 
-        historyArea = new JTextArea(history);
-        historyAreaScroll = new JScrollPane(historyArea);
+        historyModel = new HistoryTableModel();
+        historyTable = new JTable(historyModel);
+        historyScroll = new JScrollPane(historyTable);
         lastOutputArea = new JTextArea(lastOutput);
         lastOutputArea.setEditable(false);
-        lastOutputArea.setText(":)");
 
         outputPanel = new JPanel();
         outputPanel.setLayout(new BorderLayout());
-        outputPanel.add(historyAreaScroll, BorderLayout.CENTER);
+        outputPanel.add(historyScroll, BorderLayout.CENTER);
         outputPanel.add(lastOutputArea, BorderLayout.SOUTH);
 
         numberSystemList = new JComboBox<>();
@@ -158,5 +161,21 @@ public class Window extends JFrame {
         add(outputPanel, BorderLayout.CENTER);
         add(sidePanel, BorderLayout.EAST);
         add(inputPanel, BorderLayout.SOUTH);
+
+        inputEnterButton.addActionListener((event) -> {
+            TreeNode parsedExpression = TreeNode.fromString(inputField.getText());
+            if(parsedExpression == null){
+                lastOutputArea.setText(SYNTAX_ERR_STRING);
+                return;
+            }
+            lastOutput = parsedExpression.reduce(reducer).toString();
+            history += (history.length() == 0) ? "" : "\n\n";
+            history += lastOutput;
+
+            historyModel.addEntry(new HistoryTableModel.HistoryEntry(inputField.getText(), parsedExpression, lastOutput));
+            historyTable.invalidate();
+            lastOutputArea.setText(lastOutput);
+            inputField.setText(lastOutput);
+        });
     }
 }
