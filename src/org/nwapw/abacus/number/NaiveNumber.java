@@ -1,14 +1,30 @@
 package org.nwapw.abacus.number;
 
+/**
+ * An implementation of NumberInterface using a double.
+ */
 public class NaiveNumber implements NumberInterface {
 
+    /**
+     * The value of this number.
+     */
     private double value;
 
+    /**
+     * Creates a new NaiveNumber with the given value.
+     * @param value the value to use.
+     */
     public NaiveNumber(double value) {
         this.value = value;
     }
 
+    /**
+     * The number zero.
+     */
     public static final NaiveNumber ZERO = new NaiveNumber(0);
+    /**
+     * The number one.
+     */
     public static final NaiveNumber ONE = new NaiveNumber(1);
 
     @Override

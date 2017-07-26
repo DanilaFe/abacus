@@ -9,19 +9,42 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 
+/**
+ * A lexer that can generate tokens of a given type given a list of regular expressions
+ * to operate on.
+ * @param <T> the type used to identify which match belongs to which pattern.
+ */
 public class Lexer<T> {
 
+    /**
+     * The registered patterns.
+     */
     private ArrayList<Pattern<T>> patterns;
 
+    /**
+     * Creates a new lexer with no registered patterns.
+     */
     public Lexer(){
         patterns = new ArrayList<>();
     }
 
+    /**
+     * Registers a single pattern.
+     * @param pattern the pattern regex
+     * @param id the ID by which to identify the pattern.
+     */
     public void register(String pattern, T id){
         Pattern<T> compiledPattern = new Pattern<>(pattern, id);
         if(compiledPattern.getHead() != null) patterns.add(compiledPattern);
     }
 
+    /**
+     * Reads one token from the given string.
+     * @param from the string to read from
+     * @param startAt the index to start at
+     * @param compare the comparator used to sort tokens by their ID.
+     * @return the best match.
+     */
     public Match<T> lexOne(String from, int startAt, Comparator<T> compare){
         ArrayList<Match<T>> matches = new ArrayList<>();
         HashSet<PatternNode<T>> currentSet = new HashSet<>();
@@ -53,6 +76,13 @@ public class Lexer<T> {
         return matches.isEmpty() ? null : matches.get(matches.size() - 1);
     }
 
+    /**
+     * Reads all tokens from a string.
+     * @param from the string to start from.
+     * @param startAt the index to start at.
+     * @param compare the comparator used to sort matches by their IDs.
+     * @return the resulting list of matches, in order, or null on error.
+     */
     public ArrayList<Match<T>> lexAll(String from, int startAt, Comparator<T> compare){
         int index = startAt;
         ArrayList<Match<T>> matches = new ArrayList<>();
