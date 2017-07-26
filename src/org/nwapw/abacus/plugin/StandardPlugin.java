@@ -4,6 +4,10 @@ import org.nwapw.abacus.function.Function;
 import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
 
+/**
+ * The plugin providing standard functions such as addition and subtraction to
+ * the calculator.
+ */
 public class StandardPlugin extends Plugin {
 
     public StandardPlugin(PluginManager manager) {

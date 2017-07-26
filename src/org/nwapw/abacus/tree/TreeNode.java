@@ -5,8 +5,14 @@ import org.nwapw.abacus.lexing.pattern.Match;
 
 import java.util.*;
 
+/**
+ * An abstract class that represents an expression tree node.
+ */
 public abstract class TreeNode {
 
+    /**
+     * The lexer used to lex tokens.
+     */
     private static Lexer<TokenType> lexer = new Lexer<TokenType>(){{
         register(".", TokenType.ANY);
         register("\\+|-|\\*|/|^", TokenType.OP);
@@ -15,6 +21,9 @@ public abstract class TreeNode {
         register("\\(", TokenType.OPEN_PARENTH);
         register("\\)", TokenType.CLOSE_PARENTH);
     }};
+    /**
+     * A map that maps operations to their precedence.
+     */
     private static HashMap<String, Integer> precedenceMap = new HashMap<String, Integer>(){{
         put("+", 0);
         put("-", 0);
@@ -22,6 +31,9 @@ public abstract class TreeNode {
         put("/", 1);
         put("^", 2);
     }};
+    /**
+     * A map that maps operations to their associativity.
+     */
     private static HashMap<String, OperatorAssociativity> associativityMap =
             new HashMap<String, OperatorAssociativity>() {{
                 put("+", OperatorAssociativity.LEFT);
@@ -31,12 +43,26 @@ public abstract class TreeNode {
                 put("^", OperatorAssociativity.RIGHT);
             }};
 
+    /**
+     * Comparator used to sort token types.
+     */
     private static Comparator<TokenType> tokenSorter = Comparator.comparingInt(e -> e.priority);
 
+    /**
+     * Tokenizes a string, converting it into matches
+     * @param string the string to tokenize.
+     * @return the list of tokens produced.
+     */
     public static ArrayList<Match<TokenType>> tokenize(String string){
         return lexer.lexAll(string, 0, tokenSorter);
     }
 
+    /**
+     * Rearranges tokens into a postfix list, using Shunting Yard.
+     * @param source the source string.
+     * @param from the tokens to be rearranged.
+     * @return the resulting list of rearranged tokens.
+     */
     public static ArrayList<Match<TokenType>> intoPostfix(String source, ArrayList<Match<TokenType>> from){
         ArrayList<Match<TokenType>> output = new ArrayList<>();
         Stack<Match<TokenType>> tokenStack = new Stack<>();
@@ -78,6 +104,12 @@ public abstract class TreeNode {
         return output;
     }
 
+    /**
+     * Constructs a tree recursively from a list of tokens.
+     * @param source the source string.
+     * @param matches the list of tokens from the source string.
+     * @return the construct tree expression.
+     */
     public static TreeNode fromStringRecursive(String source, ArrayList<Match<TokenType>> matches){
         if(matches.size() == 0) return null;
         Match<TokenType> match = matches.remove(0);
@@ -92,6 +124,11 @@ public abstract class TreeNode {
         return null;
     }
 
+    /**
+     * Creates a tree node from a string.
+     * @param string the string to create a node from.
+     * @return the resulting tree.
+     */
     public static TreeNode fromString(String string){
         ArrayList<Match<TokenType>> matches = intoPostfix(string, tokenize(string));
         if(matches == null) return null;
