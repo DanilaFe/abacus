@@ -44,4 +44,9 @@ public class NumberNode extends TreeNode {
     public NumberInterface getNumber() {
         return number;
     }
+
+    @Override
+    public <T> T reduce(Reducer<T> reducer) {
+        return reducer.reduceNode(this);
+    }
 }
