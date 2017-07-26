@@ -4,60 +4,77 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Window extends JFrame {
+
     private String history;
     private String lastOutput;
-    public Window(){
+
+    private JPanel outputPanel;
+    private JTextArea lastOutputArea;
+    private JTextArea historyArea;
+    private JScrollPane historyAreaScroll;
+
+    private JPanel inputPanel;
+    private JTextField inputField;
+    private JButton inputEnterButton;
+
+    private JPanel sidePanel;
+    private JPanel numberSystemPanel;
+    private JComboBox<String> numberSystemList;
+    private JButton functionSelectButton;
+    private JPanel functionSelectPanel;
+    private JComboBox<String> functionList;
+
+    public Window() {
         super();
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (UnsupportedLookAndFeelException e) {
-            e.printStackTrace();
-        }
-        
-        //JFrame super= new JFrame();
-        //ImageIcon check = new ImageIcon(".\\Window Images\\Untitled.png");
-        String check = "Enter";
-        JButton checkButton = new JButton(check);
-        JTextField inputBox = new JTextField();
-        history="";
-        JTextArea historyBox = new JTextArea(history);
-        JScrollPane scrollHistoryBox = new JScrollPane(historyBox);
-        JTextArea outputBox = new JTextArea(lastOutput);
-        JPanel output=new JPanel();
-        output.setLayout(new BorderLayout());
-        output.add(scrollHistoryBox);
-        output.add(outputBox, BorderLayout.PAGE_END);
-        JPanel input = new JPanel();
-        input.setLayout(new BorderLayout());
-        input.add(inputBox);
-        input.add(checkButton, BorderLayout.LINE_END);
-        super.add(output);
-        JPanel custom = new JPanel();
-        JPanel numCustom = new JPanel();
-        JPanel funCustom = new JPanel();
-        custom.setLayout(new BorderLayout());
-        numCustom.setLayout(new BorderLayout());
-        funCustom.setLayout(new BorderLayout());
-        JTextArea numLabel = new JTextArea("Number Type:");
-        JTextArea funLabel = new JTextArea("Functions:");
-        JComboBox<String> numList = new JComboBox();
-        JComboBox<String> funList = new JComboBox();
-        JButton funCheckButton = new JButton(check);
-        numCustom.add(numLabel);
-        numCustom.add(numList, BorderLayout.PAGE_END);
-        funCustom.add(funList);
-        funCustom.add(funCheckButton, BorderLayout.LINE_END);
-        funCustom.add(funLabel, BorderLayout.PAGE_START);
-        custom.add(numCustom);
-        custom.add(funCustom, BorderLayout.PAGE_END);
-        super.add(custom, BorderLayout.LINE_END);
-        super.add(input, BorderLayout.PAGE_END);
-        super.setVisible(true);
+
+
+        history = "";
+        lastOutput = "";
+
+        setSize(640, 480);
+
+        inputField = new JTextField();
+        inputEnterButton = new JButton("Calculate");
+
+        inputPanel = new JPanel();
+        inputPanel.setLayout(new BorderLayout());
+        inputPanel.add(inputField);
+        inputPanel.add(inputEnterButton, BorderLayout.LINE_END);
+
+        historyArea = new JTextArea(history);
+        historyAreaScroll = new JScrollPane(historyArea);
+        lastOutputArea = new JTextArea(lastOutput);
+        lastOutputArea.setEditable(false);
+        lastOutputArea.setText(":)");
+
+        outputPanel = new JPanel();
+        outputPanel.setLayout(new BorderLayout());
+        outputPanel.add(historyAreaScroll);
+        outputPanel.add(lastOutputArea, BorderLayout.PAGE_END);
+
+        numberSystemList = new JComboBox<>();
+
+        numberSystemPanel = new JPanel();
+        numberSystemPanel.setLayout(new BorderLayout());
+        numberSystemPanel.add(new JLabel("Number Type:"));
+        numberSystemPanel.add(numberSystemList, BorderLayout.PAGE_END);
+
+        functionList = new JComboBox<>();
+        functionSelectButton = new JButton("Select");
+
+        functionSelectPanel = new JPanel();
+        functionSelectPanel.setLayout(new BorderLayout());
+        functionSelectPanel.add(new JLabel("Functions:"));
+        functionSelectPanel.add(functionList, BorderLayout.LINE_END);
+        functionSelectPanel.add(functionSelectButton, BorderLayout.LINE_END);
+
+        sidePanel = new JPanel();
+        sidePanel.setLayout(new BorderLayout());
+        sidePanel.add(numberSystemPanel);
+        sidePanel.add(functionSelectPanel, BorderLayout.PAGE_END);
+
+        add(outputPanel, BorderLayout.CENTER);
+        add(sidePanel, BorderLayout.EAST);
+        add(inputPanel, BorderLayout.SOUTH);
     }
 }
