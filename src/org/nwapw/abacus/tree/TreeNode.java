@@ -129,7 +129,9 @@ public abstract class TreeNode {
      * @return the resulting tree.
      */
     public static TreeNode fromString(String string){
-        ArrayList<Match<TokenType>> matches = intoPostfix(string, tokenize(string));
+        ArrayList<Match<TokenType>> matches = tokenize(string);
+        if(matches == null) return null;
+        matches = intoPostfix(string, matches);
         if(matches == null) return null;
 
         Collections.reverse(matches);
