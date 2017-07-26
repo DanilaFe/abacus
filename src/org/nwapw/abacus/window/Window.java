@@ -163,8 +163,10 @@ public class Window extends JFrame {
         sidePanel.add(numberSystemPanel, BorderLayout.NORTH);
         sidePanel.add(functionSelectPanel, BorderLayout.SOUTH);
 
-        add(outputPanel, BorderLayout.CENTER);
-        add(sidePanel, BorderLayout.EAST);
+        JTabbedPane pane = new JTabbedPane();
+        pane.add("Calculator", outputPanel);
+        pane.add("Settings", sidePanel);
+        add(pane, BorderLayout.CENTER);
         add(inputPanel, BorderLayout.SOUTH);
 
         ActionListener actionListener = (event) -> {
