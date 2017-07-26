@@ -1,5 +1,9 @@
 package org.nwapw.abacus.window;
 
+import org.nwapw.abacus.plugin.PluginManager;
+import org.nwapw.abacus.tree.NumberReducer;
+import org.nwapw.abacus.tree.TreeNode;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -7,6 +11,21 @@ import java.awt.*;
  * The main UI window for the calculator.
  */
 public class Window extends JFrame {
+
+    private static final String CALC_STRING = "Calculate";
+    private static final String SELECT_STRING = "Select";
+    private static final String SYNTAX_ERR_STRING = "Syntax Error";
+    private static final String NUMBER_SYSTEM_LABEL = "Number Type:";
+    private static final String FUNCTION_LABEL = "Functions:";
+
+    /**
+     * The plugin manager used to retrieve functions.
+     */
+    private PluginManager manager;
+    /**
+     * The reducer used to evaluate the tree.
+     */
+    private NumberReducer reducer;
 
     /**
      * A collection of outputs from the calculator.
@@ -74,7 +93,20 @@ public class Window extends JFrame {
      */
     private JButton functionSelectButton;
 
-    public Window() {
+    /**
+     * Creates a new window with the given manager.
+     * @param manager the manager to use.
+     */
+    public Window(PluginManager manager){
+        this();
+        this.manager = manager;
+        reducer = new NumberReducer(manager);
+    }
+
+    /**
+     * Creates a new window.
+     */
+    private Window() {
         super();
 
 
@@ -84,7 +116,7 @@ public class Window extends JFrame {
         setSize(640, 480);
 
         inputField = new JTextField();
-        inputEnterButton = new JButton("Calculate");
+        inputEnterButton = new JButton(CALC_STRING);
 
         inputPanel = new JPanel();
         inputPanel.setLayout(new BorderLayout());
@@ -106,15 +138,15 @@ public class Window extends JFrame {
 
         numberSystemPanel = new JPanel();
         numberSystemPanel.setLayout(new BorderLayout());
-        numberSystemPanel.add(new JLabel("Number Type:"), BorderLayout.NORTH);
+        numberSystemPanel.add(new JLabel(NUMBER_SYSTEM_LABEL), BorderLayout.NORTH);
         numberSystemPanel.add(numberSystemList, BorderLayout.CENTER);
 
         functionList = new JComboBox<>();
-        functionSelectButton = new JButton("Select");
+        functionSelectButton = new JButton(SELECT_STRING);
 
         functionSelectPanel = new JPanel();
         functionSelectPanel.setLayout(new BorderLayout());
-        functionSelectPanel.add(new JLabel("Functions:"), BorderLayout.NORTH);
+        functionSelectPanel.add(new JLabel(FUNCTION_LABEL), BorderLayout.NORTH);
         functionSelectPanel.add(functionList, BorderLayout.CENTER);
         functionSelectPanel.add(functionSelectButton, BorderLayout.SOUTH);
 
