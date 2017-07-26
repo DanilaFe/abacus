@@ -1,6 +1,6 @@
 package org.nwapw.abacus.plugin;
 
-import org.nwapw.abacus.number.Function;
+import org.nwapw.abacus.function.Function;
 
 import java.util.HashMap;
 

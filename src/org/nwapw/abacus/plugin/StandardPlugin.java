@@ -1,6 +1,6 @@
 package org.nwapw.abacus.plugin;
 
-import org.nwapw.abacus.number.Function;
+import org.nwapw.abacus.function.Function;
 import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
 
