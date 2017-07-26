@@ -120,6 +120,7 @@ public class Window extends JFrame {
         history = "";
         lastOutput = "";
 
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setSize(640, 480);
 
         inputField = new JTextField();
