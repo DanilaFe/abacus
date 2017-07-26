@@ -137,4 +137,6 @@ public abstract class TreeNode {
         return fromStringRecursive(string, matches);
     }
 
+    public abstract <T> T reduce(Reducer<T> reducer);
+
 }
