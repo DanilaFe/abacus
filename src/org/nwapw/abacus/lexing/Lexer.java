@@ -87,11 +87,12 @@ public class Lexer<T> {
         int index = startAt;
         ArrayList<Match<T>> matches = new ArrayList<>();
         Match<T> lastMatch = null;
-        while((lastMatch = lexOne(from, index, compare)) != null && index < from.length()){
+        while(index < from.length() && (lastMatch = lexOne(from, index, compare)) != null){
             if(lastMatch.getTo() == lastMatch.getFrom()) return null;
             matches.add(lastMatch);
             index += lastMatch.getTo() - lastMatch.getFrom();
         }
+        if(lastMatch == null) return null;
         return matches;
     }
 
