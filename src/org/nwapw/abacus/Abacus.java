@@ -23,7 +23,7 @@ public class Abacus {
         }
         manager = new PluginManager();
         manager.addInstantiated(new StandardPlugin(manager));
-        mainUi = new Window();
+        mainUi = new Window(manager);
         mainUi.setVisible(true);
     }
 
