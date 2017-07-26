@@ -29,7 +29,7 @@ public class NaiveNumber implements NumberInterface {
 
     @Override
     public int precision() {
-        return 4;
+        return 10;
     }
 
     @Override
