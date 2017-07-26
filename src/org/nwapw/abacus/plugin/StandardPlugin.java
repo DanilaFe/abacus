@@ -1,13 +1,18 @@
-package org.nwapw.abacus.number;
+package org.nwapw.abacus.plugin;
 
-import java.util.HashMap;
+import org.nwapw.abacus.function.Function;
+import org.nwapw.abacus.number.NaiveNumber;
+import org.nwapw.abacus.number.NumberInterface;
 
-public class FunctionDatabase {
+public class StandardPlugin extends Plugin {
 
-    private HashMap<String, Function> functions;
+    public StandardPlugin(PluginManager manager) {
+        super(manager);
+    }
 
-    private void registerDefault(){
-        functions.put("+", new Function() {
+    @Override
+    public void load() {
+        registerFunction("+", new Function() {
             @Override
             protected boolean matchesParams(NumberInterface[] params) {
                 return params.length >= 1;
@@ -23,7 +28,7 @@ public class FunctionDatabase {
             }
         });
 
-        functions.put("-", new Function() {
+        registerFunction("-", new Function() {
             @Override
             protected boolean matchesParams(NumberInterface[] params) {
                 return params.length == 2;
@@ -35,7 +40,7 @@ public class FunctionDatabase {
             }
         });
 
-        functions.put("*", new Function() {
+        registerFunction("*", new Function() {
             @Override
             protected boolean matchesParams(NumberInterface[] params) {
                 return params.length >= 1;
@@ -51,7 +56,7 @@ public class FunctionDatabase {
             }
         });
 
-        functions.put("/", new Function() {
+        registerFunction("/", new Function() {
             @Override
             protected boolean matchesParams(NumberInterface[] params) {
                 return params.length == 2;
@@ -63,7 +68,7 @@ public class FunctionDatabase {
             }
         });
 
-        functions.put("!", new Function() {
+        registerFunction("!", new Function() {
             @Override
             protected boolean matchesParams(NumberInterface[] params) {
                 return params.length == 1;
@@ -80,15 +85,6 @@ public class FunctionDatabase {
                 return factorial;
             }
         });
-    }
-
-    public FunctionDatabase(){
-        functions = new HashMap<>();
-        registerDefault();
-    }
-
-    public Function getFunction(String name){
-        return functions.get(name);
     }
 
 }
