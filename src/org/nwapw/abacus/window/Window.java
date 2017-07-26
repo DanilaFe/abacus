@@ -6,6 +6,9 @@ import org.nwapw.abacus.tree.TreeNode;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  * The main UI window for the calculator.
@@ -176,6 +179,18 @@ public class Window extends JFrame {
             historyTable.invalidate();
             lastOutputArea.setText(lastOutput);
             inputField.setText(lastOutput);
+        });
+        historyTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                Point clickPoint = e.getPoint();
+                if(e.getClickCount() == 2){
+                    int row = historyTable.rowAtPoint(clickPoint);
+                    int column = historyTable.columnAtPoint(clickPoint);
+                    String toCopy = historyTable.getValueAt(row, column).toString();
+                    Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(toCopy), null);
+                }
+            }
         });
     }
 }
