@@ -14,7 +14,6 @@ public abstract class TreeNode {
      * The lexer used to lex tokens.
      */
     private static Lexer<TokenType> lexer = new Lexer<TokenType>(){{
-        register(".", TokenType.ANY);
         register("\\+|-|\\*|/|^", TokenType.OP);
         register("[0-9]+(\\.[0-9]+)?", TokenType.NUM);
         register("[a-zA-Z]+", TokenType.WORD);
@@ -130,11 +129,15 @@ public abstract class TreeNode {
      * @return the resulting tree.
      */
     public static TreeNode fromString(String string){
-        ArrayList<Match<TokenType>> matches = intoPostfix(string, tokenize(string));
+        ArrayList<Match<TokenType>> matches = tokenize(string);
+        if(matches == null) return null;
+        matches = intoPostfix(string, matches);
         if(matches == null) return null;
 
         Collections.reverse(matches);
         return fromStringRecursive(string, matches);
     }
+
+    public abstract <T> T reduce(Reducer<T> reducer);
 
 }
