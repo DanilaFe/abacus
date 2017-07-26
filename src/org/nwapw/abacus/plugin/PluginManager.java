@@ -1,7 +1,5 @@
 package org.nwapw.abacus.plugin;
 
-import org.nwapw.abacus.number.Function;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;

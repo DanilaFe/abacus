@@ -1,4 +1,7 @@
-package org.nwapw.abacus.number;
+package org.nwapw.abacus.function;
+
+import org.nwapw.abacus.number.NaiveNumber;
+import org.nwapw.abacus.number.NumberInterface;
 
 import java.util.HashMap;
 
