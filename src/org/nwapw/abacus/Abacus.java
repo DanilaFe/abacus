@@ -1,5 +1,7 @@
 package org.nwapw.abacus;
 
+import org.nwapw.abacus.plugin.PluginManager;
+import org.nwapw.abacus.plugin.StandardPlugin;
 import org.nwapw.abacus.window.Window;
 
 import javax.swing.*;
@@ -7,6 +9,7 @@ import javax.swing.*;
 public class Abacus {
 
     private Window mainUi;
+    private PluginManager manager;
 
     public Abacus(){
         init();
@@ -18,6 +21,8 @@ public class Abacus {
         } catch (ClassNotFoundException | InstantiationException | UnsupportedLookAndFeelException | IllegalAccessException e) {
             e.printStackTrace();
         }
+        manager = new PluginManager();
+        manager.addInstantiated(new StandardPlugin(manager));
         mainUi = new Window();
         mainUi.setVisible(true);
     }
