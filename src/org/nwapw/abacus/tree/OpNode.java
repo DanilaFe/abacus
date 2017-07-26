@@ -18,6 +18,8 @@ public class OpNode extends TreeNode {
      */
     private TreeNode right;
 
+    private OpNode() {}
+
     /**
      * Creates a new operation node with the given operation
      * and no child nodes.
@@ -78,5 +80,12 @@ public class OpNode extends TreeNode {
      */
     public void setRight(TreeNode right) {
         this.right = right;
+    }
+
+    @Override
+    public <T> T reduce(Reducer<T> reducer) {
+        T leftReduce = left.reduce(reducer);
+        T rightReduce = right.reduce(reducer);
+        return reducer.reduceNode(this, leftReduce, rightReduce);
     }
 }
