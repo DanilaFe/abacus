@@ -49,4 +49,9 @@ public class NumberNode extends TreeNode {
     public <T> T reduce(Reducer<T> reducer) {
         return reducer.reduceNode(this);
     }
+
+    @Override
+    public String toString() {
+        return number != null ? number.toString() : "null";
+    }
 }
