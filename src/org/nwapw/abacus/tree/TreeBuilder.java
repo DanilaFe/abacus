@@ -35,6 +35,7 @@ public class TreeBuilder {
      */
     public TreeBuilder(){
         lexer = new Lexer<TokenType>(){{
+            register(" ", TokenType.WHITESPACE);
             register(",", TokenType.COMMA);
             register("[0-9]+(\\.[0-9]+)?", TokenType.NUM);
             register("\\(", TokenType.OPEN_PARENTH);
@@ -98,12 +99,14 @@ public class TreeBuilder {
                 while(!tokenStack.empty()) {
                     Match<TokenType> otherMatch = tokenStack.peek();
                     TokenType otherMatchType = otherMatch.getType();
-                    if(otherMatchType != TokenType.OP) break;
+                    if(!(otherMatchType == TokenType.OP || otherMatchType == TokenType.FUNCTION)) break;
 
-                    int otherPrecdence = precedenceMap.get(source.substring(otherMatch.getFrom(), otherMatch.getTo()));
-                    if(otherPrecdence < precedence ||
-                            (associativity == OperatorAssociativity.RIGHT && otherPrecdence == precedence)) {
-                        break;
+                    if(otherMatchType == TokenType.OP){
+                        int otherPrecdence = precedenceMap.get(source.substring(otherMatch.getFrom(), otherMatch.getTo()));
+                        if(otherPrecdence < precedence ||
+                                (associativity == OperatorAssociativity.RIGHT && otherPrecdence == precedence)) {
+                            break;
+                        }
                     }
                     output.add(tokenStack.pop());
                 }
@@ -169,6 +172,7 @@ public class TreeBuilder {
     public TreeNode fromString(String string){
         ArrayList<Match<TokenType>> matches = tokenize(string);
         if(matches == null) return null;
+        matches.removeIf(m -> m.getType() == TokenType.WHITESPACE);
         matches = intoPostfix(string, matches);
         if(matches == null) return null;
 
