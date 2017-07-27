@@ -26,6 +26,18 @@ public class PluginManager {
      * that is, found in a plugin and returned.
      */
     private HashMap<String, Operator> cachedOperators;
+    /**
+     * List of all functions loaded by the plugins.
+     */
+    private HashSet<String> allFunctions;
+    /**
+     * List of all operators loaded by the plugins.
+     */
+    private HashSet<String> allOperators;
+    /**
+     * The list of plugin listeners attached to this instance.
+     */
+    private HashSet<PluginListener> listeners;
 
     /**
      * Creates a new plugin manager.
@@ -34,6 +46,8 @@ public class PluginManager {
         plugins = new ArrayList<>();
         cachedFunctions = new HashMap<>();
         cachedOperators = new HashMap<>();
+        allFunctions = new HashSet<>();
+        allOperators = new HashSet<>();
     }
 
     /**
@@ -89,9 +103,6 @@ public class PluginManager {
      * @param plugin the plugin to add.
      */
     public void addInstantiated(Plugin plugin){
-        plugin.load();
-        cachedFunctions.clear();
-        cachedOperators.clear();
         plugins.add(plugin);
     }
 
@@ -109,4 +120,47 @@ public class PluginManager {
         }
     }
 
+    /**
+     * Loads all the plugins in the PluginManager.
+     */
+    public void load(){
+        for(Plugin plugin : plugins) plugin.enable();
+        for(Plugin plugin : plugins){
+            allFunctions.addAll(plugin.providedFunctions());
+            allOperators.addAll(plugin.providedOperators());
+        }
+    }
+
+    /**
+     * Unloads all the plugins in the PluginManager.
+     */
+    public void unload(){
+        for(Plugin plugin : plugins) plugin.disable();
+        allFunctions.clear();
+        allOperators.clear();
+    }
+
+    /**
+     * Reloads all the plugins in the PluginManager.
+     */
+    public void reload(){
+        unload();
+        reload();
+    }
+
+    /**
+     * Gets all the functions loaded by the Plugin Manager.
+     * @return the set of all functions that were loaded.
+     */
+    public HashSet<String> getAllFunctions() {
+        return allFunctions;
+    }
+
+    /**
+     * Gets all the operators loaded by the Plugin Manager.
+     * @return the set of all operators that were loaded.
+     */
+    public HashSet<String> getAllOperators() {
+        return allOperators;
+    }
 }

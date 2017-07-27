@@ -28,6 +28,10 @@ public abstract class Plugin {
      * not inside this package,
      */
     private PluginManager manager;
+    /**
+     * Whether this plugin has been loaded.
+     */
+    private boolean enabled;
 
     private Plugin(){ }
 
@@ -38,6 +42,8 @@ public abstract class Plugin {
     public Plugin(PluginManager manager) {
         this.manager = manager;
         functions = new HashMap<>();
+        operators = new HashMap<>();
+        enabled = false;
     }
 
     /**
@@ -72,6 +78,28 @@ public abstract class Plugin {
      */
     public final Operator getOperator(String operatorName) {
         return operators.get(operatorName);
+    }
+
+    /**
+     * Enables the function, loading the necessary instances
+     * of functions.
+     */
+    public final void enable(){
+        if(enabled) return;
+        onEnable();
+        enabled = true;
+    }
+
+    /**
+     * Disables the plugin, clearing loaded data store by default
+     * and calling its disable() method.
+     */
+    public final void disable(){
+        if(!enabled) return;
+        onDisable();
+        functions.clear();
+        operators.clear();
+        enabled = false;
     }
 
     /**
@@ -132,6 +160,12 @@ public abstract class Plugin {
      * are supposed to register the functions they provide and do any other
      * necessary setup.
      */
-    public abstract void load();
+    public abstract void onEnable();
+
+    /**
+     * Abstract method overridden by the plugin implementation, in which the plugins
+     * are supposed to dispose of loaded functions, operators, and macros.
+     */
+    public abstract void onDisable();
 
 }
