@@ -1,6 +1,8 @@
 package org.nwapw.abacus.plugin;
 
 import org.nwapw.abacus.function.Function;
+import org.nwapw.abacus.function.Operator;
+import org.nwapw.abacus.function.OperatorAssociativity;
 import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
 
@@ -21,7 +23,7 @@ public class StandardPlugin extends Plugin {
 
     @Override
     public void onEnable() {
-        registerFunction("+", new Function() {
+        registerOperator("\\+", new Operator(OperatorAssociativity.LEFT, 0, new Function() {
             @Override
             protected boolean matchesParams(NumberInterface[] params) {
                 return params.length >= 1;
@@ -35,9 +37,9 @@ public class StandardPlugin extends Plugin {
                 }
                 return sum;
             }
-        });
+        }));
 
-        registerFunction("-", new Function() {
+        registerOperator("-", new Operator(OperatorAssociativity.LEFT, 0, new Function() {
             @Override
             protected boolean matchesParams(NumberInterface[] params) {
                 return params.length == 2;
@@ -47,9 +49,9 @@ public class StandardPlugin extends Plugin {
             protected NumberInterface applyInternal(NumberInterface[] params) {
                 return params[0].subtract(params[1]);
             }
-        });
+        }));
 
-        registerFunction("*", new Function() {
+        registerOperator("\\*", new Operator(OperatorAssociativity.LEFT, 1, new Function() {
             @Override
             protected boolean matchesParams(NumberInterface[] params) {
                 return params.length >= 1;
@@ -63,9 +65,9 @@ public class StandardPlugin extends Plugin {
                 }
                 return product;
             }
-        });
+        }));
 
-        registerFunction("/", new Function() {
+        registerOperator("/", new Operator(OperatorAssociativity.LEFT, 1, new Function() {
             @Override
             protected boolean matchesParams(NumberInterface[] params) {
                 return params.length == 2;
@@ -75,7 +77,7 @@ public class StandardPlugin extends Plugin {
             protected NumberInterface applyInternal(NumberInterface[] params) {
                 return params[0].divide(params[1]);
             }
-        });
+        }));
 
         registerFunction("!", new Function() {
             //private HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>> storedList = new HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>>();

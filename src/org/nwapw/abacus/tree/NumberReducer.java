@@ -30,7 +30,7 @@ public class NumberReducer implements Reducer<NumberInterface> {
         } else if(node instanceof OpNode){
             NumberInterface left = (NumberInterface) children[0];
             NumberInterface right = (NumberInterface) children[1];
-            Function function = manager.functionFor(((OpNode) node).getOperation());
+            Function function = manager.operatorFor(((OpNode) node).getOperation()).getFunction();
             if(function == null) return null;
             return function.apply(left, right);
         } else if(node instanceof FunctionNode){
