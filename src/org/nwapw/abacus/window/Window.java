@@ -1,6 +1,8 @@
 package org.nwapw.abacus.window;
 
+import org.nwapw.abacus.function.Operator;
 import org.nwapw.abacus.number.NumberInterface;
+import org.nwapw.abacus.plugin.PluginListener;
 import org.nwapw.abacus.plugin.PluginManager;
 import org.nwapw.abacus.tree.NumberReducer;
 import org.nwapw.abacus.tree.TreeBuilder;
@@ -16,7 +18,7 @@ import java.awt.event.MouseEvent;
 /**
  * The main UI window for the calculator.
  */
-public class Window extends JFrame {
+public class Window extends JFrame implements PluginListener {
 
     private static final String CALC_STRING = "Calculate";
     private static final String SYNTAX_ERR_STRING = "Syntax Error";
@@ -128,7 +130,7 @@ public class Window extends JFrame {
      * Action listener that causes the input to be evaluated.
      */
     private ActionListener evaluateListener = (event) -> {
-        TreeBuilder builder = new TreeBuilder();
+        if(builder == null) return;
         TreeNode parsedExpression = builder.fromString(inputField.getText());
         if(parsedExpression == null){
             lastOutputArea.setText(SYNTAX_ERR_STRING);
@@ -162,6 +164,7 @@ public class Window extends JFrame {
     public Window(PluginManager manager){
         this();
         this.manager = manager;
+        manager.addListener(this);
         reducer = new NumberReducer(manager);
     }
 
@@ -256,5 +259,22 @@ public class Window extends JFrame {
                 }
             }
         });
+    }
+
+    @Override
+    public void onLoad(PluginManager manager) {
+        builder = new TreeBuilder();
+        for(String function : manager.getAllFunctions()){
+            builder.registerFunction(function);
+        }
+        for(String operator : manager.getAllOperators()){
+            Operator operatorObject = manager.operatorFor(operator);
+            builder.registerOperator(operator, operatorObject.getPrecedence(), operatorObject.getAssociativity());
+        }
+    }
+
+    @Override
+    public void onUnload(PluginManager manager) {
+        builder = null;
     }
 }

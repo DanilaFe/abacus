@@ -14,10 +14,25 @@ import java.util.*;
  */
 public class Lexer<T> {
 
+    /**
+     * An entry that represents a pattern that has been registered with the lexer.
+     * @param <T> the type used to identify the pattern.
+     */
     private static class PatternEntry<T>{
+        /**
+         * The name of the entry.
+         */
         public String name;
+        /**
+         * The id of the entry.
+         */
         public T id;
 
+        /**
+         * Creates a new pattern entry with the given name and id.
+         * @param name the name of the pattern entry.
+         * @param id the id of the pattern entry.
+         */
         public PatternEntry(String name, T id){
             this.name = name;
             this.id = id;

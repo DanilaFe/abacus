@@ -3,14 +3,25 @@ package org.nwapw.abacus.tree;
 import org.nwapw.abacus.function.OperatorAssociativity;
 import org.nwapw.abacus.lexing.Lexer;
 import org.nwapw.abacus.lexing.pattern.Match;
-import org.nwapw.abacus.plugin.PluginManager;
 
 import java.util.*;
 
+/**
+ * The builder responsible for turning strings into trees.
+ */
 public class TreeBuilder {
 
+    /**
+     * The lexer used to get the input tokens.
+     */
     private Lexer<TokenType> lexer;
+    /**
+     * The map of operator precedences.
+     */
     private HashMap<String, Integer> precedenceMap;
+    /**
+     * The map of operator associativity.
+     */
     private HashMap<String, OperatorAssociativity> associativityMap;
 
     /**
@@ -18,6 +29,9 @@ public class TreeBuilder {
      */
     protected static Comparator<TokenType> tokenSorter = Comparator.comparingInt(e -> e.priority);
 
+    /**
+     * Creates a new TreeBuilder.
+     */
     public TreeBuilder(){
         lexer = new Lexer<TokenType>(){{
             register(",", TokenType.COMMA);
@@ -27,6 +41,26 @@ public class TreeBuilder {
         }};
         precedenceMap = new HashMap<>();
         associativityMap = new HashMap<>();
+    }
+
+    /**
+     * Registers a function with the TreeBuilder.
+     * @param function the function to register.
+     */
+    public void registerFunction(String function){
+        lexer.register(function, TokenType.FUNCTION);
+    }
+
+    /**
+     * Registers an operator with the TreeBuilder.
+     * @param operator the operator to register.
+     * @param precedence the precedence of the operator.
+     * @param associativity the associativity of the operator.
+     */
+    public void registerOperator(String operator, int precedence, OperatorAssociativity associativity){
+        lexer.register(operator, TokenType.OP);
+        precedenceMap.put(operator, precedence);
+        associativityMap.put(operator, associativity);
     }
 
     /**
@@ -86,7 +120,9 @@ public class TreeBuilder {
             }
         }
         while(!tokenStack.empty()){
-            if(!(tokenStack.peek().getType() == TokenType.OP)) return null;
+            Match<TokenType> match = tokenStack.peek();
+            TokenType matchType = match.getType();
+            if(!(matchType == TokenType.OP || matchType == TokenType.FUNCTION)) return null;
             output.add(tokenStack.pop());
         }
         return output;
