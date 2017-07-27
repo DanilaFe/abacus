@@ -23,7 +23,7 @@ public class StandardPlugin extends Plugin {
 
     @Override
     public void onEnable() {
-        registerOperator("\\+", new Operator(OperatorAssociativity.LEFT, 0, new Function() {
+        registerOperator("+", new Operator(OperatorAssociativity.LEFT, 0, new Function() {
             @Override
             protected boolean matchesParams(NumberInterface[] params) {
                 return params.length >= 1;
@@ -51,7 +51,7 @@ public class StandardPlugin extends Plugin {
             }
         }));
 
-        registerOperator("\\*", new Operator(OperatorAssociativity.LEFT, 1, new Function() {
+        registerOperator("*", new Operator(OperatorAssociativity.LEFT, 1, new Function() {
             @Override
             protected boolean matchesParams(NumberInterface[] params) {
                 return params.length >= 1;
