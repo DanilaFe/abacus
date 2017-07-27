@@ -79,6 +79,18 @@ public class StandardPlugin extends Plugin {
             }
         }));
 
+        registerOperator("^", new Operator(OperatorAssociativity.RIGHT, 2, new Function() {
+            @Override
+            protected boolean matchesParams(NumberInterface[] params) {
+                return params.length == 2;
+            }
+
+            @Override
+            protected NumberInterface applyInternal(NumberInterface[] params) {
+                return StandardPlugin.this.getFunction("exp").apply(StandardPlugin.this.getFunction("ln").apply(params[0]).multiply(params[1]));
+            }
+        }));
+
         registerFunction("!", new Function() {
             //private HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>> storedList = new HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>>();
             @Override
@@ -208,18 +220,6 @@ public class StandardPlugin extends Plugin {
                     sum = sum.add(a.add(b).multiply(c));
                 }
                 return sum;
-            }
-        });
-
-        registerFunction("pow", new Function() {
-            @Override
-            protected boolean matchesParams(NumberInterface[] params) {
-                return params.length == 2;
-            }
-
-            @Override
-            protected NumberInterface applyInternal(NumberInterface[] params) {
-                return StandardPlugin.this.getFunction("exp").apply(StandardPlugin.this.getFunction("ln").apply(params[0]).multiply(params[1]));
             }
         });
 
