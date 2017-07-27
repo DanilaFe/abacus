@@ -1,4 +1,4 @@
-package org.nwapw.abacus.tree;
+package org.nwapw.abacus.function;
 
 /**
  * Enum to represent the associativity of an operator.

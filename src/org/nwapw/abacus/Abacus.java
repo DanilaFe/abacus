@@ -25,6 +25,7 @@ public class Abacus {
         manager.addInstantiated(new StandardPlugin(manager));
         mainUi = new Window(manager);
         mainUi.setVisible(true);
+        manager.load();
     }
 
     public static void main(String[] args){
