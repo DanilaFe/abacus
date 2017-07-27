@@ -236,6 +236,12 @@ public class Pattern<T> {
         return head;
     }
 
+    /**
+     * Removes all characters that are considered "special" from
+     * the given string.
+     * @param from the string to sanitize.
+     * @return the resulting string.
+     */
     public static String sanitize(String from){
         Pattern<Integer> pattern = new Pattern<>("", 0);
         from = from.replace(".", "\\.");
