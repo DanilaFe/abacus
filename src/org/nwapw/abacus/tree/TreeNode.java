@@ -14,6 +14,7 @@ public abstract class TreeNode {
      * The lexer used to lex tokens.
      */
     protected static Lexer<TokenType> lexer = new Lexer<TokenType>(){{
+        register(",", TokenType.COMMA);
         register("\\+|-|\\*|/|^", TokenType.OP);
         register("[0-9]+(\\.[0-9]+)?", TokenType.NUM);
         register("[a-zA-Z]+", TokenType.WORD);
@@ -67,9 +68,10 @@ public abstract class TreeNode {
         Stack<Match<TokenType>> tokenStack = new Stack<>();
         while(!from.isEmpty()){
             Match<TokenType> match = from.remove(0);
-            if(match.getType() == TokenType.NUM) {
+            TokenType matchType = match.getType();
+            if(matchType == TokenType.NUM || matchType == TokenType.WORD) {
                 output.add(match);
-            } else if(match.getType() == TokenType.OP){
+            } else if(matchType == TokenType.OP){
                 String tokenString = source.substring(match.getFrom(), match.getTo());
                 int precedence = precedenceMap.get(tokenString);
                 OperatorAssociativity associativity = associativityMap.get(tokenString);
@@ -86,14 +88,24 @@ public abstract class TreeNode {
                     output.add(tokenStack.pop());
                 }
                 tokenStack.push(match);
-            } else if(match.getType() == TokenType.OPEN_PARENTH){
+            } else if(matchType == TokenType.OPEN_PARENTH){
+                if(!output.isEmpty() && output.get(output.size() - 1).getType() == TokenType.WORD){
+                    tokenStack.push(output.remove(output.size() - 1));
+                    output.add(new Match<>(0, 0, TokenType.INTERNAL_FUNCTION_END));
+                }
                 tokenStack.push(match);
-            } else if(match.getType() == TokenType.CLOSE_PARENTH){
+            } else if(matchType == TokenType.CLOSE_PARENTH || matchType == TokenType.COMMA){
                 while(!tokenStack.empty() && tokenStack.peek().getType() != TokenType.OPEN_PARENTH){
                     output.add(tokenStack.pop());
                 }
                 if(tokenStack.empty()) return null;
-                tokenStack.pop();
+                if(matchType == TokenType.CLOSE_PARENTH){
+                    tokenStack.pop();
+                    if(!tokenStack.empty() && tokenStack.peek().getType() == TokenType.WORD) {
+                        output.add(tokenStack.pop());
+                        output.add(new Match<>(0, 0, TokenType.INTERNAL_FUNCTION_START));
+                    }
+                }
             }
         }
         while(!tokenStack.empty()){
@@ -119,6 +131,19 @@ public abstract class TreeNode {
             else return new OpNode(source.substring(match.getFrom(), match.getTo()), left, right);
         } else if(match.getType() == TokenType.NUM){
             return new NumberNode(Double.parseDouble(source.substring(match.getFrom(), match.getTo())));
+        } else if(match.getType() == TokenType.INTERNAL_FUNCTION_START){
+            if(matches.isEmpty() || matches.get(0).getType() != TokenType.WORD) return null;
+            Match<TokenType> stringName = matches.remove(0);
+            String functionName = source.substring(stringName.getFrom(), stringName.getTo());
+            FunctionNode node = new FunctionNode(functionName);
+            while(!matches.isEmpty() && matches.get(0).getType() != TokenType.INTERNAL_FUNCTION_END){
+                TreeNode argument = fromStringRecursive(source, matches);
+                if(argument == null) return null;
+                node.addChild(argument);
+            }
+            if(matches.isEmpty()) return null;
+            matches.remove(0);
+            return node;
         }
         return null;
     }
