@@ -126,6 +126,81 @@ public class StandardPlugin extends Plugin {
                 return sum;
             }
         });
+
+        registerFunction("ln", new Function() {
+            @Override
+            protected boolean matchesParams(NumberInterface[] params) {
+                return params.length == 1;
+            }
+
+            @Override
+            protected NumberInterface applyInternal(NumberInterface[] params) {
+                NumberInterface param = params[0];
+                int powersOf2 = 0;
+                while(StandardPlugin.this.getFunction("abs").apply(param.subtract(NaiveNumber.ONE.promoteTo(param.getClass()))).compareTo((new NaiveNumber(0.1)).promoteTo(param.getClass())) >= 0){
+                    if(param.subtract(NaiveNumber.ONE.promoteTo(param.getClass())).signum() == 1) {
+                        param = param.divide(new NaiveNumber(2).promoteTo(param.getClass()));
+                        powersOf2++;
+                        if(param.subtract(NaiveNumber.ONE.promoteTo(param.getClass())).signum() != 1) {
+                            break;
+                            //No infinite loop for you.
+                        }
+                    }
+                    else {
+                        param = param.multiply(new NaiveNumber(2).promoteTo(param.getClass()));
+                        powersOf2--;
+                        if(param.subtract(NaiveNumber.ONE.promoteTo(param.getClass())).signum() != 1) {
+                            break;
+                            //No infinite loop for you.
+                        }
+                    }
+                }
+                return getLog2(param).multiply((new NaiveNumber(powersOf2)).promoteTo(param.getClass())).add(getLogPartialSum(param));
+            }
+
+            /**
+             * Returns the partial sum of the Taylor series for logx (around x=1).
+             * Automatically determines the number of terms needed based on the precision of x.
+             * @param x value at which the series is evaluated. 0 < x < 2. (x=2 is convergent but impractical.)
+             * @return the partial sum.
+             */
+            private NumberInterface getLogPartialSum(NumberInterface x){
+                NumberInterface maxError = StandardPlugin.this.getMaxError(x);
+                x = x.subtract(NaiveNumber.ONE.promoteTo(x.getClass())); //Terms used are for log(x+1).
+                NumberInterface currentTerm = x, sum = x;
+                int n = 1;
+                while(StandardPlugin.this.getFunction("abs").apply(currentTerm).compareTo(maxError) > 0){
+                    n++;
+                    currentTerm = currentTerm.multiply(x).multiply((new NaiveNumber(n-1)).promoteTo(x.getClass())).divide((new NaiveNumber(n)).promoteTo(x.getClass())).negate();
+                    sum = sum.add(currentTerm);
+                }
+                return sum;
+            }
+
+            /**
+             * Returns natural log of 2 to the required precision of the class of number.
+             * @param number a number of the same type as the return type. (Used for precision.)
+             * @return the value of log(2) with the appropriate precision.
+             */
+            private NumberInterface getLog2(NumberInterface number){
+                NumberInterface maxError = StandardPlugin.this.getMaxError(number);
+                //NumberInterface errorBound = (new NaiveNumber(1)).promoteTo(number.getClass());
+                //We'll use the series \sigma_{n >= 1) ((1/3^n + 1/4^n) * 1/n)
+                //In the following, a=1/3^n, b=1/4^n, c = 1/n.
+                //a is also an error bound.
+                NumberInterface a = (new NaiveNumber(1)).promoteTo(number.getClass()), b = a, c = a;
+                NumberInterface sum = NaiveNumber.ZERO.promoteTo(number.getClass());
+                int n = 0;
+                while(a.compareTo(maxError) >= 1){
+                    n++;
+                    a = a.divide((new NaiveNumber(3)).promoteTo(number.getClass()));
+                    b = b.divide((new NaiveNumber(4)).promoteTo(number.getClass()));
+                    c = NaiveNumber.ONE.promoteTo(number.getClass()).divide((new NaiveNumber(n)).promoteTo(number.getClass()));
+                    sum = sum.add(a.add(b).multiply(c));
+                }
+                return sum;
+            }
+        });
     }
 
     /**
@@ -145,16 +220,16 @@ public class StandardPlugin extends Plugin {
      * @param x where the function is evaluated.
      * @return
      */
-    private int getNTermsExp(NumberInterface maxError, NumberInterface x){
+    private int getNTermsExp(NumberInterface maxError, NumberInterface x) {
         //We need n such that |x^(n+1)| <= (n+1)! * maxError
         //The variables LHS and RHS refer to the above inequality.
         int n = 0;
         x = this.getFunction("abs").apply(x);
         NumberInterface LHS = x, RHS = maxError;
-        while(LHS.compareTo(RHS) > 0){
+        while (LHS.compareTo(RHS) > 0) {
             n++;
             LHS = LHS.multiply(x);
-            RHS = RHS.multiply(new NaiveNumber(n+1).promoteTo(RHS.getClass()));
+            RHS = RHS.multiply(new NaiveNumber(n + 1).promoteTo(RHS.getClass()));
         }
         return n;
     }
