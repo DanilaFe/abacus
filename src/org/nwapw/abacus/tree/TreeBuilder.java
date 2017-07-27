@@ -3,6 +3,7 @@ package org.nwapw.abacus.tree;
 import org.nwapw.abacus.function.OperatorAssociativity;
 import org.nwapw.abacus.lexing.Lexer;
 import org.nwapw.abacus.lexing.pattern.Match;
+import org.nwapw.abacus.lexing.pattern.Pattern;
 
 import java.util.*;
 
@@ -48,7 +49,7 @@ public class TreeBuilder {
      * @param function the function to register.
      */
     public void registerFunction(String function){
-        lexer.register(function, TokenType.FUNCTION);
+        lexer.register(Pattern.sanitize(function), TokenType.FUNCTION);
     }
 
     /**
@@ -58,7 +59,7 @@ public class TreeBuilder {
      * @param associativity the associativity of the operator.
      */
     public void registerOperator(String operator, int precedence, OperatorAssociativity associativity){
-        lexer.register(operator, TokenType.OP);
+        lexer.register(Pattern.sanitize(operator), TokenType.OP);
         precedenceMap.put(operator, precedence);
         associativityMap.put(operator, associativity);
     }
