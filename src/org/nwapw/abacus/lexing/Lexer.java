@@ -7,6 +7,7 @@ import org.nwapw.abacus.lexing.pattern.PatternNode;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 
 /**
@@ -19,13 +20,13 @@ public class Lexer<T> {
     /**
      * The registered patterns.
      */
-    private ArrayList<Pattern<T>> patterns;
+    private HashMap<String, Pattern<T>> patterns;
 
     /**
      * Creates a new lexer with no registered patterns.
      */
     public Lexer(){
-        patterns = new ArrayList<>();
+        patterns = new HashMap<>();
     }
 
     /**
@@ -35,7 +36,7 @@ public class Lexer<T> {
      */
     public void register(String pattern, T id){
         Pattern<T> compiledPattern = new Pattern<>(pattern, id);
-        if(compiledPattern.getHead() != null) patterns.add(compiledPattern);
+        if(compiledPattern.getHead() != null) patterns.put(pattern, compiledPattern);
     }
 
     /**
@@ -50,7 +51,7 @@ public class Lexer<T> {
         HashSet<PatternNode<T>> currentSet = new HashSet<>();
         HashSet<PatternNode<T>> futureSet = new HashSet<>();
         int index = startAt;
-        for(Pattern<T> pattern : patterns){
+        for(Pattern<T> pattern : patterns.values()){
             pattern.getHead().addInto(currentSet);
         }
         while(!currentSet.isEmpty()){
