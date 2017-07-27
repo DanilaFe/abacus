@@ -20,7 +20,7 @@ public class StandardPlugin extends Plugin {
     }
 
     @Override
-    public void load() {
+    public void onEnable() {
         registerFunction("+", new Function() {
             @Override
             protected boolean matchesParams(NumberInterface[] params) {
@@ -234,11 +234,16 @@ public class StandardPlugin extends Plugin {
         });
     }
 
+    @Override
+    public void onDisable() {
+
+    }
+
     /**
      * Returns the nth term of the Taylor series (centered at 0) of e^x
      * @param n the term required (n >= 0).
      * @param x the real number at which the series is evaluated.
-     * @return
+     * @return the nth term of the series.
      */
     private NumberInterface getExpSeriesTerm(int n, NumberInterface x){
         return x.intPow(n).divide(this.getFunction("!").apply((new NaiveNumber(n)).promoteTo(x.getClass())));
@@ -249,7 +254,7 @@ public class StandardPlugin extends Plugin {
      * such that the error is at most maxError.
      * @param maxError Maximum error permissible (This should probably be positive.)
      * @param x where the function is evaluated.
-     * @return
+     * @return the number of terms needed to evaluated the exponential function.
      */
     private int getNTermsExp(NumberInterface maxError, NumberInterface x) {
         //We need n such that |x^(n+1)| <= (n+1)! * maxError
@@ -284,7 +289,7 @@ public class StandardPlugin extends Plugin {
     /**
      * Returns the maximum error based on the precision of the class of number.
      * @param number Any instance of the NumberInterface in question (should return an appropriate precision).
-     * @return
+     * @return the maximum error.
      */
     private NumberInterface getMaxError(NumberInterface number){
         return (new NaiveNumber(10)).promoteTo(number.getClass()).intPow(-number.precision());
