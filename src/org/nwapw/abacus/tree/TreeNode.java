@@ -13,7 +13,7 @@ public abstract class TreeNode {
     /**
      * The lexer used to lex tokens.
      */
-    private static Lexer<TokenType> lexer = new Lexer<TokenType>(){{
+    protected static Lexer<TokenType> lexer = new Lexer<TokenType>(){{
         register("\\+|-|\\*|/|^", TokenType.OP);
         register("[0-9]+(\\.[0-9]+)?", TokenType.NUM);
         register("[a-zA-Z]+", TokenType.WORD);
@@ -23,7 +23,7 @@ public abstract class TreeNode {
     /**
      * A map that maps operations to their precedence.
      */
-    private static HashMap<String, Integer> precedenceMap = new HashMap<String, Integer>(){{
+    protected static HashMap<String, Integer> precedenceMap = new HashMap<String, Integer>(){{
         put("+", 0);
         put("-", 0);
         put("*", 1);
@@ -33,7 +33,7 @@ public abstract class TreeNode {
     /**
      * A map that maps operations to their associativity.
      */
-    private static HashMap<String, OperatorAssociativity> associativityMap =
+    protected static HashMap<String, OperatorAssociativity> associativityMap =
             new HashMap<String, OperatorAssociativity>() {{
                 put("+", OperatorAssociativity.LEFT);
                 put("-", OperatorAssociativity.LEFT);
@@ -45,7 +45,7 @@ public abstract class TreeNode {
     /**
      * Comparator used to sort token types.
      */
-    private static Comparator<TokenType> tokenSorter = Comparator.comparingInt(e -> e.priority);
+    protected static Comparator<TokenType> tokenSorter = Comparator.comparingInt(e -> e.priority);
 
     /**
      * Tokenizes a string, converting it into matches
