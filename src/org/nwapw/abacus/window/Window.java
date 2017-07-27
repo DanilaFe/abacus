@@ -1,5 +1,6 @@
 package org.nwapw.abacus.window;
 
+import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.plugin.PluginManager;
 import org.nwapw.abacus.tree.NumberReducer;
 import org.nwapw.abacus.tree.TreeNode;
@@ -19,6 +20,7 @@ public class Window extends JFrame {
     private static final String CALC_STRING = "Calculate";
     private static final String SELECT_STRING = "Select";
     private static final String SYNTAX_ERR_STRING = "Syntax Error";
+    private static final String EVAL_ERR_STRING = "Evaluation Error";
     private static final String NUMBER_SYSTEM_LABEL = "Number Type:";
     private static final String FUNCTION_LABEL = "Functions:";
 
@@ -117,7 +119,12 @@ public class Window extends JFrame {
             lastOutputArea.setText(SYNTAX_ERR_STRING);
             return;
         }
-        lastOutput = parsedExpression.reduce(reducer).toString();
+        NumberInterface numberInterface = parsedExpression.reduce(reducer);
+        if(numberInterface == null){
+            lastOutputArea.setText(EVAL_ERR_STRING);;
+            return;
+        }
+        lastOutput = numberInterface.toString();
         historyModel.addEntry(new HistoryTableModel.HistoryEntry(inputField.getText(), parsedExpression, lastOutput));
         historyTable.invalidate();
         lastOutputArea.setText(lastOutput);
