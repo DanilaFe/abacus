@@ -1,8 +1,10 @@
 package org.nwapw.abacus.plugin;
 
 import org.nwapw.abacus.function.Function;
+import org.nwapw.abacus.function.Operator;
 
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * A plugin class that can be externally implemented and loaded via the
@@ -17,6 +19,10 @@ public abstract class Plugin {
      * A hash map of functions mapped to their string names.
      */
     private HashMap<String, Function> functions;
+    /**
+     * A hash map of operators mapped to their string names.
+     */
+    private HashMap<String, Operator> operators;
     /**
      * The plugin manager in which to search for functions
      * not inside this package,
@@ -35,12 +41,19 @@ public abstract class Plugin {
     }
 
     /**
-     * Determines whether the current plugin provides the given function name.
-     * @param functionName the name of the function provided.
-     * @return true of the function exists, false if it doesn't.
+     * Gets the list of functions provided by this plugin.
+     * @return the list of registered functions.
      */
-    public final boolean hasFunction(String functionName) {
-        return functions.containsKey(functionName);
+    public final Set<String> providedFunctions(){
+        return functions.keySet();
+    }
+
+    /**
+     * Gets the list of functions provided by this plugin.
+     * @return the list of registered functions.
+     */
+    public final Set<String> providedOperators(){
+        return operators.keySet();
     }
 
     /**
@@ -50,6 +63,15 @@ public abstract class Plugin {
      */
     public final Function getFunction(String functionName) {
         return functions.get(functionName);
+    }
+
+    /**
+     * Gets an operator under the given operator name.
+     * @param operatorName the name of the operator to get.
+     * @return the operator, or null if this plugin doesn't provide it.
+     */
+    public final Operator getOperator(String operatorName) {
+        return operators.get(operatorName);
     }
 
     /**
@@ -68,14 +90,41 @@ public abstract class Plugin {
     }
 
     /**
+     * To be used in load(). Registers an operator abstract class
+     * with the plugin internally, which makes it accessible to
+     * the plugin manager.
+     * @param name the name of the operator.
+     * @param operator the operator to register.
+     * @return true if the operator was registered successfully, false if not.
+     */
+    protected final boolean registerOperator(String name, Operator operator) {
+        if(operatorFor(name) == null){
+            operators.put(name, operator);
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Searches the PluginManager for the given function name.
      * This can be used by the plugins internally in order to call functions
      * they do not provide.
-     * @param name then name for which to search
+     * @param name the name for which to search
      * @return the resulting function, or null if none was found for that name.
      */
     protected final Function functionFor(String name) {
         return manager.functionFor(name);
+    }
+
+    /**
+     * Searches the PluginManager for the given operator name.
+     * This can be used by the plugins internally in order to call
+     * operations they do not provide.
+     * @param name the name for which to search
+     * @return the resulting operator, or null if none was found for that name.
+     */
+    protected final Operator operatorFor(String name) {
+        return manager.operatorFor(name);
     }
 
     /**
