@@ -107,14 +107,9 @@ public abstract class Plugin {
      * plugin internally, which makes it accessible to the plugin manager.
      * @param name the name to register by.
      * @param toRegister the function implementation.
-     * @return true if the function was registered successfully, false if not.
      */
-    protected final boolean registerFunction(String name, Function toRegister) {
-        if(functionFor(name) == null){
-            functions.put(name, toRegister);
-            return true;
-        }
-        return false;
+    protected final void registerFunction(String name, Function toRegister) {
+        functions.put(name, toRegister);
     }
 
     /**
@@ -123,14 +118,9 @@ public abstract class Plugin {
      * the plugin manager.
      * @param name the name of the operator.
      * @param operator the operator to register.
-     * @return true if the operator was registered successfully, false if not.
      */
-    protected final boolean registerOperator(String name, Operator operator) {
-        if(operatorFor(name) == null){
-            operators.put(name, operator);
-            return true;
-        }
-        return false;
+    protected final void registerOperator(String name, Operator operator) {
+        operators.put(name, operator);
     }
 
     /**
