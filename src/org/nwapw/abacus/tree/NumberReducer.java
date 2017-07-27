@@ -4,10 +4,21 @@ import org.nwapw.abacus.function.Function;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.plugin.PluginManager;
 
+/**
+ * A reducer implementation that turns a tree into a single number.
+ * This is not always guaranteed to work.
+ */
 public class NumberReducer implements Reducer<NumberInterface> {
 
+    /**
+     * The plugin manager from which to draw the functions.
+     */
     private PluginManager manager;
 
+    /**
+     * Creates a new number reducer with the given plugin manager.
+     * @param manager the plugin manager.
+     */
     public NumberReducer(PluginManager manager){
         this.manager = manager;
     }
