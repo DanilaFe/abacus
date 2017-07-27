@@ -124,14 +124,15 @@ public abstract class TreeNode {
     public static TreeNode fromStringRecursive(String source, ArrayList<Match<TokenType>> matches){
         if(matches.size() == 0) return null;
         Match<TokenType> match = matches.remove(0);
-        if(match.getType() == TokenType.OP){
+        TokenType matchType = match.getType();
+        if(matchType == TokenType.OP){
             TreeNode right = fromStringRecursive(source, matches);
             TreeNode left = fromStringRecursive(source, matches);
             if(left == null || right == null) return null;
             else return new OpNode(source.substring(match.getFrom(), match.getTo()), left, right);
-        } else if(match.getType() == TokenType.NUM){
+        } else if(matchType == TokenType.NUM){
             return new NumberNode(Double.parseDouble(source.substring(match.getFrom(), match.getTo())));
-        } else if(match.getType() == TokenType.INTERNAL_FUNCTION_START){
+        } else if(matchType == TokenType.INTERNAL_FUNCTION_START){
             if(matches.isEmpty() || matches.get(0).getType() != TokenType.WORD) return null;
             Match<TokenType> stringName = matches.remove(0);
             String functionName = source.substring(stringName.getFrom(), stringName.getTo());
