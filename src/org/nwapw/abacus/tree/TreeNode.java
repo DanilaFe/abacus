@@ -15,7 +15,7 @@ public abstract class TreeNode {
      */
     protected static Lexer<TokenType> lexer = new Lexer<TokenType>(){{
         register(",", TokenType.COMMA);
-        register("\\+|-|\\*|/|^", TokenType.OP);
+        register("\\+|-|\\*|/", TokenType.OP);
         register("[0-9]+(\\.[0-9]+)?", TokenType.NUM);
         register("[a-zA-Z]+", TokenType.WORD);
         register("\\(", TokenType.OPEN_PARENTH);
@@ -29,7 +29,6 @@ public abstract class TreeNode {
         put("-", 0);
         put("*", 1);
         put("/", 1);
-        put("^", 2);
     }};
     /**
      * A map that maps operations to their associativity.
@@ -40,7 +39,6 @@ public abstract class TreeNode {
                 put("-", OperatorAssociativity.LEFT);
                 put("*", OperatorAssociativity.LEFT);
                 put("/", OperatorAssociativity.LEFT);
-                put("^", OperatorAssociativity.RIGHT);
             }};
 
     /**
