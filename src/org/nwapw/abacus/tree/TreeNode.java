@@ -1,5 +1,6 @@
 package org.nwapw.abacus.tree;
 
+import org.nwapw.abacus.function.OperatorAssociativity;
 import org.nwapw.abacus.lexing.Lexer;
 import org.nwapw.abacus.lexing.pattern.Match;
 
