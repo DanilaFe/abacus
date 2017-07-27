@@ -5,6 +5,8 @@ import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
 
 import javax.print.attribute.standard.MediaSize;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.function.BiFunction;
 
 /**
@@ -76,7 +78,7 @@ public class StandardPlugin extends Plugin {
         });
 
         registerFunction("!", new Function() {
-            //private ArrayLi
+            //private HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>> storedList = new HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>>();
             @Override
             protected boolean matchesParams(NumberInterface[] params) {
                 return params.length == 1;
@@ -94,6 +96,11 @@ public class StandardPlugin extends Plugin {
                     factorial = factorial.multiply(multiplier);
                 }
                 return factorial;
+                /*if(!storedList.containsKey(params[0].getClass())){
+                    storedList.put(params[0].getClass(), new ArrayList<NumberInterface>());
+                    storedList.get(params[0].getClass()).add(NaiveNumber.ONE.promoteTo(params[0].getClass()));
+                    storedList.get(params[0].getClass()).add(NaiveNumber.ONE.promoteTo(params[0].getClass()));
+                }*/
             }
         });
 
