@@ -201,6 +201,18 @@ public class StandardPlugin extends Plugin {
                 return sum;
             }
         });
+
+        registerFunction("pow", new Function() {
+            @Override
+            protected boolean matchesParams(NumberInterface[] params) {
+                return params.length == 2;
+            }
+
+            @Override
+            protected NumberInterface applyInternal(NumberInterface[] params) {
+                return StandardPlugin.this.getFunction("exp").apply(StandardPlugin.this.getFunction("ln").apply(params[0]).multiply(params[1]));
+            }
+        });
     }
 
     /**
