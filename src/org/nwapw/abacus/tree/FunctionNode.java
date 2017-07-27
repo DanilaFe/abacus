@@ -2,22 +2,46 @@ package org.nwapw.abacus.tree;
 
 import java.util.ArrayList;
 
+/**
+ * A node that represents a function call.
+ */
 public class FunctionNode extends TreeNode {
 
+    /**
+     * The name of the function being called
+     */
     private String function;
+    /**
+     * The list of arguments to the function.
+     */
     private ArrayList<TreeNode> children;
 
+    /**
+     * Creates a function node with no function.
+     */
     private FunctionNode() { }
 
+    /**
+     * Creates a new function node with the given function name.
+     * @param function the function name.
+     */
     public FunctionNode(String function){
         this.function = function;
         children = new ArrayList<>();
     }
 
+    /**
+     * Gets the function name for this node.
+     * @return the function name.
+     */
     public String getFunction() {
         return function;
     }
 
+    /**
+     * Adds a child to this node.
+     * @param node the child to add.
+     */
     public void addChild(TreeNode node){
         children.add(node);
     }
