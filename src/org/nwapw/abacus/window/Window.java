@@ -5,8 +5,6 @@ import org.nwapw.abacus.tree.NumberReducer;
 import org.nwapw.abacus.tree.TreeNode;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionListener;
@@ -56,7 +54,7 @@ public class Window extends JFrame {
     /**
      * The panel where the output occurs.
      */
-    private JPanel outputPanel;
+    private JPanel calculationPanel;
     /**
      * The text area reserved for the last output.
      */
@@ -90,7 +88,7 @@ public class Window extends JFrame {
     /**
      * The side panel for separate configuration.
      */
-    private JPanel sidePanel;
+    private JPanel settingsPanel;
     /**
      * Panel for elements relating to number
      * system selection.
@@ -166,10 +164,10 @@ public class Window extends JFrame {
         lastOutputArea = new JTextArea(lastOutput);
         lastOutputArea.setEditable(false);
 
-        outputPanel = new JPanel();
-        outputPanel.setLayout(new BorderLayout());
-        outputPanel.add(historyScroll, BorderLayout.CENTER);
-        outputPanel.add(lastOutputArea, BorderLayout.SOUTH);
+        calculationPanel = new JPanel();
+        calculationPanel.setLayout(new BorderLayout());
+        calculationPanel.add(historyScroll, BorderLayout.CENTER);
+        calculationPanel.add(lastOutputArea, BorderLayout.SOUTH);
 
         numberSystemList = new JComboBox<>();
 
@@ -189,15 +187,15 @@ public class Window extends JFrame {
         functionSelectPanel.add(functionList);
         functionSelectPanel.setMaximumSize(functionSelectPanel.getPreferredSize());
 
-        sidePanel = new JPanel();
-        sidePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        sidePanel.setLayout(new BoxLayout(sidePanel, BoxLayout.PAGE_AXIS));
-        sidePanel.add(numberSystemPanel);
-        sidePanel.add(functionSelectPanel);
+        settingsPanel = new JPanel();
+        settingsPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        settingsPanel.setLayout(new BoxLayout(settingsPanel, BoxLayout.PAGE_AXIS));
+        settingsPanel.add(numberSystemPanel);
+        settingsPanel.add(functionSelectPanel);
 
         pane = new JTabbedPane();
-        pane.add("Calculator", outputPanel);
-        pane.add("Settings", sidePanel);
+        pane.add("Calculator", calculationPanel);
+        pane.add("Settings", settingsPanel);
         pane.addChangeListener(e -> {
             int selectionIndex = pane.getSelectedIndex();
             boolean enabled = BUTTON_ENABLED[selectionIndex];
