@@ -148,7 +148,7 @@ public class Window extends JFrame {
         lastOutput = "";
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setSize(640, 480);
+        setSize(320, 480);
 
         inputField = new JTextField();
         inputEnterButton = new JButton(CALC_STRING);
