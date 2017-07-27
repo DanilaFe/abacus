@@ -3,7 +3,7 @@ package org.nwapw.abacus.function;
 /**
  * A class that represents a single infix operator.
  */
-public abstract class Operator {
+public class Operator {
 
     /**
      * The associativity of the operator.
