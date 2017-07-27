@@ -220,6 +220,18 @@ public class StandardPlugin extends Plugin {
                 return StandardPlugin.this.getFunction("exp").apply(StandardPlugin.this.getFunction("ln").apply(params[0]).multiply(params[1]));
             }
         });
+
+        registerFunction("sqrt", new Function() {
+            @Override
+            protected boolean matchesParams(NumberInterface[] params) {
+                return params.length == 1;
+            }
+
+            @Override
+            protected NumberInterface applyInternal(NumberInterface[] params) {
+                return StandardPlugin.this.getFunction("pow").apply(params[0], (new NaiveNumber(0.5)));
+            }
+        });
     }
 
     /**
