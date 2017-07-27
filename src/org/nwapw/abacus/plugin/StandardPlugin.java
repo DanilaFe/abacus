@@ -75,6 +75,7 @@ public class StandardPlugin extends Plugin {
         });
 
         registerFunction("!", new Function() {
+            //private ArrayLi
             @Override
             protected boolean matchesParams(NumberInterface[] params) {
                 return params.length == 1;
@@ -92,6 +93,18 @@ public class StandardPlugin extends Plugin {
                     factorial = factorial.multiply(multiplier);
                 }
                 return factorial;
+            }
+        });
+
+        registerFunction("abs", new Function() {
+            @Override
+            protected boolean matchesParams(NumberInterface[] params) {
+                return params.length == 1;
+            }
+
+            @Override
+            protected NumberInterface applyInternal(NumberInterface[] params) {
+                return params[0].multiply((new NaiveNumber(params[0].signum())).promoteTo(params[0].getClass()));
             }
         });
 
@@ -126,14 +139,15 @@ public class StandardPlugin extends Plugin {
      * @return
      */
     private int getNTermsExp(NumberInterface maxError, NumberInterface x){
-        //We need n such that x^(n+2) <= (n+1)! * maxError
+        //We need n such that |x^(n+1)| <= (n+1)! * maxError
         //The variables LHS and RHS refer to the above inequality.
         int n = 0;
-        NumberInterface LHS = x.intPow(2), RHS = maxError;
+        x = this.getFunction("abs").apply(x);
+        NumberInterface LHS = x, RHS = maxError;
         while(LHS.compareTo(RHS) > 0){
             n++;
             LHS = LHS.multiply(x);
-            RHS = RHS.multiply(new NaiveNumber(n).promoteTo(RHS.getClass()));
+            RHS = RHS.multiply(new NaiveNumber(n+1).promoteTo(RHS.getClass()));
         }
         return n;
     }
