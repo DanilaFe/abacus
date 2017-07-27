@@ -3,6 +3,7 @@ package org.nwapw.abacus.window;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.plugin.PluginManager;
 import org.nwapw.abacus.tree.NumberReducer;
+import org.nwapw.abacus.tree.TreeBuilder;
 import org.nwapw.abacus.tree.TreeNode;
 
 import javax.swing.*;
@@ -47,6 +48,10 @@ public class Window extends JFrame {
      * The plugin manager used to retrieve functions.
      */
     private PluginManager manager;
+    /**
+     * The builder used to construct the parse trees.
+     */
+    private TreeBuilder builder;
     /**
      * The reducer used to evaluate the tree.
      */
@@ -123,7 +128,8 @@ public class Window extends JFrame {
      * Action listener that causes the input to be evaluated.
      */
     private ActionListener evaluateListener = (event) -> {
-        TreeNode parsedExpression = TreeNode.fromString(inputField.getText());
+        TreeBuilder builder = new TreeBuilder();
+        TreeNode parsedExpression = builder.fromString(inputField.getText());
         if(parsedExpression == null){
             lastOutputArea.setText(SYNTAX_ERR_STRING);
             return;
