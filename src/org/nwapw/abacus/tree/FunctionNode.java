@@ -39,11 +39,19 @@ public class FunctionNode extends TreeNode {
     }
 
     /**
-     * Adds a child to this node.
+     * Adds a child to the end of this node's child list.
      * @param node the child to add.
      */
-    public void addChild(TreeNode node){
+    public void appendChild(TreeNode node){
         children.add(node);
+    }
+
+    /**
+     * Adds a new child to the beginning of this node's child list.
+     * @param node the node to add.
+     */
+    public void prependChild(TreeNode node) {
+        children.add(0, node);
     }
 
     @Override
