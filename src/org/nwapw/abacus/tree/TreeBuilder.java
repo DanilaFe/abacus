@@ -155,7 +155,7 @@ public class TreeBuilder {
             while(!matches.isEmpty() && matches.get(0).getType() != TokenType.INTERNAL_FUNCTION_END){
                 TreeNode argument = fromStringRecursive(source, matches);
                 if(argument == null) return null;
-                node.addChild(argument);
+                node.prependChild(argument);
             }
             if(matches.isEmpty()) return null;
             matches.remove(0);
