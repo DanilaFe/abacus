@@ -48,6 +48,7 @@ public class PluginManager {
         cachedOperators = new HashMap<>();
         allFunctions = new HashSet<>();
         allOperators = new HashSet<>();
+        listeners = new HashSet<>();
     }
 
     /**
@@ -129,6 +130,7 @@ public class PluginManager {
             allFunctions.addAll(plugin.providedFunctions());
             allOperators.addAll(plugin.providedOperators());
         }
+        listeners.forEach(e -> e.onLoad(this));
     }
 
     /**
@@ -138,6 +140,7 @@ public class PluginManager {
         for(Plugin plugin : plugins) plugin.disable();
         allFunctions.clear();
         allOperators.clear();
+        listeners.forEach(e -> e.onUnload(this));
     }
 
     /**
@@ -163,4 +166,21 @@ public class PluginManager {
     public HashSet<String> getAllOperators() {
         return allOperators;
     }
+
+    /**
+     * Adds a plugin change listener to this plugin manager.
+     * @param listener the listener to add.
+     */
+    public void addListener(PluginListener listener){
+        listeners.add(listener);
+    }
+
+    /**
+     * Remove the plugin change listener from this plugin manager.
+     * @param listener the listener to remove.
+     */
+    public void removeListener(PluginListener listener){
+        listeners.remove(listener);
+    }
+    
 }
