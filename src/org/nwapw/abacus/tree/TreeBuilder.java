@@ -102,9 +102,9 @@ public class TreeBuilder {
                     if(!(otherMatchType == TokenType.OP || otherMatchType == TokenType.FUNCTION)) break;
 
                     if(otherMatchType == TokenType.OP){
-                        int otherPrecdence = precedenceMap.get(source.substring(otherMatch.getFrom(), otherMatch.getTo()));
-                        if(otherPrecdence < precedence ||
-                                (associativity == OperatorAssociativity.RIGHT && otherPrecdence == precedence)) {
+                        int otherPrecedence = precedenceMap.get(source.substring(otherMatch.getFrom(), otherMatch.getTo()));
+                        if(otherPrecedence < precedence ||
+                                (associativity == OperatorAssociativity.RIGHT && otherPrecedence == precedence)) {
                             break;
                         }
                     }
