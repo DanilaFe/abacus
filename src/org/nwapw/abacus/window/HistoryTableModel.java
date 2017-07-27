@@ -7,20 +7,34 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 import java.util.ArrayList;
 
+/**
+ * A table model to store data about the history of inputs
+ * in the calculator.
+ */
 public class HistoryTableModel extends AbstractTableModel {
 
+    /**
+     * Static array used to get the column names.
+     */
     public static final String[] COLUMN_NAMES = {
             "Input",
             "Parsed Input",
             "Output"
     };
 
+    /**
+     * Static array used to get the class of each column.
+     */
     public static final Class[] CLASS_TYPES = {
             String.class,
             TreeNode.class,
             String.class
     };
 
+    /**
+     * Class used specifically to hold data about
+     * the previous entries into the calculator.
+     */
     public static class HistoryEntry {
         public String input;
         public TreeNode parsedInput;
@@ -40,17 +54,27 @@ public class HistoryTableModel extends AbstractTableModel {
         }
     }
 
+    /**
+     * The list of entries.
+     */
     ArrayList<HistoryEntry> entries;
 
+    /**
+     * Creates a new empty history table model
+     */
     public HistoryTableModel() {
         entries = new ArrayList<>();
     }
 
+    /**
+     * Adds an entry to the model.
+     * @param entry the entry to add.
+     */
     public void addEntry(HistoryEntry entry){
         entries.add(entry);
     }
 
-        @Override
+    @Override
     public int getRowCount() {
         return entries.size();
     }
@@ -80,18 +104,4 @@ public class HistoryTableModel extends AbstractTableModel {
         return entries.get(rowIndex).nthValue(columnIndex);
     }
 
-    @Override
-    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-        return;
-    }
-
-    @Override
-    public void addTableModelListener(TableModelListener l) {
-
-    }
-
-    @Override
-    public void removeTableModelListener(TableModelListener l) {
-
-    }
 }

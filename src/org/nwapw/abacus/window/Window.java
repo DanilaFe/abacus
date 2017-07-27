@@ -1,5 +1,6 @@
 package org.nwapw.abacus.window;
 
+import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.plugin.PluginManager;
 import org.nwapw.abacus.tree.NumberReducer;
 import org.nwapw.abacus.tree.TreeNode;
@@ -17,17 +18,27 @@ import java.awt.event.MouseEvent;
 public class Window extends JFrame {
 
     private static final String CALC_STRING = "Calculate";
-    private static final String SELECT_STRING = "Select";
     private static final String SYNTAX_ERR_STRING = "Syntax Error";
+    private static final String EVAL_ERR_STRING = "Evaluation Error";
     private static final String NUMBER_SYSTEM_LABEL = "Number Type:";
     private static final String FUNCTION_LABEL = "Functions:";
 
+    /**
+     * Array of Strings to which the "calculate" button's text
+     * changes. For instance, in the graph tab, the name will
+     * be "Graph" and not "Calculate".
+     */
     private static final String[] BUTTON_NAMES = {
             CALC_STRING,
             CALC_STRING
     };
 
-    private static boolean[] BUTTON_ENABLED = {
+    /**
+     * Array of booleans that determine whether the input
+     * field and the input button are enabled at a particular
+     * index.
+     */
+    private static boolean[] INPUT_ENABLED = {
             true,
             false
     };
@@ -117,13 +128,22 @@ public class Window extends JFrame {
             lastOutputArea.setText(SYNTAX_ERR_STRING);
             return;
         }
-        lastOutput = parsedExpression.reduce(reducer).toString();
+        NumberInterface numberInterface = parsedExpression.reduce(reducer);
+        if(numberInterface == null){
+            lastOutputArea.setText(EVAL_ERR_STRING);;
+            return;
+        }
+        lastOutput = numberInterface.toString();
         historyModel.addEntry(new HistoryTableModel.HistoryEntry(inputField.getText(), parsedExpression, lastOutput));
         historyTable.invalidate();
         lastOutputArea.setText(lastOutput);
         inputField.setText("");
     };
 
+    /**
+     * Array of listeners that tell the input button how to behave
+     * at a given input tab.
+     */
     private ActionListener[] listeners = {
             evaluateListener,
             null
@@ -198,7 +218,7 @@ public class Window extends JFrame {
         pane.add("Settings", settingsPanel);
         pane.addChangeListener(e -> {
             int selectionIndex = pane.getSelectedIndex();
-            boolean enabled = BUTTON_ENABLED[selectionIndex];
+            boolean enabled = INPUT_ENABLED[selectionIndex];
             ActionListener listener = listeners[selectionIndex];
             inputEnterButton.setText(BUTTON_NAMES[selectionIndex]);
             inputField.setEnabled(enabled);
