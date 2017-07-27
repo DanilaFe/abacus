@@ -17,7 +17,7 @@ public class StandardPlugin extends Plugin {
     }
 
     @Override
-    public void load() {
+    public void onEnable() {
         registerFunction("+", new Function() {
             @Override
             protected boolean matchesParams(NumberInterface[] params) {
@@ -106,6 +106,11 @@ public class StandardPlugin extends Plugin {
                 return sumSeries(params[0], StandardPlugin.this::getExpSeriesTerm, getNTermsExp(getMaxError(params[0]), params[0]));
             }
         });
+    }
+
+    @Override
+    public void onDisable() {
+
     }
 
     /**
