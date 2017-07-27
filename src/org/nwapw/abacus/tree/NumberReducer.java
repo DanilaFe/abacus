@@ -1,5 +1,6 @@
 package org.nwapw.abacus.tree;
 
+import org.nwapw.abacus.function.Function;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.plugin.PluginManager;
 
@@ -18,7 +19,17 @@ public class NumberReducer implements Reducer<NumberInterface> {
         } else if(node instanceof OpNode){
             NumberInterface left = (NumberInterface) children[0];
             NumberInterface right = (NumberInterface) children[1];
-            return manager.functionFor(((OpNode) node).getOperation()).apply(left, right);
+            Function function = manager.functionFor(((OpNode) node).getOperation());
+            if(function == null) return null;
+            return function.apply(left, right);
+        } else if(node instanceof FunctionNode){
+            NumberInterface[] convertedChildren = new NumberInterface[children.length];
+            for(int i = 0; i < convertedChildren.length; i++){
+                convertedChildren[i] = (NumberInterface) children[i];
+            }
+            Function function = manager.functionFor(((FunctionNode) node).getFunction());
+            if(function == null) return null;
+            return function.apply(convertedChildren);
         }
         return null;
     }
