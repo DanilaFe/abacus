@@ -86,6 +86,7 @@ public class OpNode extends TreeNode {
     public <T> T reduce(Reducer<T> reducer) {
         T leftReduce = left.reduce(reducer);
         T rightReduce = right.reduce(reducer);
+        if(leftReduce == null || rightReduce == null) return null;
         return reducer.reduceNode(this, leftReduce, rightReduce);
     }
 
