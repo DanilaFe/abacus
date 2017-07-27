@@ -35,6 +35,19 @@ public class PluginManager {
         cachedFunctions = new HashMap<>();
     }
 
+    /**
+     * Searches the plugin list for a certain value, retrieving the Plugin's
+     * list of items of the type using the setFunction and getting the value
+     * of it is available via getFunction. If the value is contained
+     * in the cache, it returns the cached value instead.
+     * @param plugins the plugin list to search.
+     * @param cache the cache to use
+     * @param setFunction the function to retrieve a set of available T's from the plugin
+     * @param getFunction the function to get the T value under the given name
+     * @param name the name to search for
+     * @param <T> the type of element being search
+     * @return the retrieved element, or null if it was not found.
+     */
     private static <T> T searchCached(Collection<Plugin> plugins, Map<String, T> cache,
                                       java.util.function.Function<Plugin, Set<String>> setFunction,
                                       java.util.function.BiFunction<Plugin, String, T> getFunction,
@@ -77,6 +90,7 @@ public class PluginManager {
     public void addInstantiated(Plugin plugin){
         plugin.load();
         cachedFunctions.clear();
+        cachedOperators.clear();
         plugins.add(plugin);
     }
 
