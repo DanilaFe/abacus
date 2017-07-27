@@ -5,10 +5,7 @@ import org.nwapw.abacus.lexing.pattern.Match;
 import org.nwapw.abacus.lexing.pattern.Pattern;
 import org.nwapw.abacus.lexing.pattern.PatternNode;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 
 /**
  * A lexer that can generate tokens of a given type given a list of regular expressions
@@ -17,10 +14,32 @@ import java.util.HashSet;
  */
 public class Lexer<T> {
 
+    private static class PatternEntry<T>{
+        public String name;
+        public T id;
+
+        public PatternEntry(String name, T id){
+            this.name = name;
+            this.id = id;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(name, id);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return obj instanceof PatternEntry &&
+                    ((PatternEntry) obj).name.equals(name) &&
+                    ((PatternEntry) obj).id.equals(id);
+        }
+    }
+
     /**
      * The registered patterns.
      */
-    private HashMap<String, Pattern<T>> patterns;
+    private HashMap<PatternEntry<T>, Pattern<T>> patterns;
 
     /**
      * Creates a new lexer with no registered patterns.
@@ -36,7 +55,16 @@ public class Lexer<T> {
      */
     public void register(String pattern, T id){
         Pattern<T> compiledPattern = new Pattern<>(pattern, id);
-        if(compiledPattern.getHead() != null) patterns.put(pattern, compiledPattern);
+        if(compiledPattern.getHead() != null) patterns.put(new PatternEntry<>(pattern, id), compiledPattern);
+    }
+
+    /**
+     * Unregisters a pattern.
+     * @param pattern the pattern to unregister
+     * @param id the ID by which to identify the pattern.
+     */
+    public void unregister(String pattern, T id){
+        patterns.remove(new PatternEntry<>(pattern, id));
     }
 
     /**
