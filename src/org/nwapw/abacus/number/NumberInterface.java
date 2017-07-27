@@ -49,8 +49,8 @@ public interface NumberInterface {
 
     /**
      * Raises this number to an integer power.
-     * @param exponent
-     * @return
+     * @param exponent the exponent to which to take the number.
+     * @return the resulting value.
      */
     NumberInterface intPow(int exponent);
 
