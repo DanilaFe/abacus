@@ -5,6 +5,8 @@ import org.nwapw.abacus.tree.NumberReducer;
 import org.nwapw.abacus.tree.TreeNode;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionListener;
@@ -22,6 +24,16 @@ public class Window extends JFrame {
     private static final String NUMBER_SYSTEM_LABEL = "Number Type:";
     private static final String FUNCTION_LABEL = "Functions:";
 
+    private static final String[] BUTTON_NAMES = {
+            CALC_STRING,
+            CALC_STRING
+    };
+
+    private static boolean[] BUTTON_ENABLED = {
+            true,
+            false
+    };
+
     /**
      * The plugin manager used to retrieve functions.
      */
@@ -32,13 +44,14 @@ public class Window extends JFrame {
     private NumberReducer reducer;
 
     /**
-     * A collection of outputs from the calculator.
-     */
-    private String history;
-    /**
      * The last output by the calculator.
      */
     private String lastOutput;
+
+    /**
+     * The tabbed pane that separates calculator contexts.
+     */
+    private JTabbedPane pane;
 
     /**
      * The panel where the output occurs.
@@ -96,10 +109,27 @@ public class Window extends JFrame {
      * The list of functions available to the user.
      */
     private JComboBox<String> functionList;
+
     /**
-     * The button used to select a function.
+     * Action listener that causes the input to be evaluated.
      */
-    private JButton functionSelectButton;
+    private ActionListener evaluateListener = (event) -> {
+        TreeNode parsedExpression = TreeNode.fromString(inputField.getText());
+        if(parsedExpression == null){
+            lastOutputArea.setText(SYNTAX_ERR_STRING);
+            return;
+        }
+        lastOutput = parsedExpression.reduce(reducer).toString();
+        historyModel.addEntry(new HistoryTableModel.HistoryEntry(inputField.getText(), parsedExpression, lastOutput));
+        historyTable.invalidate();
+        lastOutputArea.setText(lastOutput);
+        inputField.setText("");
+    };
+
+    private ActionListener[] listeners = {
+            evaluateListener,
+            null
+    };
 
     /**
      * Creates a new window with the given manager.
@@ -117,7 +147,6 @@ public class Window extends JFrame {
     private Window() {
         super();
 
-        history = "";
         lastOutput = "";
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -145,46 +174,52 @@ public class Window extends JFrame {
         numberSystemList = new JComboBox<>();
 
         numberSystemPanel = new JPanel();
-        numberSystemPanel.setLayout(new BorderLayout());
-        numberSystemPanel.add(new JLabel(NUMBER_SYSTEM_LABEL), BorderLayout.NORTH);
-        numberSystemPanel.add(numberSystemList, BorderLayout.CENTER);
+        numberSystemPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        numberSystemPanel.setLayout(new FlowLayout());
+        numberSystemPanel.add(new JLabel(NUMBER_SYSTEM_LABEL));
+        numberSystemPanel.add(numberSystemList);
+        numberSystemPanel.setMaximumSize(numberSystemPanel.getPreferredSize());
 
         functionList = new JComboBox<>();
-        functionSelectButton = new JButton(SELECT_STRING);
 
         functionSelectPanel = new JPanel();
-        functionSelectPanel.setLayout(new BorderLayout());
-        functionSelectPanel.add(new JLabel(FUNCTION_LABEL), BorderLayout.NORTH);
-        functionSelectPanel.add(functionList, BorderLayout.CENTER);
-        functionSelectPanel.add(functionSelectButton, BorderLayout.SOUTH);
+        functionSelectPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        functionSelectPanel.setLayout(new FlowLayout());
+        functionSelectPanel.add(new JLabel(FUNCTION_LABEL));
+        functionSelectPanel.add(functionList);
+        functionSelectPanel.setMaximumSize(functionSelectPanel.getPreferredSize());
 
         sidePanel = new JPanel();
-        sidePanel.setLayout(new BorderLayout());
-        sidePanel.add(numberSystemPanel, BorderLayout.NORTH);
-        sidePanel.add(functionSelectPanel, BorderLayout.SOUTH);
+        sidePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        sidePanel.setLayout(new BoxLayout(sidePanel, BoxLayout.PAGE_AXIS));
+        sidePanel.add(numberSystemPanel);
+        sidePanel.add(functionSelectPanel);
 
-        JTabbedPane pane = new JTabbedPane();
+        pane = new JTabbedPane();
         pane.add("Calculator", outputPanel);
         pane.add("Settings", sidePanel);
+        pane.addChangeListener(e -> {
+            int selectionIndex = pane.getSelectedIndex();
+            boolean enabled = BUTTON_ENABLED[selectionIndex];
+            ActionListener listener = listeners[selectionIndex];
+            inputEnterButton.setText(BUTTON_NAMES[selectionIndex]);
+            inputField.setEnabled(enabled);
+            inputEnterButton.setEnabled(enabled);
+
+            for(ActionListener removingListener : inputEnterButton.getActionListeners()){
+                inputEnterButton.removeActionListener(removingListener);
+                inputField.removeActionListener(removingListener);
+            }
+            if(listener != null){
+                inputEnterButton.addActionListener(listener);
+                inputField.addActionListener(listener);
+            }
+        });
         add(pane, BorderLayout.CENTER);
         add(inputPanel, BorderLayout.SOUTH);
 
-        ActionListener actionListener = (event) -> {
-            TreeNode parsedExpression = TreeNode.fromString(inputField.getText());
-            if(parsedExpression == null){
-                lastOutputArea.setText(SYNTAX_ERR_STRING);
-                return;
-            }
-            lastOutput = parsedExpression.reduce(reducer).toString();
-            history += (history.length() == 0) ? "" : "\n\n";
-            history += lastOutput;
-
-            historyModel.addEntry(new HistoryTableModel.HistoryEntry(inputField.getText(), parsedExpression, lastOutput));
-            historyTable.invalidate();
-            lastOutputArea.setText(lastOutput);
-        };
-        inputEnterButton.addActionListener(actionListener);
-        inputField.addActionListener(actionListener);
+        inputEnterButton.addActionListener(evaluateListener);
+        inputField.addActionListener(evaluateListener);
         historyTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
