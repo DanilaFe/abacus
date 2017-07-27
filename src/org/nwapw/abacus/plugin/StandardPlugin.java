@@ -4,6 +4,7 @@ import org.nwapw.abacus.function.Function;
 import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
 
+import javax.print.attribute.standard.MediaSize;
 import java.util.function.BiFunction;
 
 /**
@@ -116,7 +117,13 @@ public class StandardPlugin extends Plugin {
 
             @Override
             protected NumberInterface applyInternal(NumberInterface[] params) {
-                return sumSeries(params[0], StandardPlugin.this::getExpSeriesTerm, getNTermsExp(getMaxError(params[0]), params[0]));
+                boolean takeReciprocal = params[0].signum() == -1;
+                params[0] = StandardPlugin.this.getFunction("abs").apply(params[0]);
+                NumberInterface sum = sumSeries(params[0], StandardPlugin.this::getExpSeriesTerm, getNTermsExp(getMaxError(params[0]), params[0]));
+                if(takeReciprocal){
+                    sum = NaiveNumber.ONE.promoteTo(sum.getClass()).divide(sum);
+                }
+                return sum;
             }
         });
     }
