@@ -235,4 +235,16 @@ public class Pattern<T> {
     public PatternNode<T> getHead() {
         return head;
     }
+
+    public static String sanitize(String from){
+        Pattern<Integer> pattern = new Pattern<>("", 0);
+        from = from.replace(".", "\\.");
+        from = from.replace("|", "\\|");
+        from = from.replace("(", "\\(");
+        from = from.replace(")", "\\)");
+        for(Character key : pattern.operations.keySet()){
+            from = from.replace("" + key, "\\" + key);
+        }
+        return from;
+    }
 }
