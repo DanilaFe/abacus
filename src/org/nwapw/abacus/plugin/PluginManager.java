@@ -33,6 +33,7 @@ public class PluginManager {
     public PluginManager(){
         plugins = new ArrayList<>();
         cachedFunctions = new HashMap<>();
+        cachedOperators = new HashMap<>();
     }
 
     /**

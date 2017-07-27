@@ -95,13 +95,6 @@ public class OpNode extends TreeNode {
         String leftString = left != null ? left.toString() : "null";
         String rightString = right != null ? right.toString() : "null";
 
-        if(right != null && right instanceof OpNode){
-            if(TreeNode.precedenceMap.get(((OpNode) right).getOperation()) >
-                    TreeNode.precedenceMap.get(operation)) {
-                rightString = "(" + rightString + ")";
-            }
-        }
-        
-        return leftString + operation + rightString;
+        return "(" + leftString + operation + rightString + ")";
     }
 }
