@@ -2,6 +2,7 @@ package org.nwapw.abacus.function;
 
 import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
+import org.nwapw.abacus.number.PreciseNumber;
 
 import java.util.HashMap;
 
@@ -17,6 +18,7 @@ public abstract class Function {
     private static final HashMap<Class<? extends NumberInterface>, Integer> priorityMap =
             new HashMap<Class<? extends NumberInterface>, Integer>() {{
                 put(NaiveNumber.class, 0);
+                put(PreciseNumber.class, 1);
             }};
 
     /**
