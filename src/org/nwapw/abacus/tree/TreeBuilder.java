@@ -1,6 +1,7 @@
 package org.nwapw.abacus.tree;
 
 import org.nwapw.abacus.function.OperatorAssociativity;
+import org.nwapw.abacus.function.OperatorType;
 import org.nwapw.abacus.lexing.Lexer;
 import org.nwapw.abacus.lexing.pattern.Match;
 import org.nwapw.abacus.lexing.pattern.Pattern;
@@ -24,6 +25,10 @@ public class TreeBuilder {
      * The map of operator associativity.
      */
     private Map<String, OperatorAssociativity> associativityMap;
+    /**
+     * The map of operator types.
+     */
+    private Map<String, OperatorType> typeMap;
 
     /**
      * Comparator used to sort token types.
@@ -43,6 +48,7 @@ public class TreeBuilder {
         }};
         precedenceMap = new HashMap<>();
         associativityMap = new HashMap<>();
+        typeMap = new HashMap<>();
     }
 
     /**
@@ -59,10 +65,12 @@ public class TreeBuilder {
      * @param precedence the precedence of the operator.
      * @param associativity the associativity of the operator.
      */
-    public void registerOperator(String operator, int precedence, OperatorAssociativity associativity){
+    public void registerOperator(String operator, OperatorAssociativity associativity,
+                                 OperatorType operatorType, int precedence){
         lexer.register(Pattern.sanitize(operator), TokenType.OP);
         precedenceMap.put(operator, precedence);
         associativityMap.put(operator, associativity);
+        typeMap.put(operator, operatorType);
     }
 
     /**
@@ -93,8 +101,14 @@ public class TreeBuilder {
                 tokenStack.push(match);
             } else if(matchType == TokenType.OP){
                 String tokenString = source.substring(match.getFrom(), match.getTo());
+                OperatorType type = typeMap.get(tokenString);
                 int precedence = precedenceMap.get(tokenString);
                 OperatorAssociativity associativity = associativityMap.get(tokenString);
+
+                if(type == OperatorType.UNARY_POSTFIX){
+                    output.add(match);
+                    continue;
+                }
 
                 while(!tokenStack.empty()) {
                     Match<TokenType> otherMatch = tokenStack.peek();
@@ -143,10 +157,18 @@ public class TreeBuilder {
         Match<TokenType> match = matches.remove(0);
         TokenType matchType = match.getType();
         if(matchType == TokenType.OP){
-            TreeNode right = fromStringRecursive(source, matches);
-            TreeNode left = fromStringRecursive(source, matches);
-            if(left == null || right == null) return null;
-            else return new OpNode(source.substring(match.getFrom(), match.getTo()), left, right);
+            String operator = source.substring(match.getFrom(), match.getTo());
+            OperatorType type = typeMap.get(operator);
+            if(type == OperatorType.BINARY_INFIX){
+                TreeNode right = fromStringRecursive(source, matches);
+                TreeNode left = fromStringRecursive(source, matches);
+                if(left == null || right == null) return null;
+                else return new BinaryInfixNode(operator, left, right);
+            } else {
+                TreeNode applyTo = fromStringRecursive(source, matches);
+                if(applyTo == null) return null;
+                else return new UnaryPrefixNode(operator, applyTo);
+            }
         } else if(matchType == TokenType.NUM){
             return new NumberNode(Double.parseDouble(source.substring(match.getFrom(), match.getTo())));
         } else if(matchType == TokenType.FUNCTION){

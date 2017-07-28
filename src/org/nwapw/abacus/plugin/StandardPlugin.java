@@ -3,6 +3,7 @@ package org.nwapw.abacus.plugin;
 import org.nwapw.abacus.function.Function;
 import org.nwapw.abacus.function.Operator;
 import org.nwapw.abacus.function.OperatorAssociativity;
+import org.nwapw.abacus.function.OperatorType;
 import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
 
@@ -20,7 +21,7 @@ public class StandardPlugin extends Plugin {
 
     @Override
     public void onEnable() {
-        registerOperator("+", new Operator(OperatorAssociativity.LEFT, 0, new Function() {
+        registerOperator("+", new Operator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 0, new Function() {
             @Override
             protected boolean matchesParams(NumberInterface[] params) {
                 return params.length >= 1;
@@ -36,7 +37,7 @@ public class StandardPlugin extends Plugin {
             }
         }));
 
-        registerOperator("-", new Operator(OperatorAssociativity.LEFT, 0, new Function() {
+        registerOperator("-", new Operator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 0, new Function() {
             @Override
             protected boolean matchesParams(NumberInterface[] params) {
                 return params.length == 2;
@@ -48,7 +49,7 @@ public class StandardPlugin extends Plugin {
             }
         }));
 
-        registerOperator("*", new Operator(OperatorAssociativity.LEFT, 1, new Function() {
+        registerOperator("*", new Operator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX,1, new Function() {
             @Override
             protected boolean matchesParams(NumberInterface[] params) {
                 return params.length >= 1;
@@ -64,7 +65,7 @@ public class StandardPlugin extends Plugin {
             }
         }));
 
-        registerOperator("/", new Operator(OperatorAssociativity.LEFT, 1, new Function() {
+        registerOperator("/", new Operator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX,1, new Function() {
             @Override
             protected boolean matchesParams(NumberInterface[] params) {
                 return params.length == 2;
@@ -76,7 +77,7 @@ public class StandardPlugin extends Plugin {
             }
         }));
 
-        registerOperator("^", new Operator(OperatorAssociativity.RIGHT, 2, new Function() {
+        registerOperator("^", new Operator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 2, new Function() {
             @Override
             protected boolean matchesParams(NumberInterface[] params) {
                 return params.length == 2;
@@ -88,7 +89,7 @@ public class StandardPlugin extends Plugin {
             }
         }));
 
-        registerFunction("!", new Function() {
+        registerOperator("!", new Operator(OperatorAssociativity.RIGHT, OperatorType.UNARY_POSTFIX, 0, new Function() {
             //private HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>> storedList = new HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>>();
             @Override
             protected boolean matchesParams(NumberInterface[] params) {
@@ -113,7 +114,7 @@ public class StandardPlugin extends Plugin {
                     storedList.get(params[0].getClass()).add(NaiveNumber.ONE.promoteTo(params[0].getClass()));
                 }*/
             }
-        });
+        }));
 
         registerFunction("abs", new Function() {
             @Override
@@ -245,7 +246,7 @@ public class StandardPlugin extends Plugin {
      * @return the nth term of the series.
      */
     private NumberInterface getExpSeriesTerm(int n, NumberInterface x){
-        return x.intPow(n).divide(this.getFunction("!").apply((new NaiveNumber(n)).promoteTo(x.getClass())));
+        return x.intPow(n).divide(this.getOperator("!").getFunction().apply((new NaiveNumber(n)).promoteTo(x.getClass())));
     }
 
     /**
