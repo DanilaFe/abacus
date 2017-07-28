@@ -13,9 +13,13 @@ import java.util.*;
 public class PluginManager {
 
     /**
+     * List of classes loaded by this manager.
+     */
+    private Set<Class<?>> loadedPluginClasses;
+    /**
      * A list of loaded plugins.
      */
-    private List<Plugin> plugins;
+    private Set<Plugin> plugins;
     /**
      * List of functions that have been cached,
      * that is, found in a plugin and returned.
@@ -43,7 +47,8 @@ public class PluginManager {
      * Creates a new plugin manager.
      */
     public PluginManager(){
-        plugins = new ArrayList<>();
+        loadedPluginClasses = new HashSet<>();
+        plugins = new HashSet<>();
         cachedFunctions = new HashMap<>();
         cachedOperators = new HashMap<>();
         allFunctions = new HashSet<>();
@@ -104,7 +109,9 @@ public class PluginManager {
      * @param plugin the plugin to add.
      */
     public void addInstantiated(Plugin plugin){
+        if(loadedPluginClasses.contains(plugin.getClass())) return;
         plugins.add(plugin);
+        loadedPluginClasses.add(plugin.getClass());
     }
 
     /**
