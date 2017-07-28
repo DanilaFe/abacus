@@ -88,6 +88,9 @@ public class NaiveNumber implements NumberInterface {
     @Override
     public NumberInterface promoteTo(Class<? extends NumberInterface> toClass) {
         if(toClass == this.getClass()) return this;
+        else if(toClass == PreciseNumber.class){
+            return new PreciseNumber(Double.toString(value));
+        }
         return null;
     }
 

@@ -228,7 +228,7 @@ public class StandardPlugin extends Plugin {
 
             @Override
             protected NumberInterface applyInternal(NumberInterface[] params) {
-                return StandardPlugin.this.getOperator("^").getFunction().apply(params[0], (new NaiveNumber(0.5)));
+                return StandardPlugin.this.getOperator("^").getFunction().apply(params[0], ((new NaiveNumber(0.5)).promoteTo(params[0].getClass())));
             }
         });
     }
