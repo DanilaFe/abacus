@@ -89,7 +89,7 @@ public class StandardPlugin extends Plugin {
             }
         }));
 
-        registerFunction("!", new Function() {
+        registerOperator("!", new Operator(OperatorAssociativity.RIGHT, OperatorType.UNARY_POSTFIX, 0, new Function() {
             //private HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>> storedList = new HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>>();
             @Override
             protected boolean matchesParams(NumberInterface[] params) {
@@ -114,7 +114,7 @@ public class StandardPlugin extends Plugin {
                     storedList.get(params[0].getClass()).add(NaiveNumber.ONE.promoteTo(params[0].getClass()));
                 }*/
             }
-        });
+        }));
 
         registerFunction("abs", new Function() {
             @Override

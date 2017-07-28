@@ -30,6 +30,7 @@ public class Operator {
      */
     public Operator(OperatorAssociativity associativity, OperatorType operatorType, int precedence, Function function){
         this.associativity = associativity;
+        this.type = operatorType;
         this.precedence = precedence;
         this.function = function;
     }
