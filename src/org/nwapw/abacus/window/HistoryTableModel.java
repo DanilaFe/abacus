@@ -6,6 +6,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A table model to store data about the history of inputs
@@ -57,7 +58,7 @@ public class HistoryTableModel extends AbstractTableModel {
     /**
      * The list of entries.
      */
-    ArrayList<HistoryEntry> entries;
+    List<HistoryEntry> entries;
 
     /**
      * Creates a new empty history table model

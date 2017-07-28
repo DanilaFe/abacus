@@ -4,6 +4,7 @@ import org.nwapw.abacus.function.Function;
 import org.nwapw.abacus.function.Operator;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -18,11 +19,11 @@ public abstract class Plugin {
     /**
      * A hash map of functions mapped to their string names.
      */
-    private HashMap<String, Function> functions;
+    private Map<String, Function> functions;
     /**
      * A hash map of operators mapped to their string names.
      */
-    private HashMap<String, Operator> operators;
+    private Map<String, Operator> operators;
     /**
      * The plugin manager in which to search for functions
      * not inside this package,

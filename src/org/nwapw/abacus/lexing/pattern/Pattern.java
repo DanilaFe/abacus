@@ -2,6 +2,7 @@ package org.nwapw.abacus.lexing.pattern;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 import java.util.function.Function;
 
@@ -32,7 +33,7 @@ public class Pattern<T> {
      * A map of regex operator to functions that modify a PatternChain
      * with the appropriate operation.
      */
-    private HashMap<Character, Function<PatternChain<T>, PatternChain<T>>> operations =
+    private Map<Character, Function<PatternChain<T>, PatternChain<T>>> operations =
             new HashMap<Character, Function<PatternChain<T>, PatternChain<T>>>() {{
                 put('+', Pattern.this::transformPlus);
                 put('*', Pattern.this::transformStar);
