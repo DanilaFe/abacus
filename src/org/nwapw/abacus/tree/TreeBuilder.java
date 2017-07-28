@@ -163,7 +163,7 @@ public class TreeBuilder {
                 TreeNode right = fromStringRecursive(source, matches);
                 TreeNode left = fromStringRecursive(source, matches);
                 if(left == null || right == null) return null;
-                else return new OpNode(operator, left, right);
+                else return new BinaryInfixNode(operator, left, right);
             } else {
                 TreeNode applyTo = fromStringRecursive(source, matches);
                 if(applyTo == null) return null;
