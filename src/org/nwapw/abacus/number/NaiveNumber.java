@@ -92,7 +92,8 @@ public class NaiveNumber implements NumberInterface {
     }
 
     public String toString(){
-        return Double.toString(value);
+        double shiftBy = Math.pow(10, 10);
+        return Double.toString(Math.round(value * shiftBy) / shiftBy);
     }
 
 }
