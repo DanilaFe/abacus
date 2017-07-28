@@ -1,6 +1,7 @@
 package org.nwapw.abacus.tree;
 
 import org.nwapw.abacus.function.OperatorAssociativity;
+import org.nwapw.abacus.function.OperatorType;
 import org.nwapw.abacus.lexing.Lexer;
 import org.nwapw.abacus.lexing.pattern.Match;
 import org.nwapw.abacus.lexing.pattern.Pattern;
@@ -24,6 +25,10 @@ public class TreeBuilder {
      * The map of operator associativity.
      */
     private Map<String, OperatorAssociativity> associativityMap;
+    /**
+     * The map of operator types.
+     */
+    private Map<String, OperatorType> typeMap;
 
     /**
      * Comparator used to sort token types.
@@ -43,6 +48,7 @@ public class TreeBuilder {
         }};
         precedenceMap = new HashMap<>();
         associativityMap = new HashMap<>();
+        typeMap = new HashMap<>();
     }
 
     /**
@@ -59,10 +65,12 @@ public class TreeBuilder {
      * @param precedence the precedence of the operator.
      * @param associativity the associativity of the operator.
      */
-    public void registerOperator(String operator, int precedence, OperatorAssociativity associativity){
+    public void registerOperator(String operator, OperatorAssociativity associativity,
+                                 OperatorType operatorType, int precedence){
         lexer.register(Pattern.sanitize(operator), TokenType.OP);
         precedenceMap.put(operator, precedence);
         associativityMap.put(operator, associativity);
+        typeMap.put(operator, operatorType);
     }
 
     /**
