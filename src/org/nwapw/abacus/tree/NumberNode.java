@@ -22,19 +22,10 @@ public class NumberNode extends TreeNode {
 
     /**
      * Creates a new number node with the given double value.
-     * @param value the value to use.
+     * @param newNumber the number for which to create a number node.
      */
-    public NumberNode(double value){
-        number = new NaiveNumber(value);
-    }
-
-    /**
-     * Creates a new number node with the given string value, converted
-     * to a double.
-     * @param value the value.
-     */
-    public NumberNode(String value){
-        this(Double.parseDouble(value));
+    public NumberNode(NumberInterface newNumber){
+        this.number = newNumber;
     }
 
     /**

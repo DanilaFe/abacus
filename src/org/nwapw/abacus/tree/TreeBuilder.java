@@ -5,6 +5,8 @@ import org.nwapw.abacus.function.OperatorType;
 import org.nwapw.abacus.lexing.Lexer;
 import org.nwapw.abacus.lexing.pattern.Match;
 import org.nwapw.abacus.lexing.pattern.Pattern;
+import org.nwapw.abacus.number.NaiveNumber;
+import org.nwapw.abacus.number.PreciseNumber;
 
 import java.util.*;
 
@@ -170,7 +172,7 @@ public class TreeBuilder {
                 else return new UnaryPrefixNode(operator, applyTo);
             }
         } else if(matchType == TokenType.NUM){
-            return new NumberNode(Double.parseDouble(source.substring(match.getFrom(), match.getTo())));
+            return new NumberNode(new NaiveNumber(Double.parseDouble(source.substring(match.getFrom(), match.getTo()))));
         } else if(matchType == TokenType.FUNCTION){
             String functionName = source.substring(match.getFrom(), match.getTo());
             FunctionNode node = new FunctionNode(functionName);
