@@ -11,7 +11,10 @@ public class LinkNode<T> extends PatternNode<T> {
 
     @Override
     public void addInto(Collection<PatternNode<T>> into) {
-        addOutputsInto(into);
+        if(!into.contains(this)) {
+            into.add(this);
+            addOutputsInto(into);
+        }
     }
 
 }
