@@ -10,6 +10,10 @@ public class Operator {
      */
     private OperatorAssociativity associativity;
     /**
+     * The type of this operator.
+     */
+    private OperatorType type;
+    /**
      * The precedence of the operator.
      */
     private int precedence;
@@ -24,8 +28,9 @@ public class Operator {
      * @param precedence the precedence of the operator.
      * @param function the function that the operator calls.
      */
-    public Operator(OperatorAssociativity associativity, int precedence, Function function){
+    public Operator(OperatorAssociativity associativity, OperatorType operatorType, int precedence, Function function){
         this.associativity = associativity;
+        this.type = operatorType;
         this.precedence = precedence;
         this.function = function;
     }
@@ -36,6 +41,14 @@ public class Operator {
      */
     public OperatorAssociativity getAssociativity() {
         return associativity;
+    }
+
+    /**
+     * Gets the operator's type.
+     * @return the type.
+     */
+    public OperatorType getType() {
+        return type;
     }
 
     /**

@@ -269,7 +269,10 @@ public class Window extends JFrame implements PluginListener {
         }
         for(String operator : manager.getAllOperators()){
             Operator operatorObject = manager.operatorFor(operator);
-            builder.registerOperator(operator, operatorObject.getPrecedence(), operatorObject.getAssociativity());
+            builder.registerOperator(operator,
+                    operatorObject.getAssociativity(),
+                    operatorObject.getType(),
+                    operatorObject.getPrecedence());
         }
     }
 
