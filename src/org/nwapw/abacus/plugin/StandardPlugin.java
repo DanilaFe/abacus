@@ -6,9 +6,6 @@ import org.nwapw.abacus.function.OperatorAssociativity;
 import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
 
-import javax.print.attribute.standard.MediaSize;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.function.BiFunction;
 
 /**
@@ -231,7 +228,7 @@ public class StandardPlugin extends Plugin {
 
             @Override
             protected NumberInterface applyInternal(NumberInterface[] params) {
-                return StandardPlugin.this.getFunction("pow").apply(params[0], (new NaiveNumber(0.5)));
+                return StandardPlugin.this.getOperator("^").getFunction().apply(params[0], (new NaiveNumber(0.5)));
             }
         });
     }
