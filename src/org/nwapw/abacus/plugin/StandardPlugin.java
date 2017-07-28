@@ -246,7 +246,7 @@ public class StandardPlugin extends Plugin {
      * @return the nth term of the series.
      */
     private NumberInterface getExpSeriesTerm(int n, NumberInterface x){
-        return x.intPow(n).divide(this.getFunction("!").apply((new NaiveNumber(n)).promoteTo(x.getClass())));
+        return x.intPow(n).divide(this.getOperator("!").getFunction().apply((new NaiveNumber(n)).promoteTo(x.getClass())));
     }
 
     /**
