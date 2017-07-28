@@ -113,7 +113,7 @@ public class PluginManager {
      * @param newClass the new class to instantiate.
      */
     public void addClass(Class<?> newClass){
-        if(!Plugin.class.isAssignableFrom(newClass)) return;
+        if(!Plugin.class.isAssignableFrom(newClass) || newClass == Plugin.class) return;
         try {
             addInstantiated((Plugin) newClass.getConstructor(PluginManager.class).newInstance(this));
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
