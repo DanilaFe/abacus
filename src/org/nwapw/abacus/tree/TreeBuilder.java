@@ -37,7 +37,7 @@ public class TreeBuilder {
         lexer = new Lexer<TokenType>(){{
             register(" ", TokenType.WHITESPACE);
             register(",", TokenType.COMMA);
-            register("[0-9]+(\\.[0-9]+)?", TokenType.NUM);
+            register("[0-9]*(\\.[0-9]+)?", TokenType.NUM);
             register("\\(", TokenType.OPEN_PARENTH);
             register("\\)", TokenType.CLOSE_PARENTH);
         }};
