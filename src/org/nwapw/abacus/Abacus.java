@@ -6,7 +6,6 @@ import org.nwapw.abacus.window.Window;
 import org.nwapw.abacus.plugin.ClassFinder;
 
 import javax.swing.*;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -26,24 +25,9 @@ public class Abacus {
             e.printStackTrace();
         }
         manager = new PluginManager();
-        ArrayList<String> names = new ArrayList<>();
         try {
-
-            ClassFinder classFinder = new ClassFinder();
-            File pluginFile = new File("plugins");
-            for(File classes:pluginFile.listFiles()){
-                if(classes.getName().endsWith(".jar")){
-                    names.addAll(classFinder.addJar(classes));
-                }
-            }
-            for(String name:names){
-                System.out.println(name);
-            }
-            ArrayList<Class> classes = classFinder.getClasses();
-            for(Class classGet:classes){
-                manager.addClass(classGet);
-            }
-
+            ClassFinder.loadJars("plugins")
+                    .forEach(plugin -> manager.addClass(plugin));
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
