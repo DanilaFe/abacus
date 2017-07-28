@@ -2,6 +2,7 @@ package org.nwapw.abacus;
 
 import org.nwapw.abacus.plugin.PluginManager;
 //import org.nwapw.abacus.plugin.StandardPlugin;
+import org.nwapw.abacus.plugin.StandardPlugin;
 import org.nwapw.abacus.window.Window;
 import org.nwapw.abacus.plugin.ClassFinder;
 
@@ -25,6 +26,7 @@ public class Abacus {
             e.printStackTrace();
         }
         manager = new PluginManager();
+        manager.addInstantiated(new StandardPlugin(manager));
         try {
             ClassFinder.loadJars("plugins")
                     .forEach(plugin -> manager.addClass(plugin));
