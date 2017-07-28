@@ -20,7 +20,10 @@ public class PreciseNumber implements NumberInterface{
      */
     static final PreciseNumber TEN = new PreciseNumber(BigDecimal.TEN);
 
-    BigDecimal value = new BigDecimal("0");
+    /**
+     * The value of the PreciseNumber.
+     */
+    BigDecimal value;
 
     /**
      * Constructs a precise number from the given string.
