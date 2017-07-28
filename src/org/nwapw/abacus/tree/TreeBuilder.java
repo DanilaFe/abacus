@@ -19,11 +19,11 @@ public class TreeBuilder {
     /**
      * The map of operator precedences.
      */
-    private HashMap<String, Integer> precedenceMap;
+    private Map<String, Integer> precedenceMap;
     /**
      * The map of operator associativity.
      */
-    private HashMap<String, OperatorAssociativity> associativityMap;
+    private Map<String, OperatorAssociativity> associativityMap;
 
     /**
      * Comparator used to sort token types.
@@ -70,7 +70,7 @@ public class TreeBuilder {
      * @param string the string to tokenize.
      * @return the list of tokens produced.
      */
-    public ArrayList<Match<TokenType>> tokenize(String string){
+    public List<Match<TokenType>> tokenize(String string){
         return lexer.lexAll(string, 0, tokenSorter);
     }
 
@@ -80,7 +80,7 @@ public class TreeBuilder {
      * @param from the tokens to be rearranged.
      * @return the resulting list of rearranged tokens.
      */
-    public ArrayList<Match<TokenType>> intoPostfix(String source, ArrayList<Match<TokenType>> from){
+    public List<Match<TokenType>> intoPostfix(String source, List<Match<TokenType>> from){
         ArrayList<Match<TokenType>> output = new ArrayList<>();
         Stack<Match<TokenType>> tokenStack = new Stack<>();
         while(!from.isEmpty()){
@@ -138,7 +138,7 @@ public class TreeBuilder {
      * @param matches the list of tokens from the source string.
      * @return the construct tree expression.
      */
-    public TreeNode fromStringRecursive(String source, ArrayList<Match<TokenType>> matches){
+    public TreeNode fromStringRecursive(String source, List<Match<TokenType>> matches){
         if(matches.size() == 0) return null;
         Match<TokenType> match = matches.remove(0);
         TokenType matchType = match.getType();
@@ -170,7 +170,7 @@ public class TreeBuilder {
      * @return the resulting tree.
      */
     public TreeNode fromString(String string){
-        ArrayList<Match<TokenType>> matches = tokenize(string);
+        List<Match<TokenType>> matches = tokenize(string);
         if(matches == null) return null;
         matches.removeIf(m -> m.getType() == TokenType.WHITESPACE);
         matches = intoPostfix(string, matches);

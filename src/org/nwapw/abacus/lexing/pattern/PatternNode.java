@@ -3,6 +3,7 @@ package org.nwapw.abacus.lexing.pattern;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A base class for a pattern node. Provides all functions
@@ -16,7 +17,7 @@ public class PatternNode<T> {
      * The set of states to which the lexer should continue
      * should this node be correctly matched.
      */
-    protected HashSet<PatternNode<T>> outputStates;
+    protected Set<PatternNode<T>> outputStates;
 
     /**
      * Creates a new pattern node.

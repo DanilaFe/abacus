@@ -54,7 +54,7 @@ public class Lexer<T> {
     /**
      * The registered patterns.
      */
-    private HashMap<PatternEntry<T>, Pattern<T>> patterns;
+    private Map<PatternEntry<T>, Pattern<T>> patterns;
 
     /**
      * Creates a new lexer with no registered patterns.
@@ -127,7 +127,7 @@ public class Lexer<T> {
      * @param compare the comparator used to sort matches by their IDs.
      * @return the resulting list of matches, in order, or null on error.
      */
-    public ArrayList<Match<T>> lexAll(String from, int startAt, Comparator<T> compare){
+    public List<Match<T>> lexAll(String from, int startAt, Comparator<T> compare){
         int index = startAt;
         ArrayList<Match<T>> matches = new ArrayList<>();
         Match<T> lastMatch = null;

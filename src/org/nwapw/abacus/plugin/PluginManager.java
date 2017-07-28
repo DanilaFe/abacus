@@ -15,29 +15,29 @@ public class PluginManager {
     /**
      * A list of loaded plugins.
      */
-    private ArrayList<Plugin> plugins;
+    private List<Plugin> plugins;
     /**
      * List of functions that have been cached,
      * that is, found in a plugin and returned.
      */
-    private HashMap<String, Function> cachedFunctions;
+    private Map<String, Function> cachedFunctions;
     /**
      * List of operators tha have been cached,
      * that is, found in a plugin and returned.
      */
-    private HashMap<String, Operator> cachedOperators;
+    private Map<String, Operator> cachedOperators;
     /**
      * List of all functions loaded by the plugins.
      */
-    private HashSet<String> allFunctions;
+    private Set<String> allFunctions;
     /**
      * List of all operators loaded by the plugins.
      */
-    private HashSet<String> allOperators;
+    private Set<String> allOperators;
     /**
      * The list of plugin listeners attached to this instance.
      */
-    private HashSet<PluginListener> listeners;
+    private Set<PluginListener> listeners;
 
     /**
      * Creates a new plugin manager.
@@ -155,7 +155,7 @@ public class PluginManager {
      * Gets all the functions loaded by the Plugin Manager.
      * @return the set of all functions that were loaded.
      */
-    public HashSet<String> getAllFunctions() {
+    public Set<String> getAllFunctions() {
         return allFunctions;
     }
 
@@ -163,7 +163,7 @@ public class PluginManager {
      * Gets all the operators loaded by the Plugin Manager.
      * @return the set of all operators that were loaded.
      */
-    public HashSet<String> getAllOperators() {
+    public Set<String> getAllOperators() {
         return allOperators;
     }
 

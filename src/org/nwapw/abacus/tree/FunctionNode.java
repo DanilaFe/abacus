@@ -1,6 +1,7 @@
 package org.nwapw.abacus.tree;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A node that represents a function call.
@@ -14,7 +15,7 @@ public class FunctionNode extends TreeNode {
     /**
      * The list of arguments to the function.
      */
-    private ArrayList<TreeNode> children;
+    private List<TreeNode> children;
 
     /**
      * Creates a function node with no function.
