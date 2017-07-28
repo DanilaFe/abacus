@@ -51,4 +51,9 @@ public class UnaryPrefixNode extends TreeNode {
     public TreeNode getApplyTo() {
         return applyTo;
     }
+
+    @Override
+    public String toString() {
+        return "(" + (applyTo == null ? "null" : applyTo.toString()) + ")" + operation;
+    }
 }
