@@ -2,13 +2,9 @@ package org.nwapw.abacus.config;
 
 import com.moandjiezana.toml.Toml;
 import com.moandjiezana.toml.TomlWriter;
-import org.nwapw.abacus.number.NaiveNumber;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A configuration object, which essentially
@@ -19,10 +15,6 @@ import java.util.Map;
 public class ConfigurationObject {
 
     /**
-     * The default implementation to use for instantiating numbers.
-     */
-    private static final Class<? extends NaiveNumber> DEFAULT_IMPLEMENTATION = NaiveNumber.class;
-    /**
      * The writer used to store the configuration.
      */
     private static final TomlWriter TOML_WRITER = new TomlWriter();
@@ -30,11 +22,6 @@ public class ConfigurationObject {
      * The configuration instance being modeled.
      */
     private Configuration configuration;
-    /**
-     * A map of number names to their implementations, which
-     * will be provided by plugins.
-     */
-    private Map<String, Class<? extends NaiveNumber>> numberImplementations;
 
     /**
      * Sets up the ConfigurationObject.
@@ -44,7 +31,6 @@ public class ConfigurationObject {
      */
     private void setup(Configuration configuration){
         this.configuration = configuration;
-        numberImplementations = new HashMap<>();
     }
 
     /**
@@ -59,38 +45,20 @@ public class ConfigurationObject {
     }
 
     /**
-     * Register a number implementation.
-     * @param name the name of the number implementation to register the class as.
-     * @param newClass the class that will be used to instantiate the new number.
-     *                 It is required that this class provides a Number(String) constructor.
-     */
-    public void registerImplementation(String name, Class<? extends NaiveNumber> newClass){
-        numberImplementations.put(name, newClass);
-    }
-
-    /**
-     * Creates a new number with the configured type, passing
-     * it the given string.
-     * @param string the string from which the number should be parsed.
-     * @return the resulting number, or null if an error occurred.
-     */
-    public NaiveNumber numberFromString(String string)  {
-        Class<? extends NaiveNumber> toLoad =
-                numberImplementations.getOrDefault(configuration.numberType, DEFAULT_IMPLEMENTATION);
-        try {
-            return toLoad.getConstructor(String.class).newInstance(string);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
      * Returns the configured, user-requested precision.
      * @return the precision.
      */
     public int getPrecision(){
         return configuration.decimalPrecision;
+    }
+
+    /**
+     * Returns the implementation the user has requested to
+     * represent their numbers.
+     * @return the implementation name.
+     */
+    public String getNumberImplementation() {
+        return configuration.numberType;
     }
 
     /**
