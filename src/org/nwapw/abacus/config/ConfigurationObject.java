@@ -39,17 +39,8 @@ public class ConfigurationObject {
      */
     private Configuration getDefaultConfig(){
         configuration = new Configuration();
-        configuration.decimalPrecision = -1;
         configuration.numberType = "naive";
         return configuration;
-    }
-
-    /**
-     * Returns the configured, user-requested precision.
-     * @return the precision.
-     */
-    public int getPrecision(){
-        return configuration.decimalPrecision;
     }
 
     /**
