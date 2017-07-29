@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
@@ -24,7 +25,7 @@ public class ClassFinder {
      * @throws IOException thrown if an error occurred scanning the plugin folder.
      * @throws ClassNotFoundException thrown if the class listed in the file doesn't get loaded.
      */
-    public static ArrayList<Class<?>> loadJars(String filePath) throws IOException, ClassNotFoundException {
+    public static List<Class<?>> loadJars(String filePath) throws IOException, ClassNotFoundException {
         return loadJars(new File(filePath));
     }
 
@@ -35,7 +36,7 @@ public class ClassFinder {
      * @throws IOException thrown if an error occurred scanning the plugin folder.
      * @throws ClassNotFoundException thrown if the class listed in the file doesn't get loaded.
      */
-    public static ArrayList<Class<?>> loadJars(File pluginFolderPath) throws IOException, ClassNotFoundException {
+    public static List<Class<?>> loadJars(File pluginFolderPath) throws IOException, ClassNotFoundException {
         ArrayList<Class<?>> toReturn = new ArrayList<>();
         if(!pluginFolderPath.exists()) return toReturn;
         ArrayList<File> files = Files.walk(pluginFolderPath.toPath())
@@ -55,7 +56,7 @@ public class ClassFinder {
      * @throws IOException thrown if there was an error reading the file
      * @throws ClassNotFoundException thrown if the class could not be loaded.
      */
-    public static ArrayList<Class<?>> loadJar(File jarLocation) throws IOException, ClassNotFoundException {
+    public static List<Class<?>> loadJar(File jarLocation) throws IOException, ClassNotFoundException {
         ArrayList<Class<?>> loadedClasses = new ArrayList<>();
         String path = jarLocation.getPath();
         URL[] urls = new URL[]{new URL("jar:file:" + path + "!/")};
