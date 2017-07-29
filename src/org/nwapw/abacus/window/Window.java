@@ -1,11 +1,7 @@
 package org.nwapw.abacus.window;
 
-import org.nwapw.abacus.function.Operator;
+import org.nwapw.abacus.Abacus;
 import org.nwapw.abacus.number.NumberInterface;
-import org.nwapw.abacus.plugin.PluginListener;
-import org.nwapw.abacus.plugin.PluginManager;
-import org.nwapw.abacus.tree.NumberReducer;
-import org.nwapw.abacus.tree.TreeBuilder;
 import org.nwapw.abacus.tree.TreeNode;
 
 import javax.swing.*;
@@ -18,7 +14,7 @@ import java.awt.event.MouseEvent;
 /**
  * The main UI window for the calculator.
  */
-public class Window extends JFrame implements PluginListener {
+public class Window extends JFrame {
 
     private static final String CALC_STRING = "Calculate";
     private static final String SYNTAX_ERR_STRING = "Syntax Error";
@@ -47,18 +43,10 @@ public class Window extends JFrame implements PluginListener {
     };
 
     /**
-     * The plugin manager used to retrieve functions.
+     * The instance of the Abacus class, used
+     * for interaction with plugins and configuration.
      */
-    private PluginManager manager;
-    /**
-     * The builder used to construct the parse trees.
-     */
-    private TreeBuilder builder;
-    /**
-     * The reducer used to evaluate the tree.
-     */
-    private NumberReducer reducer;
-
+    private Abacus abacus;
     /**
      * The last output by the calculator.
      */
@@ -130,15 +118,14 @@ public class Window extends JFrame implements PluginListener {
      * Action listener that causes the input to be evaluated.
      */
     private ActionListener evaluateListener = (event) -> {
-        if(builder == null) return;
-        TreeNode parsedExpression = builder.fromString(inputField.getText());
+        TreeNode parsedExpression = abacus.parseString(inputField.getText());
         if(parsedExpression == null){
             lastOutputArea.setText(SYNTAX_ERR_STRING);
             return;
         }
-        NumberInterface numberInterface = parsedExpression.reduce(reducer);
-        if(numberInterface == null){
-            lastOutputArea.setText(EVAL_ERR_STRING);;
+        NumberInterface numberInterface = abacus.evaluateTree(parsedExpression);
+        if(numberInterface == null) {
+            lastOutputArea.setText(EVAL_ERR_STRING);
             return;
         }
         lastOutput = numberInterface.toString();
@@ -159,13 +146,11 @@ public class Window extends JFrame implements PluginListener {
 
     /**
      * Creates a new window with the given manager.
-     * @param manager the manager to use.
+     * @param abacus the calculator instance to interact with other components.
      */
-    public Window(PluginManager manager){
+    public Window(Abacus abacus){
         this();
-        this.manager = manager;
-        manager.addListener(this);
-        reducer = new NumberReducer(manager);
+        this.abacus = abacus;
     }
 
     /**
@@ -261,23 +246,4 @@ public class Window extends JFrame implements PluginListener {
         });
     }
 
-    @Override
-    public void onLoad(PluginManager manager) {
-        builder = new TreeBuilder();
-        for(String function : manager.getAllFunctions()){
-            builder.registerFunction(function);
-        }
-        for(String operator : manager.getAllOperators()){
-            Operator operatorObject = manager.operatorFor(operator);
-            builder.registerOperator(operator,
-                    operatorObject.getAssociativity(),
-                    operatorObject.getType(),
-                    operatorObject.getPrecedence());
-        }
-    }
-
-    @Override
-    public void onUnload(PluginManager manager) {
-        builder = null;
-    }
 }

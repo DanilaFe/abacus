@@ -1,5 +1,6 @@
 package org.nwapw.abacus.plugin;
 
+import org.nwapw.abacus.Abacus;
 import org.nwapw.abacus.function.Function;
 import org.nwapw.abacus.function.Operator;
 
@@ -42,11 +43,17 @@ public class PluginManager {
      * The list of plugin listeners attached to this instance.
      */
     private Set<PluginListener> listeners;
+    /**
+     * The instance of Abacus that is used to interact with its other
+     * components.
+     */
+    private Abacus abacus;
 
     /**
      * Creates a new plugin manager.
      */
-    public PluginManager(){
+    public PluginManager(Abacus abacus){
+        this.abacus = abacus;
         loadedPluginClasses = new HashSet<>();
         plugins = new HashSet<>();
         cachedFunctions = new HashMap<>();
