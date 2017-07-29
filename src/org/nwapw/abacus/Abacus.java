@@ -1,5 +1,6 @@
 package org.nwapw.abacus;
 
+import org.nwapw.abacus.config.ConfigurationObject;
 import org.nwapw.abacus.function.Operator;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.plugin.ClassFinder;
@@ -12,6 +13,7 @@ import org.nwapw.abacus.tree.TreeNode;
 import org.nwapw.abacus.window.Window;
 
 import javax.swing.*;
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -20,6 +22,11 @@ import java.io.IOException;
  * their interaction with each other.
  */
 public class Abacus implements PluginListener {
+
+    /**
+     * The file used for saving and loading configuration.
+     */
+    public static final File CONFIG_FILE = new File("config.yml");
 
     /**
      * The main Abacus UI.
@@ -40,6 +47,10 @@ public class Abacus implements PluginListener {
      * The reducer used to evaluate the tree.
      */
     private NumberReducer numberReducer;
+    /**
+     * The configuration loaded from a file.
+     */
+    private ConfigurationObject configuration;
 
     /**
      * Creates a new instance of the Abacus calculator.
@@ -48,6 +59,8 @@ public class Abacus implements PluginListener {
         pluginManager = new PluginManager(this);
         mainUi = new Window(this);
         numberReducer = new NumberReducer(this);
+        configuration = new ConfigurationObject(CONFIG_FILE);
+        configuration.save(CONFIG_FILE);
 
         pluginManager.addListener(this);
         pluginManager.addInstantiated(new StandardPlugin(pluginManager));
@@ -93,6 +106,14 @@ public class Abacus implements PluginListener {
      */
     public NumberReducer getNumberReducer() {
         return numberReducer;
+    }
+
+    /**
+     * Gets the configuration object associated with this instance.
+     * @return the configuration object.
+     */
+    public ConfigurationObject getConfiguration() {
+        return configuration;
     }
 
     /**
