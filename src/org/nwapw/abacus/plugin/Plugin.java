@@ -2,6 +2,7 @@ package org.nwapw.abacus.plugin;
 
 import org.nwapw.abacus.function.Function;
 import org.nwapw.abacus.function.Operator;
+import org.nwapw.abacus.number.NumberInterface;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +26,10 @@ public abstract class Plugin {
      */
     private Map<String, Operator> operators;
     /**
+     * A hash map of operators mapped to their string names.
+     */
+    private Map<String, Class<? extends NumberInterface>> numbers;
+    /**
      * The plugin manager in which to search for functions
      * not inside this package,
      */
@@ -44,6 +49,7 @@ public abstract class Plugin {
         this.manager = manager;
         functions = new HashMap<>();
         operators = new HashMap<>();
+        numbers = new HashMap<>();
         enabled = false;
     }
 
@@ -64,6 +70,14 @@ public abstract class Plugin {
     }
 
     /**
+     * Gets the list of all numbers provided by this plugin.
+     * @return the list of registered numbers.
+     */
+    public final Set<String> providedNumbers(){
+        return numbers.keySet();
+    }
+
+    /**
      * Gets a function under the given function name.
      * @param functionName the name of the function to get
      * @return the function, or null if this plugin doesn't provide it.
@@ -79,6 +93,15 @@ public abstract class Plugin {
      */
     public final Operator getOperator(String operatorName) {
         return operators.get(operatorName);
+    }
+
+    /**
+     * Gets the class under the given name.
+     * @param numberName the name of the class.
+     * @return the class, or null if the plugin doesn't provide it.
+     */
+    public final Class<? extends NumberInterface> getNumber(String numberName){
+        return numbers.get(numberName);
     }
 
     /**
@@ -122,6 +145,18 @@ public abstract class Plugin {
      */
     protected final void registerOperator(String name, Operator operator) {
         operators.put(name, operator);
+    }
+
+    /**
+     * To be used in load(). Registers a number class
+     * with the plugin internally, which makes it possible
+     * for the user to select it as an "implementation" for the
+     * number that they would like to use.
+     * @param name the name to register it under.
+     * @param toRegister the class to register.
+     */
+    protected final void registerNumber(String name, Class<? extends NumberInterface> toRegister){
+        numbers.put(name, toRegister);
     }
 
     /**

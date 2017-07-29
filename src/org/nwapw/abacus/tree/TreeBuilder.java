@@ -1,12 +1,11 @@
 package org.nwapw.abacus.tree;
 
+import org.nwapw.abacus.Abacus;
 import org.nwapw.abacus.function.OperatorAssociativity;
 import org.nwapw.abacus.function.OperatorType;
 import org.nwapw.abacus.lexing.Lexer;
 import org.nwapw.abacus.lexing.pattern.Match;
 import org.nwapw.abacus.lexing.pattern.Pattern;
-import org.nwapw.abacus.number.NaiveNumber;
-import org.nwapw.abacus.number.PreciseNumber;
 
 import java.util.*;
 
@@ -31,6 +30,11 @@ public class TreeBuilder {
      * The map of operator types.
      */
     private Map<String, OperatorType> typeMap;
+    /**
+     * The abacus instance required to interact with
+     * other components of the calculator.
+     */
+    private Abacus abacus;
 
     /**
      * Comparator used to sort token types.
@@ -40,7 +44,8 @@ public class TreeBuilder {
     /**
      * Creates a new TreeBuilder.
      */
-    public TreeBuilder(){
+    public TreeBuilder(Abacus abacus){
+        this.abacus = abacus;
         lexer = new Lexer<TokenType>(){{
             register(" ", TokenType.WHITESPACE);
             register(",", TokenType.COMMA);
@@ -172,7 +177,7 @@ public class TreeBuilder {
                 else return new UnaryPrefixNode(operator, applyTo);
             }
         } else if(matchType == TokenType.NUM){
-            return new NumberNode(new NaiveNumber(Double.parseDouble(source.substring(match.getFrom(), match.getTo()))));
+            return new NumberNode(abacus.numberFromString(source.substring(match.getFrom(), match.getTo())));
         } else if(matchType == TokenType.FUNCTION){
             String functionName = source.substring(match.getFrom(), match.getTo());
             FunctionNode node = new FunctionNode(functionName);

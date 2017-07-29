@@ -2,6 +2,7 @@ package org.nwapw.abacus;
 
 import org.nwapw.abacus.config.ConfigurationObject;
 import org.nwapw.abacus.function.Operator;
+import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.plugin.ClassFinder;
 import org.nwapw.abacus.plugin.PluginListener;
@@ -15,6 +16,7 @@ import org.nwapw.abacus.window.Window;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * The main calculator class. This is responsible
@@ -24,9 +26,13 @@ import java.io.IOException;
 public class Abacus implements PluginListener {
 
     /**
+     * The default implementation to use for the number representation.
+     */
+    public static final Class<? extends NumberInterface> DEFAULT_NUMBER = NaiveNumber.class;
+    /**
      * The file used for saving and loading configuration.
      */
-    public static final File CONFIG_FILE = new File("config.yml");
+    public static final File CONFIG_FILE = new File("config.toml");
 
     /**
      * The main Abacus UI.
@@ -137,9 +143,22 @@ public class Abacus implements PluginListener {
         return tree.reduce(numberReducer);
     }
 
+    public NumberInterface numberFromString(String numberString){
+        Class<? extends NumberInterface> toInstantiate =
+                pluginManager.numberFor(configuration.getNumberImplementation());
+        if(toInstantiate == null) toInstantiate = DEFAULT_NUMBER;
+
+        try {
+            return toInstantiate.getConstructor(String.class).newInstance(numberString);
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     @Override
     public void onLoad(PluginManager manager) {
-        treeBuilder = new TreeBuilder();
+        treeBuilder = new TreeBuilder(this);
         for(String function : manager.getAllFunctions()){
             treeBuilder.registerFunction(function);
         }
