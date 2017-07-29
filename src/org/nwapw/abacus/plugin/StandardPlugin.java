@@ -292,7 +292,7 @@ public class StandardPlugin extends Plugin {
      * @return the maximum error.
      */
     private NumberInterface getMaxError(NumberInterface number){
-        return (new NaiveNumber(10)).promoteTo(number.getClass()).intPow(-number.precision());
+        return (new NaiveNumber(10)).promoteTo(number.getClass()).intPow(-number.getMaxPrecision());
     }
 
 }

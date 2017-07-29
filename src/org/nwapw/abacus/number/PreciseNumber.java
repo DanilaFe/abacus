@@ -1,8 +1,6 @@
 package org.nwapw.abacus.number;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.math.MathContext;
 import java.math.RoundingMode;
 
 public class PreciseNumber implements NumberInterface{
@@ -43,7 +41,7 @@ public class PreciseNumber implements NumberInterface{
     }
 
     @Override
-    public int precision() {
+    public int getMaxPrecision() {
         return 54;
     }
 
@@ -54,7 +52,7 @@ public class PreciseNumber implements NumberInterface{
 
     @Override
     public NumberInterface divide(NumberInterface divisor) {
-        return new PreciseNumber(value.divide(((PreciseNumber) divisor).value, this.precision(), RoundingMode.HALF_UP));
+        return new PreciseNumber(value.divide(((PreciseNumber) divisor).value, this.getMaxPrecision(), RoundingMode.HALF_UP));
     }
 
     @Override
@@ -109,7 +107,7 @@ public class PreciseNumber implements NumberInterface{
 
     @Override
     public String toString() {
-        BigDecimal rounded = value.setScale(precision() - 4, RoundingMode.HALF_UP);
+        BigDecimal rounded = value.setScale(getMaxPrecision() - 4, RoundingMode.HALF_UP);
         return rounded.stripTrailingZeros().toPlainString();
     }
 }

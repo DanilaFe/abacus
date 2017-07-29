@@ -11,6 +11,13 @@ public class NaiveNumber implements NumberInterface {
     private double value;
 
     /**
+     * Creates a new NaiveNumber with the given string.
+     * @param value the value, which will be parsed as a double.
+     */
+    public NaiveNumber(String value) {
+        this(Double.parseDouble(value));
+    }
+    /**
      * Creates a new NaiveNumber with the given value.
      * @param value the value to use.
      */
@@ -28,7 +35,7 @@ public class NaiveNumber implements NumberInterface {
     public static final NaiveNumber ONE = new NaiveNumber(1);
 
     @Override
-    public int precision() {
+    public int getMaxPrecision() {
         return 18;
     }
 
