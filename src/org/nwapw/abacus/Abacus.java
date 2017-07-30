@@ -1,15 +1,15 @@
 package org.nwapw.abacus;
 
 import org.nwapw.abacus.config.ConfigurationObject;
-import org.nwapw.abacus.function.Operator;
 import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
+import org.nwapw.abacus.parsing.LexerTokenizer;
+import org.nwapw.abacus.parsing.ShuntingYardParser;
+import org.nwapw.abacus.parsing.TreeBuilder;
 import org.nwapw.abacus.plugin.ClassFinder;
-import org.nwapw.abacus.plugin.PluginListener;
 import org.nwapw.abacus.plugin.PluginManager;
 import org.nwapw.abacus.plugin.StandardPlugin;
 import org.nwapw.abacus.tree.NumberReducer;
-import org.nwapw.abacus.tree.TreeBuilder;
 import org.nwapw.abacus.tree.TreeNode;
 import org.nwapw.abacus.window.Window;
 
@@ -23,7 +23,7 @@ import java.lang.reflect.InvocationTargetException;
  * for piecing together all of the components, allowing
  * their interaction with each other.
  */
-public class Abacus implements PluginListener {
+public class Abacus {
 
     /**
      * The default implementation to use for the number representation.
@@ -45,11 +45,6 @@ public class Abacus implements PluginListener {
      */
     private PluginManager pluginManager;
     /**
-     * Tree builder built from plugin manager,
-     * used to construct parse trees.
-     */
-    private TreeBuilder treeBuilder;
-    /**
      * The reducer used to evaluate the tree.
      */
     private NumberReducer numberReducer;
@@ -57,6 +52,11 @@ public class Abacus implements PluginListener {
      * The configuration loaded from a file.
      */
     private ConfigurationObject configuration;
+    /**
+     * The tree builder used to construct a tree
+     * from a string.
+     */
+    private TreeBuilder treeBuilder;
 
     /**
      * Creates a new instance of the Abacus calculator.
@@ -67,8 +67,12 @@ public class Abacus implements PluginListener {
         numberReducer = new NumberReducer(this);
         configuration = new ConfigurationObject(CONFIG_FILE);
         configuration.save(CONFIG_FILE);
+        LexerTokenizer lexerTokenizer = new LexerTokenizer();
+        ShuntingYardParser shuntingYardParser = new ShuntingYardParser(this);
+        treeBuilder = new TreeBuilder<>(lexerTokenizer, shuntingYardParser);
 
-        pluginManager.addListener(this);
+        pluginManager.addListener(lexerTokenizer);
+        pluginManager.addListener(shuntingYardParser);
         pluginManager.addInstantiated(new StandardPlugin(pluginManager));
         try {
             ClassFinder.loadJars("plugins")
@@ -129,7 +133,6 @@ public class Abacus implements PluginListener {
      * @return the resulting tree, null if the tree builder or the produced tree are null.
      */
     public TreeNode parseString(String input){
-        if(treeBuilder == null) return null;
         return treeBuilder.fromString(input);
     }
 
@@ -154,26 +157,6 @@ public class Abacus implements PluginListener {
             e.printStackTrace();
         }
         return null;
-    }
-
-    @Override
-    public void onLoad(PluginManager manager) {
-        treeBuilder = new TreeBuilder(this);
-        for(String function : manager.getAllFunctions()){
-            treeBuilder.registerFunction(function);
-        }
-        for(String operator : manager.getAllOperators()){
-            Operator operatorObject = manager.operatorFor(operator);
-            treeBuilder.registerOperator(operator,
-                    operatorObject.getAssociativity(),
-                    operatorObject.getType(),
-                    operatorObject.getPrecedence());
-        }
-    }
-
-    @Override
-    public void onUnload(PluginManager manager) {
-        treeBuilder = null;
     }
 
     public static void main(String[] args){
