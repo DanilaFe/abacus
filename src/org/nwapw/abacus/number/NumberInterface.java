@@ -6,10 +6,10 @@ package org.nwapw.abacus.number;
 public interface NumberInterface {
 
     /**
-     * The precision to which this number operates.
+     * The maximum precision to which this number operates.
      * @return the precision.
      */
-    int precision();
+    int getMaxPrecision();
 
     /**
      * Multiplies this number by another, returning

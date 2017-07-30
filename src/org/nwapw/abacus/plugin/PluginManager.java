@@ -1,7 +1,9 @@
 package org.nwapw.abacus.plugin;
 
+import org.nwapw.abacus.Abacus;
 import org.nwapw.abacus.function.Function;
 import org.nwapw.abacus.function.Operator;
+import org.nwapw.abacus.number.NumberInterface;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -26,10 +28,15 @@ public class PluginManager {
      */
     private Map<String, Function> cachedFunctions;
     /**
-     * List of operators tha have been cached,
+     * List of operators that have been cached,
      * that is, found in a plugin and returned.
      */
     private Map<String, Operator> cachedOperators;
+    /**
+     * List of registered number implementations that have
+     * been cached, that is, found in a plugin and returned.
+     */
+    private Map<String, Class<? extends NumberInterface>> cachedNumbers;
     /**
      * List of all functions loaded by the plugins.
      */
@@ -39,20 +46,32 @@ public class PluginManager {
      */
     private Set<String> allOperators;
     /**
+     * List of all numbers loaded by the plugins.
+     */
+    private Set<String> allNumbers;
+    /**
      * The list of plugin listeners attached to this instance.
      */
     private Set<PluginListener> listeners;
+    /**
+     * The instance of Abacus that is used to interact with its other
+     * components.
+     */
+    private Abacus abacus;
 
     /**
      * Creates a new plugin manager.
      */
-    public PluginManager(){
+    public PluginManager(Abacus abacus){
+        this.abacus = abacus;
         loadedPluginClasses = new HashSet<>();
         plugins = new HashSet<>();
         cachedFunctions = new HashMap<>();
         cachedOperators = new HashMap<>();
+        cachedNumbers = new HashMap<>();
         allFunctions = new HashSet<>();
         allOperators = new HashSet<>();
+        allNumbers = new HashSet<>();
         listeners = new HashSet<>();
     }
 
@@ -105,6 +124,15 @@ public class PluginManager {
     }
 
     /**
+     * Gets a numer implementation under the given name.
+     * @param name the name of the implementation.
+     * @return the implementation class
+     */
+    public Class<? extends NumberInterface> numberFor(String name){
+        return searchCached(plugins, cachedNumbers, Plugin::providedNumbers, Plugin::getNumber, name);
+    }
+
+    /**
      * Adds an instance of Plugin that already has been instantiated.
      * @param plugin the plugin to add.
      */
@@ -136,6 +164,7 @@ public class PluginManager {
         for(Plugin plugin : plugins){
             allFunctions.addAll(plugin.providedFunctions());
             allOperators.addAll(plugin.providedOperators());
+            allNumbers.addAll(plugin.providedNumbers());
         }
         listeners.forEach(e -> e.onLoad(this));
     }
@@ -147,6 +176,7 @@ public class PluginManager {
         for(Plugin plugin : plugins) plugin.disable();
         allFunctions.clear();
         allOperators.clear();
+        allNumbers.clear();
         listeners.forEach(e -> e.onUnload(this));
     }
 
@@ -172,6 +202,14 @@ public class PluginManager {
      */
     public Set<String> getAllOperators() {
         return allOperators;
+    }
+
+    /**
+     * Gets all the number implementations loaded by the Plugin Manager
+     * @return the set of all implementations that were loaded
+     */
+    public Set<String> getAllNumbers() {
+        return allNumbers;
     }
 
     /**
