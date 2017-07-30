@@ -6,6 +6,7 @@ import org.nwapw.abacus.function.OperatorAssociativity;
 import org.nwapw.abacus.function.OperatorType;
 import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
+import org.nwapw.abacus.number.PreciseNumber;
 
 import java.util.function.BiFunction;
 
@@ -21,6 +22,9 @@ public class StandardPlugin extends Plugin {
 
     @Override
     public void onEnable() {
+        registerNumber("naive", NaiveNumber.class);
+        registerNumber("precise", PreciseNumber.class);
+
         registerOperator("+", new Operator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 0, new Function() {
             @Override
             protected boolean matchesParams(NumberInterface[] params) {
@@ -292,7 +296,7 @@ public class StandardPlugin extends Plugin {
      * @return the maximum error.
      */
     private NumberInterface getMaxError(NumberInterface number){
-        return (new NaiveNumber(10)).promoteTo(number.getClass()).intPow(-number.precision());
+        return (new NaiveNumber(10)).promoteTo(number.getClass()).intPow(-number.getMaxPrecision());
     }
 
 }
