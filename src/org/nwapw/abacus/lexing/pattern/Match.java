@@ -7,13 +7,9 @@ package org.nwapw.abacus.lexing.pattern;
 public class Match<T> {
 
     /**
-     * The bottom range of the string, inclusive.
+     * The content of this match.
      */
-    private int from;
-    /**
-     * The top range of the string, exclusive.
-     */
-    private int to;
+    private String content;
     /**
      * The pattern type this match matched.
      */
@@ -21,30 +17,20 @@ public class Match<T> {
 
     /**
      * Creates a new match with the given parameters.
-     * @param from the bottom range of the string.
-     * @param to the top range of the string.
+     * @param content the content of this match.
      * @param type the type of the match.
      */
-    public Match(int from, int to, T type){
-        this.from = from;
-        this.to = to;
+    public Match(String content, T type){
+        this.content = content;
         this.type = type;
     }
 
     /**
-     * Gets the bottom range bound of the string.
-     * @return the bottom range bound of the string.
+     * Gets the content of this match.
+     * @return the content.
      */
-    public int getFrom() {
-        return from;
-    }
-
-    /**
-     * Gets the top range bound of the string.
-     * @return the top range bound of the string.
-     */
-    public int getTo() {
-        return to;
+    public String getContent() {
+        return content;
     }
 
     /**

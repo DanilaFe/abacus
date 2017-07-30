@@ -102,7 +102,7 @@ public class Lexer<T> {
                 if(index < from.length() && node.matches(from.charAt(index))) {
                     node.addOutputsInto(futureSet);
                 } else if(node instanceof EndNode){
-                    matches.add(new Match<>(startAt, index, ((EndNode<T>) node).getPatternId()));
+                    matches.add(new Match<>(from.substring(startAt, index), ((EndNode<T>) node).getPatternId()));
                 }
             }
 
@@ -115,7 +115,7 @@ public class Lexer<T> {
         }
         matches.sort((a, b) -> compare.compare(a.getType(), b.getType()));
         if(compare != null) {
-            matches.sort(Comparator.comparingInt(a -> a.getTo() - a.getFrom()));
+            matches.sort(Comparator.comparingInt(a -> a.getContent().length()));
         }
         return matches.isEmpty() ? null : matches.get(matches.size() - 1);
     }
@@ -132,9 +132,10 @@ public class Lexer<T> {
         ArrayList<Match<T>> matches = new ArrayList<>();
         Match<T> lastMatch = null;
         while(index < from.length() && (lastMatch = lexOne(from, index, compare)) != null){
-            if(lastMatch.getTo() == lastMatch.getFrom()) return null;
+            int length = lastMatch.getContent().length();
+            if(length == 0) return null;
             matches.add(lastMatch);
-            index += lastMatch.getTo() - lastMatch.getFrom();
+            index += length;
         }
         if(lastMatch == null) return null;
         return matches;
