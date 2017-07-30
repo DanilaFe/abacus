@@ -35,10 +35,6 @@ public class Abacus {
     public static final File CONFIG_FILE = new File("config.toml");
 
     /**
-     * The main Abacus UI.
-     */
-    private Window mainUi;
-    /**
      * The plugin manager responsible for
      * loading and unloading plugins,
      * and getting functions from them.
@@ -63,7 +59,6 @@ public class Abacus {
      */
     public Abacus(){
         pluginManager = new PluginManager();
-        mainUi = new Window(this);
         numberReducer = new NumberReducer(this);
         configuration = new ConfigurationObject(CONFIG_FILE);
         configuration.save(CONFIG_FILE);
@@ -81,8 +76,6 @@ public class Abacus {
             e.printStackTrace();
         }
         pluginManager.load();
-
-        mainUi.setVisible(true);
     }
 
     /**
@@ -99,14 +92,6 @@ public class Abacus {
      */
     public PluginManager getPluginManager() {
         return pluginManager;
-    }
-
-    /**
-     * Gets the current UI.
-     * @return the UI window in this abacus instance.
-     */
-    public Window getMainUi() {
-        return mainUi;
     }
 
     /**
@@ -171,6 +156,6 @@ public class Abacus {
             e.printStackTrace();
         }
 
-        new Abacus();
+        new Window(new Abacus()).setVisible(true);
     }
 }
