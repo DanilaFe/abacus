@@ -91,11 +91,10 @@ public class TreeBuilder {
 
     /**
      * Rearranges tokens into a postfix list, using Shunting Yard.
-     * @param source the source string.
      * @param from the tokens to be rearranged.
      * @return the resulting list of rearranged tokens.
      */
-    public List<Match<TokenType>> intoPostfix(String source, List<Match<TokenType>> from){
+    public List<Match<TokenType>> intoPostfix(List<Match<TokenType>> from){
         ArrayList<Match<TokenType>> output = new ArrayList<>();
         Stack<Match<TokenType>> tokenStack = new Stack<>();
         while(!from.isEmpty()){
@@ -104,10 +103,10 @@ public class TreeBuilder {
             if(matchType == TokenType.NUM) {
                 output.add(match);
             } else if(matchType == TokenType.FUNCTION) {
-                output.add(new Match<>(0, 0, TokenType.INTERNAL_FUNCTION_END));
+                output.add(new Match<>("" , TokenType.INTERNAL_FUNCTION_END));
                 tokenStack.push(match);
             } else if(matchType == TokenType.OP){
-                String tokenString = source.substring(match.getFrom(), match.getTo());
+                String tokenString = match.getContent();
                 OperatorType type = typeMap.get(tokenString);
                 int precedence = precedenceMap.get(tokenString);
                 OperatorAssociativity associativity = associativityMap.get(tokenString);
@@ -123,7 +122,7 @@ public class TreeBuilder {
                     if(!(otherMatchType == TokenType.OP || otherMatchType == TokenType.FUNCTION)) break;
 
                     if(otherMatchType == TokenType.OP){
-                        int otherPrecedence = precedenceMap.get(source.substring(otherMatch.getFrom(), otherMatch.getTo()));
+                        int otherPrecedence = precedenceMap.get(match.getContent());
                         if(otherPrecedence < precedence ||
                                 (associativity == OperatorAssociativity.RIGHT && otherPrecedence == precedence)) {
                             break;
@@ -155,34 +154,33 @@ public class TreeBuilder {
 
     /**
      * Constructs a tree recursively from a list of tokens.
-     * @param source the source string.
      * @param matches the list of tokens from the source string.
      * @return the construct tree expression.
      */
-    public TreeNode fromStringRecursive(String source, List<Match<TokenType>> matches){
+    public TreeNode fromStringRecursive(List<Match<TokenType>> matches){
         if(matches.size() == 0) return null;
         Match<TokenType> match = matches.remove(0);
         TokenType matchType = match.getType();
         if(matchType == TokenType.OP){
-            String operator = source.substring(match.getFrom(), match.getTo());
+            String operator = match.getContent();
             OperatorType type = typeMap.get(operator);
             if(type == OperatorType.BINARY_INFIX){
-                TreeNode right = fromStringRecursive(source, matches);
-                TreeNode left = fromStringRecursive(source, matches);
+                TreeNode right = fromStringRecursive(matches);
+                TreeNode left = fromStringRecursive(matches);
                 if(left == null || right == null) return null;
                 else return new BinaryInfixNode(operator, left, right);
             } else {
-                TreeNode applyTo = fromStringRecursive(source, matches);
+                TreeNode applyTo = fromStringRecursive(matches);
                 if(applyTo == null) return null;
                 else return new UnaryPrefixNode(operator, applyTo);
             }
         } else if(matchType == TokenType.NUM){
-            return new NumberNode(abacus.numberFromString(source.substring(match.getFrom(), match.getTo())));
+            return new NumberNode(abacus.numberFromString(match.getContent()));
         } else if(matchType == TokenType.FUNCTION){
-            String functionName = source.substring(match.getFrom(), match.getTo());
+            String functionName = match.getContent();
             FunctionNode node = new FunctionNode(functionName);
             while(!matches.isEmpty() && matches.get(0).getType() != TokenType.INTERNAL_FUNCTION_END){
-                TreeNode argument = fromStringRecursive(source, matches);
+                TreeNode argument = fromStringRecursive(matches);
                 if(argument == null) return null;
                 node.prependChild(argument);
             }
@@ -202,11 +200,11 @@ public class TreeBuilder {
         List<Match<TokenType>> matches = tokenize(string);
         if(matches == null) return null;
         matches.removeIf(m -> m.getType() == TokenType.WHITESPACE);
-        matches = intoPostfix(string, matches);
+        matches = intoPostfix(matches);
         if(matches == null) return null;
 
         Collections.reverse(matches);
-        return fromStringRecursive(string, matches);
+        return fromStringRecursive(matches);
     }
 
 }
