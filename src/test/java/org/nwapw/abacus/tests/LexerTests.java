@@ -28,4 +28,17 @@ public class LexerTests {
         Assert.assertNull(lexer.lexAll("abcdefabcz", 0, Integer::compare));
     }
 
+    @Test
+    public void testNoPatterns(){
+        Lexer<Integer> lexer = new Lexer<>();
+        Assert.assertNull(lexer.lexAll("abcdefabc", 0, Integer::compare));
+    }
+
+    @Test
+    public void testEmptyMatches(){
+        Lexer<Integer> lexer = new Lexer<>();
+        lexer.register("a?", 0);
+        Assert.assertNull(lexer.lexAll("", 0, Integer::compare));
+    }
+    
 }
