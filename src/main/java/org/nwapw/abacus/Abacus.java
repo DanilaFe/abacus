@@ -146,6 +146,11 @@ public class Abacus {
         return tree.reduce(numberReducer);
     }
 
+    /**
+     * Creates a number from a string.
+     * @param numberString the string to create the number from.
+     * @return the resulting number.
+     */
     public NumberInterface numberFromString(String numberString){
         Class<? extends NumberInterface> toInstantiate =
                 pluginManager.numberFor(configuration.getNumberImplementation());
