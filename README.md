@@ -5,7 +5,7 @@ Summer project for NWAPW.
 Created by Arthur Drobot, Danila Fedorin and Riley Jones.
 
 ## Project Description
-Abacus is a calculator built with extensibility and usability in mind. It provides a plugin interface, via Java, as Lua provides too difficult to link up to the Java core. The description of the internals of the project can be found on the wiki page.
+Abacus is a calculator built with extensibility and usability in mind. It provides a plugin interface, via Java, as Lua proves too difficult to link up to the Java core. The description of the internals of the project can be found on the wiki page.
 
 ## Current State
 Abacus is being built for the Northwest Advanced Programming Workshop, a 3 week program in which students work in treams to complete a single project, following principles of agile development. Because of its short timeframe, Abacus is not even close to completed state. Below is a list of the current features and problems.
