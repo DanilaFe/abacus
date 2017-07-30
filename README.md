@@ -1,5 +1,6 @@
 # abacus
 [![Build Status](https://travis-ci.org/DanilaFe/abacus.svg?branch=master)](https://travis-ci.org/DanilaFe/abacus)
+
 Summer project for NWAPW.
 Created by Arthur Drobot, Danila Fedorin and Riley Jones.
 
