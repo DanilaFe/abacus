@@ -16,6 +16,9 @@ import java.util.function.BiFunction;
  */
 public class StandardPlugin extends Plugin {
 
+    /**
+     * The addition operator, +
+     */
     public static final Operator OP_ADD = new Operator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 0, new Function() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
@@ -31,6 +34,9 @@ public class StandardPlugin extends Plugin {
             return sum;
         }
     });
+    /**
+     * The subtraction operator, -
+     */
     public static final Operator OP_SUBTRACT = new Operator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 0, new Function() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
@@ -42,6 +48,9 @@ public class StandardPlugin extends Plugin {
             return params[0].subtract(params[1]);
         }
     });
+    /**
+     * The multiplication operator, *
+     */
     public static final Operator OP_MULTIPLY = new Operator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 1, new Function() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
@@ -57,6 +66,9 @@ public class StandardPlugin extends Plugin {
             return product;
         }
     });
+    /**
+     * The division operator, /
+     */
     public static final Operator OP_DIVIDE = new Operator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 1, new Function() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
@@ -72,6 +84,9 @@ public class StandardPlugin extends Plugin {
             return product;
         }
     });
+    /**
+     * The factorial operator, !
+     */
     public static final Operator OP_FACTORIAL = new Operator(OperatorAssociativity.RIGHT, OperatorType.UNARY_POSTFIX, 0, new Function() {
         //private HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>> storedList = new HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>>();
         @Override
@@ -98,6 +113,9 @@ public class StandardPlugin extends Plugin {
                 }*/
         }
     });
+    /**
+     * The caret / pow operator, ^
+     */
     public static final Operator OP_CARET = new Operator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 2, new Function() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
@@ -109,6 +127,9 @@ public class StandardPlugin extends Plugin {
             return FUNCTION_EXP.apply(FUNCTION_LN.apply(params[0]).multiply(params[1]));
         }
     });
+    /**
+     * The absolute value function, abs(-3) = 3
+     */
     public static final Function FUNCTION_ABS = new Function() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
@@ -120,6 +141,9 @@ public class StandardPlugin extends Plugin {
             return params[0].multiply((new NaiveNumber(params[0].signum())).promoteTo(params[0].getClass()));
         }
     };
+    /**
+     * The exponentiation function, exp(1) = e^1 = 2.71
+     */
     public static final Function FUNCTION_EXP = new Function() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
@@ -137,6 +161,9 @@ public class StandardPlugin extends Plugin {
             return sum;
         }
     };
+    /**
+     * The natural log function, ln(exp(1)) = 1
+     */
     public static final Function FUNCTION_LN = new Function() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
@@ -210,6 +237,9 @@ public class StandardPlugin extends Plugin {
             return sum;
         }
     };
+    /**
+     * The square root function, sqrt(4) = 2
+     */
     public static final Function FUNCTION_SQRT = new Function() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
