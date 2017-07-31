@@ -56,7 +56,7 @@ public class PluginManager {
     /**
      * Creates a new plugin manager.
      */
-    public PluginManager(){
+    public PluginManager() {
         loadedPluginClasses = new HashSet<>();
         plugins = new HashSet<>();
         cachedFunctions = new HashMap<>();
@@ -73,23 +73,24 @@ public class PluginManager {
      * list of items of the type using the setFunction and getting the value
      * of it is available via getFunction. If the value is contained
      * in the cache, it returns the cached value instead.
-     * @param plugins the plugin list to search.
-     * @param cache the cache to use
+     *
+     * @param plugins     the plugin list to search.
+     * @param cache       the cache to use
      * @param setFunction the function to retrieve a set of available T's from the plugin
      * @param getFunction the function to get the T value under the given name
-     * @param name the name to search for
-     * @param <T> the type of element being search
+     * @param name        the name to search for
+     * @param <T>         the type of element being search
      * @return the retrieved element, or null if it was not found.
      */
     private static <T> T searchCached(Collection<Plugin> plugins, Map<String, T> cache,
                                       java.util.function.Function<Plugin, Set<String>> setFunction,
                                       java.util.function.BiFunction<Plugin, String, T> getFunction,
-                                      String name){
-        if(cache.containsKey(name)) return cache.get(name);
+                                      String name) {
+        if (cache.containsKey(name)) return cache.get(name);
 
         T loadedValue = null;
-        for(Plugin plugin : plugins){
-            if(setFunction.apply(plugin).contains(name)){
+        for (Plugin plugin : plugins) {
+            if (setFunction.apply(plugin).contains(name)) {
                 loadedValue = getFunction.apply(plugin, name);
                 break;
             }
@@ -98,39 +99,44 @@ public class PluginManager {
         cache.put(name, loadedValue);
         return loadedValue;
     }
+
     /**
      * Gets a function under the given name.
+     *
      * @param name the name of the function
      * @return the function under the given name.
      */
-    public Function functionFor(String name){
+    public Function functionFor(String name) {
         return searchCached(plugins, cachedFunctions, Plugin::providedFunctions, Plugin::getFunction, name);
     }
 
     /**
      * Gets an operator under the given name.
+     *
      * @param name the name of the operator.
      * @return the operator under the given name.
      */
-    public Operator operatorFor(String name){
+    public Operator operatorFor(String name) {
         return searchCached(plugins, cachedOperators, Plugin::providedOperators, Plugin::getOperator, name);
     }
 
     /**
      * Gets a numer implementation under the given name.
+     *
      * @param name the name of the implementation.
      * @return the implementation class
      */
-    public Class<? extends NumberInterface> numberFor(String name){
+    public Class<? extends NumberInterface> numberFor(String name) {
         return searchCached(plugins, cachedNumbers, Plugin::providedNumbers, Plugin::getNumber, name);
     }
 
     /**
      * Adds an instance of Plugin that already has been instantiated.
+     *
      * @param plugin the plugin to add.
      */
-    public void addInstantiated(Plugin plugin){
-        if(loadedPluginClasses.contains(plugin.getClass())) return;
+    public void addInstantiated(Plugin plugin) {
+        if (loadedPluginClasses.contains(plugin.getClass())) return;
         plugins.add(plugin);
         loadedPluginClasses.add(plugin.getClass());
     }
@@ -138,10 +144,11 @@ public class PluginManager {
     /**
      * Instantiates a class of plugin, and adds it to this
      * plugin manager.
+     *
      * @param newClass the new class to instantiate.
      */
-    public void addClass(Class<?> newClass){
-        if(!Plugin.class.isAssignableFrom(newClass) || newClass == Plugin.class) return;
+    public void addClass(Class<?> newClass) {
+        if (!Plugin.class.isAssignableFrom(newClass) || newClass == Plugin.class) return;
         try {
             addInstantiated((Plugin) newClass.getConstructor(PluginManager.class).newInstance(this));
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
@@ -152,9 +159,9 @@ public class PluginManager {
     /**
      * Loads all the plugins in the PluginManager.
      */
-    public void load(){
-        for(Plugin plugin : plugins) plugin.enable();
-        for(Plugin plugin : plugins){
+    public void load() {
+        for (Plugin plugin : plugins) plugin.enable();
+        for (Plugin plugin : plugins) {
             allFunctions.addAll(plugin.providedFunctions());
             allOperators.addAll(plugin.providedOperators());
             allNumbers.addAll(plugin.providedNumbers());
@@ -165,8 +172,8 @@ public class PluginManager {
     /**
      * Unloads all the plugins in the PluginManager.
      */
-    public void unload(){
-        for(Plugin plugin : plugins) plugin.disable();
+    public void unload() {
+        for (Plugin plugin : plugins) plugin.disable();
         allFunctions.clear();
         allOperators.clear();
         allNumbers.clear();
@@ -176,13 +183,14 @@ public class PluginManager {
     /**
      * Reloads all the plugins in the PluginManager.
      */
-    public void reload(){
+    public void reload() {
         unload();
         reload();
     }
 
     /**
      * Gets all the functions loaded by the Plugin Manager.
+     *
      * @return the set of all functions that were loaded.
      */
     public Set<String> getAllFunctions() {
@@ -191,6 +199,7 @@ public class PluginManager {
 
     /**
      * Gets all the operators loaded by the Plugin Manager.
+     *
      * @return the set of all operators that were loaded.
      */
     public Set<String> getAllOperators() {
@@ -199,6 +208,7 @@ public class PluginManager {
 
     /**
      * Gets all the number implementations loaded by the Plugin Manager
+     *
      * @return the set of all implementations that were loaded
      */
     public Set<String> getAllNumbers() {
@@ -207,18 +217,20 @@ public class PluginManager {
 
     /**
      * Adds a plugin change listener to this plugin manager.
+     *
      * @param listener the listener to add.
      */
-    public void addListener(PluginListener listener){
+    public void addListener(PluginListener listener) {
         listeners.add(listener);
     }
 
     /**
      * Remove the plugin change listener from this plugin manager.
+     *
      * @param listener the listener to remove.
      */
-    public void removeListener(PluginListener listener){
+    public void removeListener(PluginListener listener) {
         listeners.remove(listener);
     }
-    
+
 }

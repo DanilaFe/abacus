@@ -2,9 +2,7 @@ package org.nwapw.abacus.window;
 
 import org.nwapw.abacus.tree.TreeNode;
 
-import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableModel;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,30 +29,6 @@ public class HistoryTableModel extends AbstractTableModel {
             TreeNode.class,
             String.class
     };
-
-    /**
-     * Class used specifically to hold data about
-     * the previous entries into the calculator.
-     */
-    public static class HistoryEntry {
-        public String input;
-        public TreeNode parsedInput;
-        public String output;
-
-        public HistoryEntry(String input, TreeNode parsedInput, String output){
-            this.input = input;
-            this.parsedInput = parsedInput;
-            this.output = output;
-        }
-
-        Object nthValue(int n){
-            if(n == 0) return input;
-            if(n == 1) return parsedInput;
-            if(n == 2) return output;
-            return null;
-        }
-    }
-
     /**
      * The list of entries.
      */
@@ -69,9 +43,10 @@ public class HistoryTableModel extends AbstractTableModel {
 
     /**
      * Adds an entry to the model.
+     *
      * @param entry the entry to add.
      */
-    public void addEntry(HistoryEntry entry){
+    public void addEntry(HistoryEntry entry) {
         entries.add(entry);
     }
 
@@ -103,6 +78,29 @@ public class HistoryTableModel extends AbstractTableModel {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         return entries.get(rowIndex).nthValue(columnIndex);
+    }
+
+    /**
+     * Class used specifically to hold data about
+     * the previous entries into the calculator.
+     */
+    public static class HistoryEntry {
+        public String input;
+        public TreeNode parsedInput;
+        public String output;
+
+        public HistoryEntry(String input, TreeNode parsedInput, String output) {
+            this.input = input;
+            this.parsedInput = parsedInput;
+            this.output = output;
+        }
+
+        Object nthValue(int n) {
+            if (n == 0) return input;
+            if (n == 1) return parsedInput;
+            if (n == 2) return output;
+            return null;
+        }
     }
 
 }

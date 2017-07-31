@@ -119,12 +119,12 @@ public class Window extends JFrame {
      */
     private ActionListener evaluateListener = (event) -> {
         TreeNode parsedExpression = abacus.parseString(inputField.getText());
-        if(parsedExpression == null){
+        if (parsedExpression == null) {
             lastOutputArea.setText(SYNTAX_ERR_STRING);
             return;
         }
         NumberInterface numberInterface = abacus.evaluateTree(parsedExpression);
-        if(numberInterface == null) {
+        if (numberInterface == null) {
             lastOutputArea.setText(EVAL_ERR_STRING);
             return;
         }
@@ -146,9 +146,10 @@ public class Window extends JFrame {
 
     /**
      * Creates a new window with the given manager.
+     *
      * @param abacus the calculator instance to interact with other components.
      */
-    public Window(Abacus abacus){
+    public Window(Abacus abacus) {
         this();
         this.abacus = abacus;
     }
@@ -218,11 +219,11 @@ public class Window extends JFrame {
             inputField.setEnabled(enabled);
             inputEnterButton.setEnabled(enabled);
 
-            for(ActionListener removingListener : inputEnterButton.getActionListeners()){
+            for (ActionListener removingListener : inputEnterButton.getActionListeners()) {
                 inputEnterButton.removeActionListener(removingListener);
                 inputField.removeActionListener(removingListener);
             }
-            if(listener != null){
+            if (listener != null) {
                 inputEnterButton.addActionListener(listener);
                 inputField.addActionListener(listener);
             }
@@ -236,7 +237,7 @@ public class Window extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 Point clickPoint = e.getPoint();
-                if(e.getClickCount() == 2){
+                if (e.getClickCount() == 2) {
                     int row = historyTable.rowAtPoint(clickPoint);
                     int column = historyTable.columnAtPoint(clickPoint);
                     String toCopy = historyTable.getValueAt(row, column).toString();

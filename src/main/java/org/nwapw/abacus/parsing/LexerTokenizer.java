@@ -29,7 +29,7 @@ public class LexerTokenizer implements Tokenizer<Match<TokenType>>, PluginListen
     /**
      * Creates a new lexer tokenizer.
      */
-    public LexerTokenizer(){
+    public LexerTokenizer() {
         lexer = new Lexer<TokenType>() {{
             register(" ", TokenType.WHITESPACE);
             register(",", TokenType.COMMA);
@@ -46,20 +46,20 @@ public class LexerTokenizer implements Tokenizer<Match<TokenType>>, PluginListen
 
     @Override
     public void onLoad(PluginManager manager) {
-        for(String operator : manager.getAllOperators()){
-           lexer.register(Pattern.sanitize(operator), TokenType.OP);
+        for (String operator : manager.getAllOperators()) {
+            lexer.register(Pattern.sanitize(operator), TokenType.OP);
         }
-        for(String function : manager.getAllFunctions()){
+        for (String function : manager.getAllFunctions()) {
             lexer.register(Pattern.sanitize(function), TokenType.FUNCTION);
         }
     }
 
     @Override
     public void onUnload(PluginManager manager) {
-        for(String operator : manager.getAllOperators()){
+        for (String operator : manager.getAllOperators()) {
             lexer.unregister(Pattern.sanitize(operator), TokenType.OP);
         }
-        for(String function : manager.getAllFunctions()){
+        for (String function : manager.getAllFunctions()) {
             lexer.unregister(Pattern.sanitize(function), TokenType.FUNCTION);
         }
     }

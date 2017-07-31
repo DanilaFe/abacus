@@ -1,6 +1,5 @@
 package org.nwapw.abacus.tree;
 
-import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
 
 /**
@@ -16,20 +15,22 @@ public class NumberNode extends TreeNode {
     /**
      * Creates a number node with no number.
      */
-    public NumberNode(){
+    public NumberNode() {
         number = null;
     }
 
     /**
      * Creates a new number node with the given double value.
+     *
      * @param newNumber the number for which to create a number node.
      */
-    public NumberNode(NumberInterface newNumber){
+    public NumberNode(NumberInterface newNumber) {
         this.number = newNumber;
     }
 
     /**
      * Gets the number value of this node.
+     *
      * @return the number value of this node.
      */
     public NumberInterface getNumber() {

@@ -13,18 +13,20 @@ public class UnaryPrefixNode extends TreeNode {
 
     /**
      * Creates a new node with the given operation and no child.
+     *
      * @param operation the operation for this node.
      */
-    public UnaryPrefixNode(String operation){
+    public UnaryPrefixNode(String operation) {
         this(operation, null);
     }
 
     /**
      * Creates a new node with the given operation and child.
+     *
      * @param operation the operation for this node.
-     * @param applyTo the node to apply the function to.
+     * @param applyTo   the node to apply the function to.
      */
-    public UnaryPrefixNode(String operation, TreeNode applyTo){
+    public UnaryPrefixNode(String operation, TreeNode applyTo) {
         this.operation = operation;
         this.applyTo = applyTo;
     }
@@ -32,12 +34,13 @@ public class UnaryPrefixNode extends TreeNode {
     @Override
     public <T> T reduce(Reducer<T> reducer) {
         Object reducedChild = applyTo.reduce(reducer);
-        if(reducedChild == null) return null;
+        if (reducedChild == null) return null;
         return reducer.reduceNode(this, reducedChild);
     }
 
     /**
      * Gets the operation of this node.
+     *
      * @return the operation this node performs.
      */
     public String getOperation() {
@@ -46,6 +49,7 @@ public class UnaryPrefixNode extends TreeNode {
 
     /**
      * Gets the node to which this node's operation applies.
+     *
      * @return the tree node to which the operation will be applied.
      */
     public TreeNode getApplyTo() {

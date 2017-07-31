@@ -20,9 +20,10 @@ public class ClassFinder {
 
     /**
      * Loads all the plugin classes from the given plugin folder.
+     *
      * @param filePath the path for the plugin folder.
      * @return the list of all loaded classes.
-     * @throws IOException thrown if an error occurred scanning the plugin folder.
+     * @throws IOException            thrown if an error occurred scanning the plugin folder.
      * @throws ClassNotFoundException thrown if the class listed in the file doesn't get loaded.
      */
     public static List<Class<?>> loadJars(String filePath) throws IOException, ClassNotFoundException {
@@ -31,19 +32,20 @@ public class ClassFinder {
 
     /**
      * Loads all the plugin classes from the given plugin folder.
+     *
      * @param pluginFolderPath the folder in which to look for plugins.
      * @return the list of all loaded classes.
-     * @throws IOException thrown if an error occurred scanning the plugin folder.
+     * @throws IOException            thrown if an error occurred scanning the plugin folder.
      * @throws ClassNotFoundException thrown if the class listed in the file doesn't get loaded.
      */
     public static List<Class<?>> loadJars(File pluginFolderPath) throws IOException, ClassNotFoundException {
         ArrayList<Class<?>> toReturn = new ArrayList<>();
-        if(!pluginFolderPath.exists()) return toReturn;
+        if (!pluginFolderPath.exists()) return toReturn;
         ArrayList<File> files = Files.walk(pluginFolderPath.toPath())
                 .map(Path::toFile)
                 .filter(f -> f.getName().endsWith(".jar"))
                 .collect(Collectors.toCollection(ArrayList::new));
-        for (File file : files){
+        for (File file : files) {
             toReturn.addAll(loadJar(file));
         }
         return toReturn;
@@ -51,9 +53,10 @@ public class ClassFinder {
 
     /**
      * Loads the classes from a single path, given by the file.
+     *
      * @param jarLocation the location of the jar to load.
      * @return the list of loaded classes loaded from the jar.
-     * @throws IOException thrown if there was an error reading the file
+     * @throws IOException            thrown if there was an error reading the file
      * @throws ClassNotFoundException thrown if the class could not be loaded.
      */
     public static List<Class<?>> loadJar(File jarLocation) throws IOException, ClassNotFoundException {

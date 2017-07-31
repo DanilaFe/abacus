@@ -20,19 +20,22 @@ public class FunctionNode extends TreeNode {
     /**
      * Creates a function node with no function.
      */
-    private FunctionNode() { }
+    private FunctionNode() {
+    }
 
     /**
      * Creates a new function node with the given function name.
+     *
      * @param function the function name.
      */
-    public FunctionNode(String function){
+    public FunctionNode(String function) {
         this.function = function;
         children = new ArrayList<>();
     }
 
     /**
      * Gets the function name for this node.
+     *
      * @return the function name.
      */
     public String getFunction() {
@@ -41,14 +44,16 @@ public class FunctionNode extends TreeNode {
 
     /**
      * Adds a child to the end of this node's child list.
+     *
      * @param node the child to add.
      */
-    public void appendChild(TreeNode node){
+    public void appendChild(TreeNode node) {
         children.add(node);
     }
 
     /**
      * Adds a new child to the beginning of this node's child list.
+     *
      * @param node the node to add.
      */
     public void prependChild(TreeNode node) {
@@ -58,9 +63,9 @@ public class FunctionNode extends TreeNode {
     @Override
     public <T> T reduce(Reducer<T> reducer) {
         Object[] reducedChildren = new Object[children.size()];
-        for(int i = 0; i < reducedChildren.length; i++){
+        for (int i = 0; i < reducedChildren.length; i++) {
             reducedChildren[i] = children.get(i).reduce(reducer);
-            if(reducedChildren[i] == null) return null;
+            if (reducedChildren[i] == null) return null;
         }
         return reducer.reduceNode(this, reducedChildren);
     }
@@ -70,7 +75,7 @@ public class FunctionNode extends TreeNode {
         StringBuilder buffer = new StringBuilder();
         buffer.append(function);
         buffer.append("(");
-        for(int i = 0; i < children.size(); i++){
+        for (int i = 0; i < children.size(); i++) {
             buffer.append(children.get(i));
             buffer.append(i == children.size() - 1 ? "" : ", ");
         }

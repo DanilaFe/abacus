@@ -3,7 +3,7 @@ package org.nwapw.abacus.number;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-public class PreciseNumber implements NumberInterface{
+public class PreciseNumber implements NumberInterface {
 
     /**
      * The number one.
@@ -25,18 +25,20 @@ public class PreciseNumber implements NumberInterface{
 
     /**
      * Constructs a precise number from the given string.
+     *
      * @param string a string representation of the number meeting the same conditions
      *               as the BidDecimal(String) constructor.
      */
-    public PreciseNumber(String string){
+    public PreciseNumber(String string) {
         value = new BigDecimal(string);
     }
 
     /**
      * Constructs a precise number from the given BigDecimal.
+     *
      * @param value a BigDecimal object representing the value of the number.
      */
-    public PreciseNumber(BigDecimal value){
+    public PreciseNumber(BigDecimal value) {
         this.value = value;
     }
 
@@ -67,16 +69,16 @@ public class PreciseNumber implements NumberInterface{
 
     @Override
     public NumberInterface intPow(int exponent) {
-        if(exponent == 0){
+        if (exponent == 0) {
             return PreciseNumber.ONE;
         }
         boolean takeReciprocal = exponent < 0;
         exponent = Math.abs(exponent);
         NumberInterface power = this;
-        for(int currentExponent = 1; currentExponent < exponent; currentExponent++){
+        for (int currentExponent = 1; currentExponent < exponent; currentExponent++) {
             power = power.multiply(this);
         }
-        if(takeReciprocal){
+        if (takeReciprocal) {
             power = PreciseNumber.ONE.divide(power);
         }
         return power;
@@ -93,13 +95,13 @@ public class PreciseNumber implements NumberInterface{
     }
 
     @Override
-    public NumberInterface negate(){
+    public NumberInterface negate() {
         return new PreciseNumber(value.negate());
     }
 
     @Override
     public NumberInterface promoteTo(Class<? extends NumberInterface> toClass) {
-        if(toClass == this.getClass()){
+        if (toClass == this.getClass()) {
             return this;
         }
         return null;

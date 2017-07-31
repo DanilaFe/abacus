@@ -39,10 +39,12 @@ public abstract class Plugin {
      */
     private boolean enabled;
 
-    private Plugin(){ }
+    private Plugin() {
+    }
 
     /**
      * Creates a new plugin with the given PluginManager.
+     *
      * @param manager the manager controlling this plugin.
      */
     public Plugin(PluginManager manager) {
@@ -55,30 +57,34 @@ public abstract class Plugin {
 
     /**
      * Gets the list of functions provided by this plugin.
+     *
      * @return the list of registered functions.
      */
-    public final Set<String> providedFunctions(){
+    public final Set<String> providedFunctions() {
         return functions.keySet();
     }
 
     /**
      * Gets the list of functions provided by this plugin.
+     *
      * @return the list of registered functions.
      */
-    public final Set<String> providedOperators(){
+    public final Set<String> providedOperators() {
         return operators.keySet();
     }
 
     /**
      * Gets the list of all numbers provided by this plugin.
+     *
      * @return the list of registered numbers.
      */
-    public final Set<String> providedNumbers(){
+    public final Set<String> providedNumbers() {
         return numbers.keySet();
     }
 
     /**
      * Gets a function under the given function name.
+     *
      * @param functionName the name of the function to get
      * @return the function, or null if this plugin doesn't provide it.
      */
@@ -88,6 +94,7 @@ public abstract class Plugin {
 
     /**
      * Gets an operator under the given operator name.
+     *
      * @param operatorName the name of the operator to get.
      * @return the operator, or null if this plugin doesn't provide it.
      */
@@ -97,10 +104,11 @@ public abstract class Plugin {
 
     /**
      * Gets the class under the given name.
+     *
      * @param numberName the name of the class.
      * @return the class, or null if the plugin doesn't provide it.
      */
-    public final Class<? extends NumberInterface> getNumber(String numberName){
+    public final Class<? extends NumberInterface> getNumber(String numberName) {
         return numbers.get(numberName);
     }
 
@@ -108,8 +116,8 @@ public abstract class Plugin {
      * Enables the function, loading the necessary instances
      * of functions.
      */
-    public final void enable(){
-        if(enabled) return;
+    public final void enable() {
+        if (enabled) return;
         onEnable();
         enabled = true;
     }
@@ -118,8 +126,8 @@ public abstract class Plugin {
      * Disables the plugin, clearing loaded data store by default
      * and calling its disable() method.
      */
-    public final void disable(){
-        if(!enabled) return;
+    public final void disable() {
+        if (!enabled) return;
         onDisable();
         functions.clear();
         operators.clear();
@@ -129,7 +137,8 @@ public abstract class Plugin {
     /**
      * To be used in load(). Registers a function abstract class with the
      * plugin internally, which makes it accessible to the plugin manager.
-     * @param name the name to register by.
+     *
+     * @param name       the name to register by.
      * @param toRegister the function implementation.
      */
     protected final void registerFunction(String name, Function toRegister) {
@@ -140,7 +149,8 @@ public abstract class Plugin {
      * To be used in load(). Registers an operator abstract class
      * with the plugin internally, which makes it accessible to
      * the plugin manager.
-     * @param name the name of the operator.
+     *
+     * @param name     the name of the operator.
      * @param operator the operator to register.
      */
     protected final void registerOperator(String name, Operator operator) {
@@ -152,10 +162,11 @@ public abstract class Plugin {
      * with the plugin internally, which makes it possible
      * for the user to select it as an "implementation" for the
      * number that they would like to use.
-     * @param name the name to register it under.
+     *
+     * @param name       the name to register it under.
      * @param toRegister the class to register.
      */
-    protected final void registerNumber(String name, Class<? extends NumberInterface> toRegister){
+    protected final void registerNumber(String name, Class<? extends NumberInterface> toRegister) {
         numbers.put(name, toRegister);
     }
 
@@ -163,6 +174,7 @@ public abstract class Plugin {
      * Searches the PluginManager for the given function name.
      * This can be used by the plugins internally in order to call functions
      * they do not provide.
+     *
      * @param name the name for which to search
      * @return the resulting function, or null if none was found for that name.
      */
@@ -174,6 +186,7 @@ public abstract class Plugin {
      * Searches the PluginManager for the given operator name.
      * This can be used by the plugins internally in order to call
      * operations they do not provide.
+     *
      * @param name the name for which to search
      * @return the resulting operator, or null if none was found for that name.
      */

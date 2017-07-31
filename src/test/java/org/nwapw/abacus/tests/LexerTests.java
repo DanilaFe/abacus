@@ -10,7 +10,7 @@ import java.util.List;
 public class LexerTests {
 
     @Test
-    public void testBasicSuccess(){
+    public void testBasicSuccess() {
         Lexer<Integer> lexer = new Lexer<>();
         lexer.register("abc", 0);
         lexer.register("def", 1);
@@ -22,7 +22,7 @@ public class LexerTests {
     }
 
     @Test
-    public void testBasicFailure(){
+    public void testBasicFailure() {
         Lexer<Integer> lexer = new Lexer<>();
         lexer.register("abc", 0);
         lexer.register("def", 1);
@@ -30,20 +30,20 @@ public class LexerTests {
     }
 
     @Test
-    public void testNoPatterns(){
+    public void testNoPatterns() {
         Lexer<Integer> lexer = new Lexer<>();
         Assert.assertNull(lexer.lexAll("abcdefabc", 0, Integer::compare));
     }
 
     @Test
-    public void testEmptyMatches(){
+    public void testEmptyMatches() {
         Lexer<Integer> lexer = new Lexer<>();
         lexer.register("a?", 0);
         Assert.assertNull(lexer.lexAll("", 0, Integer::compare));
     }
 
     @Test
-    public void testOneOrMore(){
+    public void testOneOrMore() {
         Lexer<Integer> lexer = new Lexer<>();
         lexer.register("a+", 0);
         List<Match<Integer>> tokens = lexer.lexAll("aaaa", 0, Integer::compare);
@@ -52,7 +52,7 @@ public class LexerTests {
     }
 
     @Test
-    public void testZeroOrMore(){
+    public void testZeroOrMore() {
         Lexer<Integer> lexer = new Lexer<>();
         lexer.register("a*", 0);
         List<Match<Integer>> tokens = lexer.lexAll("aaaa", 0, Integer::compare);
@@ -61,7 +61,7 @@ public class LexerTests {
     }
 
     @Test
-    public void testZeroOrOne(){
+    public void testZeroOrOne() {
         Lexer<Integer> lexer = new Lexer<>();
         lexer.register("a?", 0);
         List<Match<Integer>> tokens = lexer.lexAll("aaaa", 0, Integer::compare);
@@ -70,7 +70,7 @@ public class LexerTests {
     }
 
     @Test
-    public void testGreedyMatching(){
+    public void testGreedyMatching() {
         Lexer<Integer> lexer = new Lexer<>();
         lexer.register("a*a", 0);
         List<Match<Integer>> tokens = lexer.lexAll("aaaa", 0, Integer::compare);
@@ -79,20 +79,20 @@ public class LexerTests {
     }
 
     @Test
-    public void testAnyCharacter(){
+    public void testAnyCharacter() {
         String testString = "abcdef";
         Lexer<Integer> lexer = new Lexer<>();
         lexer.register(".", 0);
         List<Match<Integer>> tokens = lexer.lexAll(testString, 0, Integer::compare);
         Assert.assertNotNull(tokens);
         Assert.assertEquals(tokens.size(), testString.length());
-        for(int i = 0; i < tokens.size(); i++){
+        for (int i = 0; i < tokens.size(); i++) {
             Assert.assertEquals(testString.substring(i, i + 1), tokens.get(i).getContent());
         }
     }
 
     @Test
-    public void testBasicGroup(){
+    public void testBasicGroup() {
         Lexer<Integer> lexer = new Lexer<>();
         lexer.register("(abc)", 0);
         List<Match<Integer>> tokens = lexer.lexAll("abc", 0, Integer::compare);
@@ -102,27 +102,27 @@ public class LexerTests {
     }
 
     @Test
-    public void testBasicRangeSuccess(){
+    public void testBasicRangeSuccess() {
         String testString = "abcdef";
         Lexer<Integer> lexer = new Lexer<>();
         lexer.register("[a-f]", 0);
         List<Match<Integer>> tokens = lexer.lexAll(testString, 0, Integer::compare);
         Assert.assertNotNull(tokens);
         Assert.assertEquals(testString.length(), tokens.size());
-        for(int i = 0; i < tokens.size(); i++){
+        for (int i = 0; i < tokens.size(); i++) {
             Assert.assertEquals(testString.substring(i, i + 1), tokens.get(i).getContent());
         }
     }
 
     @Test
-    public void testBasicRangeFailure(){
+    public void testBasicRangeFailure() {
         Lexer<Integer> lexer = new Lexer<>();
         lexer.register("[a-f]", 0);
         Assert.assertNull(lexer.lexAll("g", 0, Integer::compare));
     }
-    
+
     @Test
-    public void testGroupAndOperator(){
+    public void testGroupAndOperator() {
         Lexer<Integer> lexer = new Lexer<>();
         lexer.register("(abc)+", 0);
         List<Match<Integer>> tokens = lexer.lexAll("abcabc", 0, Integer::compare);
