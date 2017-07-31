@@ -98,6 +98,17 @@ public class StandardPlugin extends Plugin {
                 }*/
         }
     });
+    public static final Operator OP_CARET = new Operator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 2, new Function() {
+        @Override
+        protected boolean matchesParams(NumberInterface[] params) {
+            return params.length == 2;
+        }
+
+        @Override
+        protected NumberInterface applyInternal(NumberInterface[] params) {
+            return FUNCTION_EXP.apply(FUNCTION_LN.apply(params[0]).multiply(params[1]));
+        }
+    });
     public static final Function FUNCTION_ABS = new Function() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
@@ -199,17 +210,6 @@ public class StandardPlugin extends Plugin {
             return sum;
         }
     };
-    public static final Operator OP_CARET = new Operator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 2, new Function() {
-        @Override
-        protected boolean matchesParams(NumberInterface[] params) {
-            return params.length == 2;
-        }
-
-        @Override
-        protected NumberInterface applyInternal(NumberInterface[] params) {
-            return FUNCTION_EXP.apply(FUNCTION_LN.apply(params[0]).multiply(params[1]));
-        }
-    });
     public static final Function FUNCTION_SQRT = new Function() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
