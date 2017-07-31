@@ -15,13 +15,16 @@ import java.awt.event.MouseEvent;
  * The main UI window for the calculator.
  */
 public class Window extends JFrame {
-
+    
+    private boolean contComputation;
+    
     private static final String CALC_STRING = "Calculate";
     private static final String SYNTAX_ERR_STRING = "Syntax Error";
     private static final String EVAL_ERR_STRING = "Evaluation Error";
     private static final String NUMBER_SYSTEM_LABEL = "Number Type:";
     private static final String FUNCTION_LABEL = "Functions:";
-
+    private static final String STOP_STRING = "Stop";
+    private static final String STOPPED_TEXT = "Stop";
     /**
      * Array of Strings to which the "calculate" button's text
      * changes. For instance, in the graph tab, the name will
@@ -90,7 +93,10 @@ public class Window extends JFrame {
      * The "submit" button.
      */
     private JButton inputEnterButton;
-
+    /**
+     * The stop calculations button.
+     */
+    private JButton inputStopButton;
     /**
      * The side panel for separate configuration.
      */
@@ -117,22 +123,39 @@ public class Window extends JFrame {
     /**
      * Action listener that causes the input to be evaluated.
      */
+    private ActionListener stopListener = (event) -> {
+        contComputation=false;
+    };
     private ActionListener evaluateListener = (event) -> {
+        contComputation = true;
         TreeNode parsedExpression = abacus.parseString(inputField.getText());
-        if (parsedExpression == null) {
-            lastOutputArea.setText(SYNTAX_ERR_STRING);
-            return;
+        if(contComputation) {
+            if (parsedExpression == null) {
+                lastOutputArea.setText(SYNTAX_ERR_STRING);
+                return;
+            }
         }
-        NumberInterface numberInterface = abacus.evaluateTree(parsedExpression);
-        if (numberInterface == null) {
-            lastOutputArea.setText(EVAL_ERR_STRING);
-            return;
-        }
-        lastOutput = numberInterface.toString();
-        historyModel.addEntry(new HistoryTableModel.HistoryEntry(inputField.getText(), parsedExpression, lastOutput));
-        historyTable.invalidate();
-        lastOutputArea.setText(lastOutput);
+        NumberInterface numberInterface = null;
+        if(contComputation)
+            numberInterface = abacus.evaluateTree(parsedExpression);
+        if(contComputation) {
+            if (numberInterface == null) {
+                lastOutputArea.setText(EVAL_ERR_STRING);
+                return;
+        }}
+        if(contComputation)
+            lastOutput = numberInterface.toString();
+        if(contComputation)
+            historyModel.addEntry(new HistoryTableModel.HistoryEntry(inputField.getText(), parsedExpression, lastOutput));
+        if(contComputation)
+            historyTable.invalidate();
+        if(contComputation)
+            lastOutputArea.setText(lastOutput);
+        else
+            lastOutputArea.setText(STOPPED_TEXT);
         inputField.setText("");
+
+
     };
 
     /**
@@ -159,7 +182,7 @@ public class Window extends JFrame {
      */
     private Window() {
         super();
-
+        
         lastOutput = "";
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -167,6 +190,7 @@ public class Window extends JFrame {
 
         inputField = new JTextField();
         inputEnterButton = new JButton(CALC_STRING);
+        inputStopButton = new JButton(STOP_STRING);
 
         inputPanel = new JPanel();
         inputPanel.setLayout(new BorderLayout());
