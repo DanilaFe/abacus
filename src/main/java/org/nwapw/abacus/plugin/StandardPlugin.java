@@ -203,11 +203,12 @@ public class StandardPlugin extends Plugin {
         private NumberInterface getLogPartialSum(NumberInterface x) {
             NumberInterface maxError = getMaxError(x);
             x = x.subtract(NaiveNumber.ONE.promoteTo(x.getClass())); //Terms used are for log(x+1).
-            NumberInterface currentTerm = x, sum = x;
+            NumberInterface currentNumerator = x, currentTerm = x, sum = x;
             int n = 1;
             while (FUNCTION_ABS.apply(currentTerm).compareTo(maxError) > 0) {
                 n++;
-                currentTerm = currentTerm.multiply(x).multiply((new NaiveNumber(n - 1)).promoteTo(x.getClass())).divide((new NaiveNumber(n)).promoteTo(x.getClass())).negate();
+                currentNumerator = currentNumerator.multiply(x).negate();
+                currentTerm = currentNumerator.divide(new NaiveNumber(n).promoteTo(x.getClass()));
                 sum = sum.add(currentTerm);
             }
             return sum;
@@ -273,7 +274,7 @@ public class StandardPlugin extends Plugin {
      *
      * @param maxError Maximum error permissible (This should probably be positive.)
      * @param x        where the function is evaluated.
-     * @return the number of terms needed to evaluated the exponential function.
+     * @return the number of terms needed to evaluate the exponential function.
      */
     private static int getNTermsExp(NumberInterface maxError, NumberInterface x) {
         //We need n such that |x^(n+1)| <= (n+1)! * maxError
