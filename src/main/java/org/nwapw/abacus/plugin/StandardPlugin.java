@@ -184,13 +184,6 @@ public class StandardPlugin extends Plugin {
                 while(left.compareTo(right) > 0);
                 return sum;
             }
-            /*boolean takeReciprocal = params[0].signum() == 1;
-            params[0] = FUNCTION_ABS.apply(params[0]).negate();
-            NumberInterface sum = sumSeries(params[0], StandardPlugin::getExpSeriesTerm, getNTermsExp(getMaxError(params[0]), params[0]));
-            if (takeReciprocal) {
-                sum = NaiveNumber.ONE.promoteTo(sum.getClass()).divide(sum);
-            }
-            return sum;*/
         }
     };
     /**
@@ -271,7 +264,7 @@ public class StandardPlugin extends Plugin {
         }
     };
     /**
-     * The square root function, sqrt(4) = 2
+     * The square root function.
      */
     public static final Function FUNCTION_SQRT = new Function() {
         @Override
@@ -287,39 +280,6 @@ public class StandardPlugin extends Plugin {
 
     public StandardPlugin(PluginManager manager) {
         super(manager);
-    }
-
-    /**
-     * Returns the nth term of the Taylor series (centered at 0) of e^x
-     *
-     * @param n the term required (n >= 0).
-     * @param x the real number at which the series is evaluated.
-     * @return the nth term of the series.
-     */
-    private static NumberInterface getExpSeriesTerm(int n, NumberInterface x) {
-        return x.intPow(n).divide(OP_FACTORIAL.getFunction().apply((new NaiveNumber(n)).promoteTo(x.getClass())));
-    }
-
-    /**
-     * Returns the number of terms needed to evaluate the exponential function (at x)
-     * such that the error is at most maxError.
-     *
-     * @param maxError Maximum error permissible (This should probably be positive.)
-     * @param x        where the function is evaluated.
-     * @return the number of terms needed to evaluate the exponential function.
-     */
-    private static int getNTermsExp(NumberInterface maxError, NumberInterface x) {
-        //We need n such that |x^(n+1)| <= (n+1)! * maxError
-        //The variables LHS and RHS refer to the above inequality.
-        int n = 0;
-        x = FUNCTION_ABS.apply(x);
-        NumberInterface LHS = x, RHS = maxError;
-        while (LHS.compareTo(RHS) > 0) {
-            n++;
-            LHS = LHS.multiply(x);
-            RHS = RHS.multiply(new NaiveNumber(n + 1).promoteTo(RHS.getClass()));
-        }
-        return n;
     }
 
     /**
