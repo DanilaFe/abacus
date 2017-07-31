@@ -80,6 +80,12 @@ public interface NumberInterface {
     int signum();
 
     /**
+     * Returns the least integer greater than or equal to the number.
+     * @return the least integer >= the number, if int can hold the value.
+     */
+    int ceiling();
+
+    /**
      * Promotes this class to another number class.
      *
      * @param toClass the class to promote to.
