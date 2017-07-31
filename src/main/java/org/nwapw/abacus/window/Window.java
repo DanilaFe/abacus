@@ -247,4 +247,9 @@ public class Window extends JFrame {
         });
     }
 
+    @Override
+    public void setVisible(boolean b) {
+        super.setVisible(b);
+        if(b) inputField.requestFocusInWindow();
+    }
 }
