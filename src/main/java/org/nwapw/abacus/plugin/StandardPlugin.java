@@ -142,7 +142,7 @@ public class StandardPlugin extends Plugin {
         }
     };
     /**
-     * The exponentiation function, exp(1) = e^1 = 2.71
+     * The exponential function, exp(1) = e^1 = 2.71...
      */
     public static final Function FUNCTION_EXP = new Function() {
         @Override
