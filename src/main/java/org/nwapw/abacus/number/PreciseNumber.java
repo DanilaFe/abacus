@@ -1,6 +1,7 @@
 package org.nwapw.abacus.number;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 
 public class PreciseNumber implements NumberInterface {
@@ -49,7 +50,7 @@ public class PreciseNumber implements NumberInterface {
 
     @Override
     public NumberInterface multiply(NumberInterface multiplier) {
-        return new PreciseNumber(value.multiply(((PreciseNumber) multiplier).value));
+        return new PreciseNumber(this.value.multiply(((PreciseNumber) multiplier).value));
     }
 
     @Override
@@ -92,6 +93,11 @@ public class PreciseNumber implements NumberInterface {
     @Override
     public int signum() {
         return value.signum();
+    }
+
+    @Override
+    public int ceiling() {
+        return (int) Math.ceil(value.doubleValue());
     }
 
     @Override
