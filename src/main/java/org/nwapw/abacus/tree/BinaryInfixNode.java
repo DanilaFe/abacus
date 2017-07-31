@@ -18,25 +18,28 @@ public class BinaryInfixNode extends TreeNode {
      */
     private TreeNode right;
 
-    private BinaryInfixNode() {}
+    private BinaryInfixNode() {
+    }
 
     /**
      * Creates a new operation node with the given operation
      * and no child nodes.
+     *
      * @param operation the operation.
      */
-    public BinaryInfixNode(String operation){
+    public BinaryInfixNode(String operation) {
         this(operation, null, null);
     }
 
     /**
      * Creates a new operation node with the given operation
      * and child nodes.
+     *
      * @param operation the operation.
-     * @param left the left node of the expression.
-     * @param right the right node of the expression.
+     * @param left      the left node of the expression.
+     * @param right     the right node of the expression.
      */
-    public BinaryInfixNode(String operation, TreeNode left, TreeNode right){
+    public BinaryInfixNode(String operation, TreeNode left, TreeNode right) {
         this.operation = operation;
         this.left = left;
         this.right = right;
@@ -44,6 +47,7 @@ public class BinaryInfixNode extends TreeNode {
 
     /**
      * Gets the operation in this node.
+     *
      * @return the operation in this node.
      */
     public String getOperation() {
@@ -52,6 +56,7 @@ public class BinaryInfixNode extends TreeNode {
 
     /**
      * Gets the left sub-expression of this node.
+     *
      * @return the left node.
      */
     public TreeNode getLeft() {
@@ -60,6 +65,7 @@ public class BinaryInfixNode extends TreeNode {
 
     /**
      * Sets the left sub-expression of this node.
+     *
      * @param left the sub-expression to apply.
      */
     public void setLeft(TreeNode left) {
@@ -68,6 +74,7 @@ public class BinaryInfixNode extends TreeNode {
 
     /**
      * Gets the right sub-expression of this node.
+     *
      * @return the right node.
      */
     public TreeNode getRight() {
@@ -76,6 +83,7 @@ public class BinaryInfixNode extends TreeNode {
 
     /**
      * Sets the right sub-expression of this node.
+     *
      * @param right the sub-expression to apply.
      */
     public void setRight(TreeNode right) {
@@ -86,7 +94,7 @@ public class BinaryInfixNode extends TreeNode {
     public <T> T reduce(Reducer<T> reducer) {
         T leftReduce = left.reduce(reducer);
         T rightReduce = right.reduce(reducer);
-        if(leftReduce == null || rightReduce == null) return null;
+        if (leftReduce == null || rightReduce == null) return null;
         return reducer.reduceNode(this, leftReduce, rightReduce);
     }
 

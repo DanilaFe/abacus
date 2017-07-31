@@ -2,6 +2,7 @@ package org.nwapw.abacus.lexing.pattern;
 
 /**
  * A node that matches a single value.
+ *
  * @param <T> the type that's used to tell which pattern this node belongs to.
  */
 public class ValueNode<T> extends PatternNode<T> {
@@ -13,9 +14,10 @@ public class ValueNode<T> extends PatternNode<T> {
 
     /**
      * Creates a new node that matches the given character.
+     *
      * @param value
      */
-    public ValueNode(char value){
+    public ValueNode(char value) {
         this.value = value;
     }
 

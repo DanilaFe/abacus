@@ -16,9 +16,10 @@ public enum TokenType {
 
     /**
      * Creates a new token type with the given priority.
+     *
      * @param priority the priority of this token type.
      */
-    TokenType(int priority){
+    TokenType(int priority) {
         this.priority = priority;
     }
 

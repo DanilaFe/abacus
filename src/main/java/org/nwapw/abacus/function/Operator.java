@@ -24,11 +24,12 @@ public class Operator {
 
     /**
      * Creates a new operator with the given parameters.
+     *
      * @param associativity the associativity of the operator.
-     * @param precedence the precedence of the operator.
-     * @param function the function that the operator calls.
+     * @param precedence    the precedence of the operator.
+     * @param function      the function that the operator calls.
      */
-    public Operator(OperatorAssociativity associativity, OperatorType operatorType, int precedence, Function function){
+    public Operator(OperatorAssociativity associativity, OperatorType operatorType, int precedence, Function function) {
         this.associativity = associativity;
         this.type = operatorType;
         this.precedence = precedence;
@@ -37,6 +38,7 @@ public class Operator {
 
     /**
      * Gets the operator's associativity.
+     *
      * @return the associativity.
      */
     public OperatorAssociativity getAssociativity() {
@@ -45,6 +47,7 @@ public class Operator {
 
     /**
      * Gets the operator's type.
+     *
      * @return the type.
      */
     public OperatorType getType() {
@@ -53,6 +56,7 @@ public class Operator {
 
     /**
      * Gets the operator's precedence.
+     *
      * @return the precedence.
      */
     public int getPrecedence() {
@@ -61,6 +65,7 @@ public class Operator {
 
     /**
      * Gets the operator's function.
+     *
      * @return the function.
      */
     public Function getFunction() {

@@ -10,6 +10,7 @@ import java.util.List;
  * working with any parameters at all, and the generics
  * in this class are used only to ensure the tokenizer and parser
  * are of the same type.
+ *
  * @param <T> the type of tokens created by the tokenizer and used by the parser.
  */
 public class TreeBuilder<T> {
@@ -25,22 +26,24 @@ public class TreeBuilder<T> {
 
     /**
      * Create a new Tree Builder with the given tokenizer and parser
+     *
      * @param tokenizer the tokenizer to turn strings into tokens
-     * @param parser the parser to turn tokens into a tree
+     * @param parser    the parser to turn tokens into a tree
      */
-    public TreeBuilder(Tokenizer<T> tokenizer, Parser<T> parser){
+    public TreeBuilder(Tokenizer<T> tokenizer, Parser<T> parser) {
         this.tokenizer = tokenizer;
         this.parser = parser;
     }
 
     /**
      * Parse the given string into a tree.
+     *
      * @param input the string to parse into a tree.
      * @return the resulting tree.
      */
-    public TreeNode fromString(String input){
+    public TreeNode fromString(String input) {
         List<T> tokens = tokenizer.tokenizeString(input);
-        if(tokens == null) return null;
+        if (tokens == null) return null;
         return parser.constructTree(tokens);
     }
 

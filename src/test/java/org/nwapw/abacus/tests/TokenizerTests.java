@@ -64,17 +64,17 @@ public class TokenizerTests {
 
     @Test
     public void testInteger() {
-        assertTokensMatch(lexerTokenizer.tokenizeString("11"), new TokenType[]{ TokenType.NUM } );
+        assertTokensMatch(lexerTokenizer.tokenizeString("11"), new TokenType[]{TokenType.NUM});
     }
 
     @Test
     public void testLeadingZeroDecimal() {
-        assertTokensMatch(lexerTokenizer.tokenizeString("0.1"), new TokenType[]{ TokenType.NUM } );
+        assertTokensMatch(lexerTokenizer.tokenizeString("0.1"), new TokenType[]{TokenType.NUM});
     }
 
     @Test
     public void testNonLeadingDecimal() {
-        assertTokensMatch(lexerTokenizer.tokenizeString(".1"), new TokenType[]{ TokenType.NUM } );
+        assertTokensMatch(lexerTokenizer.tokenizeString(".1"), new TokenType[]{TokenType.NUM});
     }
 
     @Test
@@ -102,7 +102,7 @@ public class TokenizerTests {
     }
 
     @Test
-    public void testOperatorParsing(){
+    public void testOperatorParsing() {
         TokenType[] types = {
                 TokenType.NUM,
                 TokenType.OP,
@@ -112,7 +112,7 @@ public class TokenizerTests {
     }
 
     @Test
-    public void testSanitizedOperators(){
+    public void testSanitizedOperators() {
         TokenType[] types = {
                 TokenType.NUM,
                 TokenType.OP,

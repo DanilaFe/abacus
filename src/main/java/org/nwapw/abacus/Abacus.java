@@ -57,7 +57,7 @@ public class Abacus {
     /**
      * Creates a new instance of the Abacus calculator.
      */
-    public Abacus(){
+    public Abacus() {
         pluginManager = new PluginManager();
         numberReducer = new NumberReducer(this);
         configuration = new ConfigurationObject(CONFIG_FILE);
@@ -78,8 +78,19 @@ public class Abacus {
         pluginManager.load();
     }
 
+    public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException | UnsupportedLookAndFeelException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        new Window(new Abacus()).setVisible(true);
+    }
+
     /**
      * Gets the current tree builder.
+     *
      * @return the main tree builder in this abacus instance.
      */
     public TreeBuilder getTreeBuilder() {
@@ -88,6 +99,7 @@ public class Abacus {
 
     /**
      * Gets the current plugin manager,
+     *
      * @return the plugin manager in this abacus instance.
      */
     public PluginManager getPluginManager() {
@@ -97,6 +109,7 @@ public class Abacus {
     /**
      * Get the reducer that is responsible for transforming
      * an expression into a number.
+     *
      * @return the number reducer in this abacus instance.
      */
     public NumberReducer getNumberReducer() {
@@ -105,6 +118,7 @@ public class Abacus {
 
     /**
      * Gets the configuration object associated with this instance.
+     *
      * @return the configuration object.
      */
     public ConfigurationObject getConfiguration() {
@@ -114,32 +128,35 @@ public class Abacus {
     /**
      * Parses a string into a tree structure using the main
      * tree builder.
+     *
      * @param input the input string to parse
      * @return the resulting tree, null if the tree builder or the produced tree are null.
      */
-    public TreeNode parseString(String input){
+    public TreeNode parseString(String input) {
         return treeBuilder.fromString(input);
     }
 
     /**
      * Evaluates the given tree using the main
      * number reducer.
+     *
      * @param tree the tree to reduce, must not be null.
      * @return the resulting number, or null of the reduction failed.
      */
-    public NumberInterface evaluateTree(TreeNode tree){
+    public NumberInterface evaluateTree(TreeNode tree) {
         return tree.reduce(numberReducer);
     }
 
     /**
      * Creates a number from a string.
+     *
      * @param numberString the string to create the number from.
      * @return the resulting number.
      */
-    public NumberInterface numberFromString(String numberString){
+    public NumberInterface numberFromString(String numberString) {
         Class<? extends NumberInterface> toInstantiate =
                 pluginManager.numberFor(configuration.getNumberImplementation());
-        if(toInstantiate == null) toInstantiate = DEFAULT_NUMBER;
+        if (toInstantiate == null) toInstantiate = DEFAULT_NUMBER;
 
         try {
             return toInstantiate.getConstructor(String.class).newInstance(numberString);
@@ -147,15 +164,5 @@ public class Abacus {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public static void main(String[] args){
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException | InstantiationException | UnsupportedLookAndFeelException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-
-        new Window(new Abacus()).setVisible(true);
     }
 }
