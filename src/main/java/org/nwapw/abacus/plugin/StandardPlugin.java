@@ -8,6 +8,8 @@ import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.number.PreciseNumber;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.function.BiFunction;
 
 /**
@@ -15,6 +17,8 @@ import java.util.function.BiFunction;
  * the calculator.
  */
 public class StandardPlugin extends Plugin {
+
+    private static HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>> factorialLists = new HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>>();
 
     /**
      * The addition operator, +
@@ -152,17 +156,45 @@ public class StandardPlugin extends Plugin {
 
         @Override
         protected NumberInterface applyInternal(NumberInterface[] params) {
-            boolean takeReciprocal = params[0].signum() == -1;
-            params[0] = FUNCTION_ABS.apply(params[0]);
+            NumberInterface maxError = getMaxError(params[0]);
+            int n = 0;
+            if(params[0].signum() <= 0){
+                NumberInterface currentTerm = NaiveNumber.ONE.promoteTo(params[0].getClass()), sum = currentTerm;
+                while(FUNCTION_ABS.apply(currentTerm).compareTo(maxError) > 0){
+                    n++;
+                    currentTerm = currentTerm.multiply(params[0]).divide((new NaiveNumber(n)).promoteTo(params[0].getClass()));
+                    sum = sum.add(currentTerm);
+                }
+                return sum;
+            }
+            else{
+                //We need n such that x^(n+1) * 3^ceil(x) <= maxError * (n+1)!.
+                //right and left refer to lhs and rhs in the above inequality.
+                NumberInterface sum = NaiveNumber.ONE.promoteTo(params[0].getClass());
+                NumberInterface nextTerm = params[0];
+                NumberInterface left = params[0].multiply(new NaiveNumber(3).promoteTo(params[0].getClass()).intPow(params[0].ceiling())), right = maxError;
+                do{
+                    sum = sum.add(nextTerm);
+                    n++;
+                    NumberInterface nextN = new NaiveNumber(n+1).promoteTo(params[0].getClass());
+                    nextTerm = nextTerm.multiply(params[0]).divide(nextN);
+                    left = left.multiply(params[0]);
+                    right = right.multiply(nextN);
+                }
+                while(left.compareTo(right) > 0);
+                return sum;
+            }
+            /*boolean takeReciprocal = params[0].signum() == 1;
+            params[0] = FUNCTION_ABS.apply(params[0]).negate();
             NumberInterface sum = sumSeries(params[0], StandardPlugin::getExpSeriesTerm, getNTermsExp(getMaxError(params[0]), params[0]));
             if (takeReciprocal) {
                 sum = NaiveNumber.ONE.promoteTo(sum.getClass()).divide(sum);
             }
-            return sum;
+            return sum;*/
         }
     };
     /**
-     * The natural log function, ln(exp(1)) = 1
+     * The natural log function.
      */
     public static final Function FUNCTION_LN = new Function() {
         @Override
@@ -337,6 +369,21 @@ public class StandardPlugin extends Plugin {
     @Override
     public void onDisable() {
 
+    }
+
+    public static NumberInterface factorial(Class<? extends NumberInterface> numberClass, int n){
+        if(!factorialLists.containsKey(numberClass)){
+            factorialLists.put(numberClass, new ArrayList<NumberInterface>());
+            factorialLists.get(numberClass).add(NaiveNumber.ONE.promoteTo(numberClass));
+            factorialLists.get(numberClass).add(NaiveNumber.ONE.promoteTo(numberClass));
+        }
+        ArrayList<NumberInterface> list = factorialLists.get(numberClass);
+        if(n >= list.size()){
+            while(list.size() < n + 16){
+                list.add(list.get(list.size()-1).multiply(new NaiveNumber(list.size()).promoteTo(numberClass)));
+            }
+        }
+        return list.get(n);
     }
 
 }
