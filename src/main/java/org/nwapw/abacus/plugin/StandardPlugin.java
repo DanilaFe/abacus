@@ -183,7 +183,7 @@ public class StandardPlugin extends Plugin {
                     //System.out.println(left + ", " + right);
                 }
                 while(left.compareTo(right) > 0);
-                System.out.println(n+1);
+                //System.out.println(n+1);
                 return sum;
             }
         }
