@@ -24,7 +24,7 @@ public class Window extends JFrame {
     private static final String NUMBER_SYSTEM_LABEL = "Number Type:";
     private static final String FUNCTION_LABEL = "Functions:";
     private static final String STOP_STRING = "Stop";
-    private static final String STOPPED_TEXT = "Stop";
+    private static final String STOPPED_TEXT = "Stopped";
     /**
      * Array of Strings to which the "calculate" button's text
      * changes. For instance, in the graph tab, the name will
@@ -119,43 +119,85 @@ public class Window extends JFrame {
      * The list of functions available to the user.
      */
     private JComboBox<String> functionList;
-
+    /**
+     * Thread used for calculations
+     */
+    private Thread calculateThread;
+    /**
+     * Check if currently calculating
+     */
+    private boolean calculating;
+    private int count;
+    //private Object monitor;
     /**
      * Action listener that causes the input to be evaluated.
      */
+   //*
     private ActionListener stopListener = (event) -> {
-        contComputation=false;
-    };
-    private ActionListener evaluateListener = (event) -> {
-        contComputation = true;
-        TreeNode parsedExpression = abacus.parseString(inputField.getText());
-        if(contComputation) {
-            if (parsedExpression == null) {
-                lastOutputArea.setText(SYNTAX_ERR_STRING);
-                return;
+        //contComputation=false;
+        //Long pause = Long.MAX_VALUE;
+        //System.out.println(Thread.currentThread().getName());
+        //System.out.println(calculateThread.getName());
+        //calculateThread.suspend();
+        System.out.println(count++);
+        calculating = false;
+        /*
+        synchronized(calculateThread) {
+            try {
+                calculateThread.wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
-        NumberInterface numberInterface = null;
-        if(contComputation)
-            numberInterface = abacus.evaluateTree(parsedExpression);
-        if(contComputation) {
-            if (numberInterface == null) {
-                lastOutputArea.setText(EVAL_ERR_STRING);
-                return;
-        }}
-        if(contComputation)
-            lastOutput = numberInterface.toString();
-        if(contComputation)
-            historyModel.addEntry(new HistoryTableModel.HistoryEntry(inputField.getText(), parsedExpression, lastOutput));
-        if(contComputation)
-            historyTable.invalidate();
-        if(contComputation)
-            lastOutputArea.setText(lastOutput);
-        else
-            lastOutputArea.setText(STOPPED_TEXT);
-        inputField.setText("");
+        //*/
+    };//*/
+    private ActionListener evaluateListener = (event) -> {
+        //contComputation = true;
+        Runnable calculate = new Runnable() {
+            public void run() {
+                boolean skip = false;
+                calculating = true;
+                TreeNode parsedExpression = null;
 
 
+                parsedExpression = abacus.parseString(inputField.getText());
+                if (parsedExpression == null) {
+                    lastOutputArea.setText(SYNTAX_ERR_STRING);
+                    skip = true;
+                }
+                /*
+                try {
+                        Thread.currentThread().sleep(9999);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (IllegalMonitorStateException e){
+                    e.printStackTrace();
+                }
+                //*/
+                //NumberInterface numberInterface = null;
+
+                if(!skip){
+                    NumberInterface numberInterface = abacus.evaluateTree(parsedExpression);
+                    if (numberInterface == null) {
+                        lastOutputArea.setText(EVAL_ERR_STRING);
+                        return;
+                    }
+                    if(calculateThread.equals(Thread.currentThread())) {
+                        lastOutput = numberInterface.toString();
+                        historyModel.addEntry(new HistoryTableModel.HistoryEntry(inputField.getText(), parsedExpression, lastOutput));
+                        historyTable.invalidate();
+                        lastOutputArea.setText(lastOutput);
+                        inputField.setText("");
+                        calculating = false;
+                    }
+                }
+            }
+        };
+        if(!calculating) {
+            calculateThread = new Thread(calculate);
+            calculateThread.setName("a-"+System.currentTimeMillis());
+            calculateThread.start();
+        }
     };
 
     /**
@@ -182,7 +224,9 @@ public class Window extends JFrame {
      */
     private Window() {
         super();
-        
+
+        contComputation = true;
+
         lastOutput = "";
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -194,8 +238,9 @@ public class Window extends JFrame {
 
         inputPanel = new JPanel();
         inputPanel.setLayout(new BorderLayout());
-        inputPanel.add(inputField, BorderLayout.CENTER);
-        inputPanel.add(inputEnterButton, BorderLayout.SOUTH);
+        inputPanel.add(inputStopButton, BorderLayout.SOUTH);
+        inputPanel.add(inputField, BorderLayout.NORTH);
+        inputPanel.add(inputEnterButton, BorderLayout.CENTER);
 
         historyModel = new HistoryTableModel();
         historyTable = new JTable(historyModel);
@@ -232,6 +277,8 @@ public class Window extends JFrame {
         settingsPanel.add(numberSystemPanel);
         settingsPanel.add(functionSelectPanel);
 
+        calculating = false;
+
         pane = new JTabbedPane();
         pane.add("Calculator", calculationPanel);
         pane.add("Settings", settingsPanel);
@@ -246,10 +293,12 @@ public class Window extends JFrame {
             for (ActionListener removingListener : inputEnterButton.getActionListeners()) {
                 inputEnterButton.removeActionListener(removingListener);
                 inputField.removeActionListener(removingListener);
+                inputStopButton.removeActionListener(removingListener);
             }
             if (listener != null) {
                 inputEnterButton.addActionListener(listener);
                 inputField.addActionListener(listener);
+                inputStopButton.addActionListener(listener);
             }
         });
         add(pane, BorderLayout.CENTER);
@@ -257,6 +306,7 @@ public class Window extends JFrame {
 
         inputEnterButton.addActionListener(evaluateListener);
         inputField.addActionListener(evaluateListener);
+        inputStopButton.addActionListener(stopListener);
         historyTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
