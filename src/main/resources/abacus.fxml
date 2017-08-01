@@ -12,6 +12,15 @@
         <TabPane>
             <Tab text="Calculator" closable="false">
                 <BorderPane>
+                    <center>
+                        <TableView fx:id="historyTable">
+                            <columns>
+                                <TableColumn fx:id="inputColumn" text="Input" sortable="false"/>
+                                <TableColumn fx:id="parsedColumn" text="Parsed" sortable="false"/>
+                                <TableColumn fx:id="outputColumn" text="Output" sortable="false"/>
+                            </columns>
+                        </TableView>
+                    </center>
                     <bottom>
                         <VBox>
                             <ScrollPane prefHeight="50" vbarPolicy="NEVER">

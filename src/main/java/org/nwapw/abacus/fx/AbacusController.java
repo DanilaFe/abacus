@@ -4,6 +4,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import org.nwapw.abacus.Abacus;
@@ -15,6 +17,14 @@ public class AbacusController {
     private static final String ERR_SYNTAX = "Syntax Error";
     private static final String ERR_EVAL = "Evaluation Error";
 
+    @FXML
+    private TableView<HistoryModel> historyTable;
+    @FXML
+    private TableColumn<HistoryModel, String> inputColumn;
+    @FXML
+    private TableColumn<HistoryModel, String> parsedColumn;
+    @FXML
+    private TableColumn<HistoryModel, String> outputColumn;
     @FXML
     private Text outputText;
     @FXML
@@ -30,6 +40,10 @@ public class AbacusController {
     public void initialize(){
         abacus = new Abacus();
         historyData = FXCollections.observableArrayList();
+        historyTable.setItems(historyData);
+        inputColumn.setCellValueFactory(cell -> cell.getValue().inputProperty());
+        parsedColumn.setCellValueFactory(cell -> cell.getValue().parsedProperty());
+        outputColumn.setCellValueFactory(cell -> cell.getValue().outputProperty());
     }
 
     @FXML
@@ -47,8 +61,11 @@ public class AbacusController {
             inputButton.setDisable(false);
             return;
         }
-        inputButton.setDisable(false);
         outputText.setText(evaluatedNumber.toString());
+        historyData.add(new HistoryModel(inputField.getText(), constructedTree.toString(), evaluatedNumber.toString()));
+
+        inputButton.setDisable(false);
+        inputField.setText("");
     }
 
 }
