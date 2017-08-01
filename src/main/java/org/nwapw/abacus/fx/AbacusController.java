@@ -1,5 +1,7 @@
 package org.nwapw.abacus.fx;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -20,11 +22,14 @@ public class AbacusController {
     @FXML
     private Button inputButton;
 
+    private ObservableList<HistoryModel> historyData;
+
     private Abacus abacus;
 
     @FXML
     public void initialize(){
         abacus = new Abacus();
+        historyData = FXCollections.observableArrayList();
     }
 
     @FXML
@@ -37,7 +42,7 @@ public class AbacusController {
             return;
         }
         NumberInterface evaluatedNumber = abacus.evaluateTree(constructedTree);
-        if(constructedTree == null){
+        if(evaluatedNumber == null){
             outputText.setText(ERR_EVAL);
             inputButton.setDisable(false);
             return;
