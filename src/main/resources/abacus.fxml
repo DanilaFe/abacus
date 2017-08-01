@@ -2,14 +2,28 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
 
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.nwapw.abacus.fx.AbacusController">
     <center>
         <TabPane>
-            <Tab text="Calculator" closable="false"/>
+            <Tab text="Calculator" closable="false">
+                <BorderPane>
+                    <bottom>
+                        <VBox>
+                            <ScrollPane prefHeight="50" vbarPolicy="NEVER">
+                                <padding><Insets top="10" bottom="10" left="10" right="10"/></padding>
+                            </ScrollPane>
+                            <TextField text="Input"/>
+                            <Button text="Calculate" maxWidth="Infinity"/>
+                        </VBox>
+                    </bottom>
+                </BorderPane>
+            </Tab>
             <Tab text="Settings" closable="false"/>
         </TabPane>
     </center>
+    
 </BorderPane>
