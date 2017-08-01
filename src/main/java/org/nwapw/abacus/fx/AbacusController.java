@@ -3,14 +3,13 @@ package org.nwapw.abacus.fx;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.text.Text;
+import javafx.util.Callback;
 import org.nwapw.abacus.Abacus;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.tree.TreeNode;
+
 
 public class AbacusController {
 
@@ -38,12 +37,18 @@ public class AbacusController {
 
     @FXML
     public void initialize(){
+        Callback<TableColumn<HistoryModel, String>, TableCell<HistoryModel, String>> cellFactory =
+                param -> new CopyableCell<>();
+
         abacus = new Abacus();
         historyData = FXCollections.observableArrayList();
         historyTable.setItems(historyData);
         historyTable.getSelectionModel().setCellSelectionEnabled(true);
+        inputColumn.setCellFactory(cellFactory);
         inputColumn.setCellValueFactory(cell -> cell.getValue().inputProperty());
+        parsedColumn.setCellFactory(cellFactory);
         parsedColumn.setCellValueFactory(cell -> cell.getValue().parsedProperty());
+        outputColumn.setCellFactory(cellFactory);
         outputColumn.setCellValueFactory(cell -> cell.getValue().outputProperty());
     }
 
