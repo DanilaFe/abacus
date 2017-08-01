@@ -1,9 +1,12 @@
 package org.nwapw.abacus.number;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 
+/**
+ * A number that uses a BigDecimal to store its value,
+ * leading to infinite possible precision.
+ */
 public class PreciseNumber implements NumberInterface {
 
     /**
