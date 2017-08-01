@@ -6,6 +6,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+/**
+ * The main application class for JavaFX responsible for loading
+ * and displaying the fxml file.
+ */
 public class AbacusApplication extends Application {
 
     @Override

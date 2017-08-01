@@ -11,9 +11,19 @@ import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.tree.TreeNode;
 
 
+/**
+ * The controller for the abacus FX UI, responsible
+ * for all the user interaction.
+ */
 public class AbacusController {
 
+    /**
+     * Constant string that is displayed if the text could not be lexed or parsed.
+     */
     private static final String ERR_SYNTAX = "Syntax Error";
+    /**
+     * Constant string that is displayed if the tree could not be reduced.
+     */
     private static final String ERR_EVAL = "Evaluation Error";
 
     @FXML
@@ -31,8 +41,15 @@ public class AbacusController {
     @FXML
     private Button inputButton;
 
+    /**
+     * The list of history entries, created by the users.
+     */
     private ObservableList<HistoryModel> historyData;
 
+    /**
+     * The abacus instance used for calculations and all
+     * other main processing code.
+     */
     private Abacus abacus;
 
     @FXML
