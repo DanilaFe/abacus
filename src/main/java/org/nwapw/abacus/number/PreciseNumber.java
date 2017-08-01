@@ -101,6 +101,11 @@ public class PreciseNumber implements NumberInterface {
     }
 
     @Override
+    public int floor() {
+        return (int) Math.floor(value.doubleValue());
+    }
+
+    @Override
     public NumberInterface negate() {
         return new PreciseNumber(value.negate());
     }
