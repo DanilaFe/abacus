@@ -72,4 +72,12 @@ public class Configuration {
     public String getNumberImplementation() {
         return numberImplementation;
     }
+
+    /**
+     * Sets the number implementation for the configuration
+     * @param numberImplementation the number implementation.
+     */
+    public void setNumberImplementation(String numberImplementation) {
+        this.numberImplementation = numberImplementation;
+    }
 }

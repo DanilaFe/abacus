@@ -5,6 +5,8 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.GridPane?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.nwapw.abacus.fx.AbacusController">
@@ -39,7 +41,13 @@
                     </bottom>
                 </BorderPane>
             </Tab>
-            <Tab text="Settings" closable="false"/>
+            <Tab text="Settings" closable="false">
+                <GridPane hgap="10" vgap="10">
+                    <padding><Insets left="10" right="10" top="10" bottom="10"/></padding>
+                    <Label text="Number Implementation" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                    <ComboBox fx:id="numberImplementationBox" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                </GridPane>
+            </Tab>
         </TabPane>
     </center>
 
