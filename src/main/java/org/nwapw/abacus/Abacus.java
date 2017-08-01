@@ -1,6 +1,7 @@
 package org.nwapw.abacus;
 
 import org.nwapw.abacus.config.ConfigurationObject;
+import org.nwapw.abacus.fx.AbacusApplication;
 import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.parsing.LexerTokenizer;
@@ -11,9 +12,7 @@ import org.nwapw.abacus.plugin.PluginManager;
 import org.nwapw.abacus.plugin.StandardPlugin;
 import org.nwapw.abacus.tree.NumberReducer;
 import org.nwapw.abacus.tree.TreeNode;
-import org.nwapw.abacus.window.Window;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -79,13 +78,7 @@ public class Abacus {
     }
 
     public static void main(String[] args) {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException | InstantiationException | UnsupportedLookAndFeelException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-
-        new Window(new Abacus()).setVisible(true);
+        AbacusApplication.launch(AbacusApplication.class, args);
     }
 
     /**

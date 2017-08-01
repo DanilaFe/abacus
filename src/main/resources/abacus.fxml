@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.nwapw.abacus.fx.AbacusController">
+    <center>
+        <TabPane>
+            <Tab text="Calculator" closable="false">
+                <BorderPane>
+                    <center>
+                        <TableView fx:id="historyTable">
+                            <columnResizePolicy>
+                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                            </columnResizePolicy>
+                            <columns>
+                                <TableColumn fx:id="inputColumn" text="Input" sortable="false"/>
+                                <TableColumn fx:id="parsedColumn" text="Parsed" sortable="false"/>
+                                <TableColumn fx:id="outputColumn" text="Output" sortable="false"/>
+                            </columns>
+                        </TableView>
+                    </center>
+                    <bottom>
+                        <VBox>
+                            <ScrollPane prefHeight="50" vbarPolicy="NEVER">
+                                <padding>
+                                    <Insets top="10" bottom="10" left="10" right="10"/>
+                                </padding>
+                                <Text fx:id="outputText"/>
+                            </ScrollPane>
+                            <TextField fx:id="inputField" onAction="#performCalculation"/>
+                            <Button fx:id="inputButton" text="Calculate" maxWidth="Infinity"
+                                    onAction="#performCalculation"/>
+                        </VBox>
+                    </bottom>
+                </BorderPane>
+            </Tab>
+            <Tab text="Settings" closable="false"/>
+        </TabPane>
+    </center>
+
+</BorderPane>
