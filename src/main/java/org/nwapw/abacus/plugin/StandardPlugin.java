@@ -171,17 +171,19 @@ public class StandardPlugin extends Plugin {
                 //We need n such that x^(n+1) * 3^ceil(x) <= maxError * (n+1)!.
                 //right and left refer to lhs and rhs in the above inequality.
                 NumberInterface sum = NaiveNumber.ONE.promoteTo(params[0].getClass());
-                NumberInterface nextTerm = params[0];
-                NumberInterface left = params[0].multiply(new NaiveNumber(3).promoteTo(params[0].getClass()).intPow(params[0].ceiling())), right = maxError;
+                NumberInterface nextNumerator = params[0];
+                NumberInterface left = params[0].multiply((new NaiveNumber(3)).promoteTo(params[0].getClass()).intPow(params[0].ceiling())), right = maxError;
                 do{
-                    sum = sum.add(nextTerm);
+                    sum = sum.add(nextNumerator.divide(factorial(params[0].getClass(), n+1)));
                     n++;
-                    NumberInterface nextN = new NaiveNumber(n+1).promoteTo(params[0].getClass());
-                    nextTerm = nextTerm.multiply(params[0]).divide(nextN);
+                    nextNumerator = nextNumerator.multiply(params[0]);
                     left = left.multiply(params[0]);
+                    NumberInterface nextN = (new NaiveNumber(n+1)).promoteTo(params[0].getClass());
                     right = right.multiply(nextN);
+                    //System.out.println(left + ", " + right);
                 }
                 while(left.compareTo(right) > 0);
+                System.out.println(n+1);
                 return sum;
             }
         }
