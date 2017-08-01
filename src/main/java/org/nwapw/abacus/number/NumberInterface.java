@@ -86,6 +86,12 @@ public interface NumberInterface {
     int ceiling();
 
     /**
+     * Return the greatest integer less than or equal to the number.
+     * @return the greatest int >= the number, if int can hold the value.
+     */
+    int floor();
+
+    /**
      * Promotes this class to another number class.
      *
      * @param toClass the class to promote to.

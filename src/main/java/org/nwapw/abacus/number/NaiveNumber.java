@@ -99,6 +99,11 @@ public class NaiveNumber implements NumberInterface {
     }
 
     @Override
+    public int floor() {
+        return (int) Math.floor(value);
+    }
+
+    @Override
     public NumberInterface promoteTo(Class<? extends NumberInterface> toClass) {
         if (toClass == this.getClass()) return this;
         else if (toClass == PreciseNumber.class) {
