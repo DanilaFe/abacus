@@ -1,6 +1,6 @@
 package org.nwapw.abacus;
 
-import org.nwapw.abacus.config.ConfigurationObject;
+import org.nwapw.abacus.config.Configuration;
 import org.nwapw.abacus.fx.AbacusApplication;
 import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
@@ -46,7 +46,7 @@ public class Abacus {
     /**
      * The configuration loaded from a file.
      */
-    private ConfigurationObject configuration;
+    private Configuration configuration;
     /**
      * The tree builder used to construct a tree
      * from a string.
@@ -59,8 +59,8 @@ public class Abacus {
     public Abacus() {
         pluginManager = new PluginManager();
         numberReducer = new NumberReducer(this);
-        configuration = new ConfigurationObject(CONFIG_FILE);
-        configuration.save(CONFIG_FILE);
+        configuration = new Configuration(CONFIG_FILE);
+        configuration.saveTo(CONFIG_FILE);
         LexerTokenizer lexerTokenizer = new LexerTokenizer();
         ShuntingYardParser shuntingYardParser = new ShuntingYardParser(this);
         treeBuilder = new TreeBuilder<>(lexerTokenizer, shuntingYardParser);
@@ -114,7 +114,7 @@ public class Abacus {
      *
      * @return the configuration object.
      */
-    public ConfigurationObject getConfiguration() {
+    public Configuration getConfiguration() {
         return configuration;
     }
 
