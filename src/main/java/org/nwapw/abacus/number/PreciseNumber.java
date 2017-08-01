@@ -45,7 +45,7 @@ public class PreciseNumber implements NumberInterface {
 
     @Override
     public int getMaxPrecision() {
-        return 54;
+        return 65;
     }
 
     @Override
@@ -115,7 +115,7 @@ public class PreciseNumber implements NumberInterface {
 
     @Override
     public String toString() {
-        BigDecimal rounded = value.setScale(getMaxPrecision() - 4, RoundingMode.HALF_UP);
+        BigDecimal rounded = value.setScale(getMaxPrecision() - 15, RoundingMode.HALF_UP);
         return rounded.stripTrailingZeros().toPlainString();
     }
 }
