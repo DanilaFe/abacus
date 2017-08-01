@@ -14,6 +14,9 @@
                 <BorderPane>
                     <center>
                         <TableView fx:id="historyTable">
+                            <columnResizePolicy>
+                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                            </columnResizePolicy>
                             <columns>
                                 <TableColumn fx:id="inputColumn" text="Input" sortable="false"/>
                                 <TableColumn fx:id="parsedColumn" text="Parsed" sortable="false"/>
