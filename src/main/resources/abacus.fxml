@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
-
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
@@ -15,11 +15,14 @@
                     <bottom>
                         <VBox>
                             <ScrollPane prefHeight="50" vbarPolicy="NEVER">
-                                <padding><Insets top="10" bottom="10" left="10" right="10"/></padding>
+                                <padding>
+                                    <Insets top="10" bottom="10" left="10" right="10"/>
+                                </padding>
                                 <Text fx:id="outputText"/>
                             </ScrollPane>
                             <TextField fx:id="inputField" onAction="#performCalculation"/>
-                            <Button fx:id="inputButton" text="Calculate" maxWidth="Infinity" onAction="#performCalculation"/>
+                            <Button fx:id="inputButton" text="Calculate" maxWidth="Infinity"
+                                    onAction="#performCalculation"/>
                         </VBox>
                     </bottom>
                 </BorderPane>
