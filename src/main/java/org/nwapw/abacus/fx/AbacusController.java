@@ -41,6 +41,7 @@ public class AbacusController {
         abacus = new Abacus();
         historyData = FXCollections.observableArrayList();
         historyTable.setItems(historyData);
+        historyTable.getSelectionModel().setCellSelectionEnabled(true);
         inputColumn.setCellValueFactory(cell -> cell.getValue().inputProperty());
         parsedColumn.setCellValueFactory(cell -> cell.getValue().parsedProperty());
         outputColumn.setCellValueFactory(cell -> cell.getValue().outputProperty());
