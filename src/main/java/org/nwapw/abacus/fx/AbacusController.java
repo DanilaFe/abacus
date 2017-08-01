@@ -40,6 +40,8 @@ public class AbacusController {
     private TextField inputField;
     @FXML
     private Button inputButton;
+    @FXML
+    private ComboBox<String> numberImplementationBox;
 
     /**
      * The list of history entries, created by the users.
@@ -50,6 +52,8 @@ public class AbacusController {
      * The abacus instance used for calculations and all
      * other main processing code.
      */
+    private ObservableList<String> numberImplementationOptions;
+
     private Abacus abacus;
 
     @FXML
@@ -57,9 +61,15 @@ public class AbacusController {
         Callback<TableColumn<HistoryModel, String>, TableCell<HistoryModel, String>> cellFactory =
                 param -> new CopyableCell<>();
 
-        abacus = new Abacus();
         historyData = FXCollections.observableArrayList();
         historyTable.setItems(historyData);
+        numberImplementationOptions = FXCollections.observableArrayList();
+        numberImplementationBox.setItems(numberImplementationOptions);
+        numberImplementationBox.valueProperty().addListener((observable, oldValue, newValue)
+                -> {
+            abacus.getConfiguration().setNumberImplementation(newValue);
+            abacus.getConfiguration().saveTo(Abacus.CONFIG_FILE);
+        });
         historyTable.getSelectionModel().setCellSelectionEnabled(true);
         inputColumn.setCellFactory(cellFactory);
         inputColumn.setCellValueFactory(cell -> cell.getValue().inputProperty());
@@ -67,6 +77,12 @@ public class AbacusController {
         parsedColumn.setCellValueFactory(cell -> cell.getValue().parsedProperty());
         outputColumn.setCellFactory(cellFactory);
         outputColumn.setCellValueFactory(cell -> cell.getValue().outputProperty());
+
+        abacus = new Abacus();
+        numberImplementationOptions.addAll(abacus.getPluginManager().getAllNumbers());
+        String actualImplementation = abacus.getConfiguration().getNumberImplementation();
+        String toSelect = (numberImplementationOptions.contains(actualImplementation)) ? actualImplementation : "naive";
+        numberImplementationBox.getSelectionModel().select(toSelect);
     }
 
     @FXML
