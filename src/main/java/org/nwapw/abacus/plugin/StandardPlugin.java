@@ -282,6 +282,9 @@ public class StandardPlugin extends Plugin {
         }
     };
 
+    /**
+     * The sine function (the argument is interpreted in radians).
+     */
     public static final Function FUNCTION_SIN = new Function() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
@@ -359,6 +362,13 @@ public class StandardPlugin extends Plugin {
 
     }
 
+    /**
+     * A factorial function that uses memoization for each number class; it efficiently
+     * computes factorials of non-negative integers.
+     * @param numberClass type of number to return.
+     * @param n non-negative integer.
+     * @return a number of numClass with value n factorial.
+     */
     public static NumberInterface factorial(Class<? extends NumberInterface> numberClass, int n){
         if(!factorialLists.containsKey(numberClass)){
             factorialLists.put(numberClass, new ArrayList<NumberInterface>());
