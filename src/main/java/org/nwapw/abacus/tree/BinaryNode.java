@@ -3,7 +3,7 @@ package org.nwapw.abacus.tree;
 /**
  * A tree node that represents an operation being applied to two operands.
  */
-public class BinaryInfixNode extends TreeNode {
+public class BinaryNode extends TreeNode {
 
     /**
      * The operation being applied.
@@ -18,7 +18,7 @@ public class BinaryInfixNode extends TreeNode {
      */
     private TreeNode right;
 
-    private BinaryInfixNode() {
+    private BinaryNode() {
     }
 
     /**
@@ -27,7 +27,7 @@ public class BinaryInfixNode extends TreeNode {
      *
      * @param operation the operation.
      */
-    public BinaryInfixNode(String operation) {
+    public BinaryNode(String operation) {
         this(operation, null, null);
     }
 
@@ -39,7 +39,7 @@ public class BinaryInfixNode extends TreeNode {
      * @param left      the left node of the expression.
      * @param right     the right node of the expression.
      */
-    public BinaryInfixNode(String operation, TreeNode left, TreeNode right) {
+    public BinaryNode(String operation, TreeNode left, TreeNode right) {
         this.operation = operation;
         this.left = left;
         this.right = right;

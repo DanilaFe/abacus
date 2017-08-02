@@ -1,6 +1,6 @@
 package org.nwapw.abacus.tree;
 
-public class UnaryPrefixNode extends TreeNode {
+public class UnaryNode extends TreeNode {
 
     /**
      * The operation this node will apply.
@@ -16,7 +16,7 @@ public class UnaryPrefixNode extends TreeNode {
      *
      * @param operation the operation for this node.
      */
-    public UnaryPrefixNode(String operation) {
+    public UnaryNode(String operation) {
         this(operation, null);
     }
 
@@ -26,7 +26,7 @@ public class UnaryPrefixNode extends TreeNode {
      * @param operation the operation for this node.
      * @param applyTo   the node to apply the function to.
      */
-    public UnaryPrefixNode(String operation, TreeNode applyTo) {
+    public UnaryNode(String operation, TreeNode applyTo) {
         this.operation = operation;
         this.applyTo = applyTo;
     }
