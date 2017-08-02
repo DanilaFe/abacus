@@ -405,7 +405,7 @@ public class StandardPlugin extends Plugin {
             NumberInterface L = new NaiveNumber(13591409).promoteTo(numClass);
             NumberInterface X = M;
             NumberInterface sum = L;
-            int termsNeeded = C.getMaxPrecision()/13;
+            int termsNeeded = C.getMaxPrecision()/13 + 1;
 
             NumberInterface lSummand = new NaiveNumber(545140134).promoteTo(L.getClass());
             NumberInterface xMultiplier = new NaiveNumber(262537412).promoteTo(X.getClass())
@@ -420,9 +420,9 @@ public class StandardPlugin extends Plugin {
                         .divide(new NaiveNumber(Math.pow(i+1,3)).promoteTo(M.getClass()));
                 L = L.add(lSummand);
                 X = X.multiply(xMultiplier);
-                sum = sum.add(M.add(L).divide(X));
+                sum = sum.add(M.multiply(L).divide(X));
             }
-            piValues.put(numClass, NaiveNumber.ONE.promoteTo(numClass).divide(sum).multiply(C));
+            piValues.put(numClass, C.divide(sum));
         }
         return piValues.get(numClass);
     }
