@@ -293,13 +293,14 @@ public class StandardPlugin extends Plugin {
             NumberInterface pi = getPi(params[0].getClass());
             NumberInterface twoPi = pi.multiply(new NaiveNumber(2).promoteTo(pi.getClass()));
             NumberInterface theta = getSmallAngle(params[0]);
+            //System.out.println(theta);
             if(theta.compareTo(pi.multiply(new NaiveNumber(1.5).promoteTo(twoPi.getClass()))) >= 0){
                 theta = theta.subtract(twoPi);
             }
             else if(theta.compareTo(pi.divide(new NaiveNumber(2).promoteTo(pi.getClass()))) > 0){
                 theta = pi.subtract(theta);
             }
-            System.out.println(theta);
+            //System.out.println(theta);
             return sinTaylor(theta);
         }
     };
@@ -434,7 +435,7 @@ public class StandardPlugin extends Plugin {
     private static NumberInterface getSmallAngle(NumberInterface phi){
         NumberInterface twoPi = getPi(phi.getClass()).multiply(new NaiveNumber("2").promoteTo(phi.getClass()));
         NumberInterface theta = FUNCTION_ABS.apply(phi).subtract(twoPi
-        .multiply(FUNCTION_ABS.apply(phi).divide(twoPi))); //Now theta is in [0, 2pi).
+        .multiply(FUNCTION_ABS.apply(phi).divide(twoPi).floor())); //Now theta is in [0, 2pi).
         if(phi.signum() < 0){
             theta = twoPi.subtract(theta);
         }
