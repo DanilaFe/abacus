@@ -127,11 +127,11 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
                 TreeNode right = constructRecursive(matches);
                 TreeNode left = constructRecursive(matches);
                 if (left == null || right == null) return null;
-                else return new BinaryInfixNode(operator, left, right);
+                else return new BinaryNode(operator, left, right);
             } else {
                 TreeNode applyTo = constructRecursive(matches);
                 if (applyTo == null) return null;
-                else return new UnaryPrefixNode(operator, applyTo);
+                else return new UnaryNode(operator, applyTo);
             }
         } else if (matchType == TokenType.NUM) {
             return new NumberNode(abacus.numberFromString(match.getContent()));
