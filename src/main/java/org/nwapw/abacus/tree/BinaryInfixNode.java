@@ -1,5 +1,7 @@
 package org.nwapw.abacus.tree;
 
+import org.nwapw.abacus.Abacus;
+
 /**
  * A tree node that represents an operation being applied to two operands.
  */
@@ -17,6 +19,7 @@ public class BinaryInfixNode extends TreeNode {
      * The right node of the operation.
      */
     private TreeNode right;
+    private Abacus trace;
 
     private BinaryInfixNode() {
     }
@@ -27,8 +30,8 @@ public class BinaryInfixNode extends TreeNode {
      *
      * @param operation the operation.
      */
-    public BinaryInfixNode(String operation) {
-        this(operation, null, null);
+    public BinaryInfixNode(String operation,Abacus trace) {
+        this(operation, null, null,trace);
     }
 
     /**
@@ -39,10 +42,11 @@ public class BinaryInfixNode extends TreeNode {
      * @param left      the left node of the expression.
      * @param right     the right node of the expression.
      */
-    public BinaryInfixNode(String operation, TreeNode left, TreeNode right) {
+    public BinaryInfixNode(String operation, TreeNode left, TreeNode right,Abacus trace) {
         this.operation = operation;
         this.left = left;
         this.right = right;
+        this.trace = trace;
     }
 
     /**
@@ -92,10 +96,15 @@ public class BinaryInfixNode extends TreeNode {
 
     @Override
     public <T> T reduce(Reducer<T> reducer) {
-        T leftReduce = left.reduce(reducer);
-        T rightReduce = right.reduce(reducer);
-        if (leftReduce == null || rightReduce == null) return null;
-        return reducer.reduceNode(this, leftReduce, rightReduce);
+        if(!trace.getStop()) {
+            T leftReduce = left.reduce(reducer);
+
+            T rightReduce = right.reduce(reducer);
+            if (leftReduce == null || rightReduce == null) return null;
+            return reducer.reduceNode(this, leftReduce, rightReduce);
+        }
+        return null;
+
     }
 
     @Override

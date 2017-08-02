@@ -1,5 +1,6 @@
 package org.nwapw.abacus.parsing;
 
+import org.nwapw.abacus.Abacus;
 import org.nwapw.abacus.tree.TreeNode;
 
 import java.util.List;
@@ -41,10 +42,10 @@ public class TreeBuilder<T> {
      * @param input the string to parse into a tree.
      * @return the resulting tree.
      */
-    public TreeNode fromString(String input) {
+    public TreeNode fromString(String input,Abacus trace) {
         List<T> tokens = tokenizer.tokenizeString(input);
         if (tokens == null) return null;
-        return parser.constructTree(tokens);
+        return parser.constructTree(tokens,trace);
     }
 
 }

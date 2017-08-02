@@ -1,5 +1,7 @@
 package org.nwapw.abacus.tree;
 
+import org.nwapw.abacus.Abacus;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +18,7 @@ public class FunctionNode extends TreeNode {
      * The list of arguments to the function.
      */
     private List<TreeNode> children;
+    private Abacus trace;
 
     /**
      * Creates a function node with no function.
@@ -28,9 +31,10 @@ public class FunctionNode extends TreeNode {
      *
      * @param function the function name.
      */
-    public FunctionNode(String function) {
+    public FunctionNode(String function,Abacus trace) {
         this.function = function;
         children = new ArrayList<>();
+        this.trace = trace;
     }
 
     /**

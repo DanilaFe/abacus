@@ -34,6 +34,8 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
      */
     private Map<String, OperatorType> typeMap;
 
+    //private Abacus trace;
+
     /**
      * Creates a new Shunting Yard parser with the given Abacus instance.
      *
@@ -116,7 +118,8 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
      * @param matches the list of tokens from the source string.
      * @return the construct tree expression.
      */
-    public TreeNode constructRecursive(List<Match<TokenType>> matches) {
+    public TreeNode constructRecursive(List<Match<TokenType>> matches,Abacus trace) {
+        //this.trace = trace;
         if (matches.size() == 0) return null;
         Match<TokenType> match = matches.remove(0);
         TokenType matchType = match.getType();
@@ -124,22 +127,22 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
             String operator = match.getContent();
             OperatorType type = typeMap.get(operator);
             if (type == OperatorType.BINARY_INFIX) {
-                TreeNode right = constructRecursive(matches);
-                TreeNode left = constructRecursive(matches);
+                TreeNode right = constructRecursive(matches,trace);
+                TreeNode left = constructRecursive(matches,trace);
                 if (left == null || right == null) return null;
-                else return new BinaryInfixNode(operator, left, right);
+                else return new BinaryInfixNode(operator, left, right,trace);
             } else {
-                TreeNode applyTo = constructRecursive(matches);
+                TreeNode applyTo = constructRecursive(matches,trace);
                 if (applyTo == null) return null;
-                else return new UnaryPrefixNode(operator, applyTo);
+                else return new UnaryPrefixNode(operator, applyTo,trace);
             }
         } else if (matchType == TokenType.NUM) {
             return new NumberNode(abacus.numberFromString(match.getContent()));
         } else if (matchType == TokenType.FUNCTION) {
             String functionName = match.getContent();
-            FunctionNode node = new FunctionNode(functionName);
+            FunctionNode node = new FunctionNode(functionName,trace);
             while (!matches.isEmpty() && matches.get(0).getType() != TokenType.INTERNAL_FUNCTION_END) {
-                TreeNode argument = constructRecursive(matches);
+                TreeNode argument = constructRecursive(matches,trace);
                 if (argument == null) return null;
                 node.prependChild(argument);
             }
@@ -151,10 +154,10 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
     }
 
     @Override
-    public TreeNode constructTree(List<Match<TokenType>> tokens) {
+    public TreeNode constructTree(List<Match<TokenType>> tokens,Abacus trace) {
         tokens = intoPostfix(new ArrayList<>(tokens));
         Collections.reverse(tokens);
-        return constructRecursive(tokens);
+        return constructRecursive(tokens,trace);
     }
 
     @Override

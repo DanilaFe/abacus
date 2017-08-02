@@ -1,5 +1,7 @@
 package org.nwapw.abacus.tree;
 
+import org.nwapw.abacus.Abacus;
+
 public class UnaryPrefixNode extends TreeNode {
 
     /**
@@ -10,14 +12,15 @@ public class UnaryPrefixNode extends TreeNode {
      * The tree node to apply the operation to.
      */
     private TreeNode applyTo;
+    private Abacus trace;
 
     /**
      * Creates a new node with the given operation and no child.
      *
      * @param operation the operation for this node.
      */
-    public UnaryPrefixNode(String operation) {
-        this(operation, null);
+    public UnaryPrefixNode(String operation,Abacus trace) {
+        this(operation, null,trace);
     }
 
     /**
@@ -26,16 +29,20 @@ public class UnaryPrefixNode extends TreeNode {
      * @param operation the operation for this node.
      * @param applyTo   the node to apply the function to.
      */
-    public UnaryPrefixNode(String operation, TreeNode applyTo) {
+    public UnaryPrefixNode(String operation, TreeNode applyTo,Abacus trace) {
         this.operation = operation;
         this.applyTo = applyTo;
+        this.trace = trace;
     }
 
     @Override
     public <T> T reduce(Reducer<T> reducer) {
-        Object reducedChild = applyTo.reduce(reducer);
-        if (reducedChild == null) return null;
-        return reducer.reduceNode(this, reducedChild);
+        if(!trace.getStop()) {
+            Object reducedChild = applyTo.reduce(reducer);
+            if (reducedChild == null) return null;
+            return reducer.reduceNode(this, reducedChild);
+        }
+        return null;
     }
 
     /**

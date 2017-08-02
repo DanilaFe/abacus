@@ -53,7 +53,10 @@ public class Abacus {
      * from a string.
      */
     private TreeBuilder treeBuilder;
-
+    private Window window;
+    public boolean getStop(){
+        return window.getStop();
+    }
     /**
      * Creates a new instance of the Abacus calculator.
      */
@@ -133,7 +136,7 @@ public class Abacus {
      * @return the resulting tree, null if the tree builder or the produced tree are null.
      */
     public TreeNode parseString(String input) {
-        return treeBuilder.fromString(input);
+        return treeBuilder.fromString(input,this);
     }
 
     /**
@@ -164,5 +167,9 @@ public class Abacus {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void setWindow(Window window) {
+        this.window = window;
     }
 }

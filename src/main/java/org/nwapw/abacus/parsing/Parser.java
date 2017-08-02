@@ -1,5 +1,6 @@
 package org.nwapw.abacus.parsing;
 
+import org.nwapw.abacus.Abacus;
 import org.nwapw.abacus.tree.TreeNode;
 
 import java.util.List;
@@ -18,5 +19,5 @@ public interface Parser<T> {
      * @param tokens the tokens to construct a tree from.
      * @return the constructed tree, or null on error.
      */
-    public TreeNode constructTree(List<T> tokens);
+    public TreeNode constructTree(List<T> tokens,Abacus trace);
 }
