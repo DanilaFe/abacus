@@ -76,16 +76,12 @@ public class StandardPlugin extends Plugin {
     public static final Operator OP_DIVIDE = new Operator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 1, new Function() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
-            return params.length >= 1;
+            return params.length == 2;
         }
 
         @Override
         protected NumberInterface applyInternal(NumberInterface[] params) {
-            NumberInterface product = params[0];
-            for (int i = 1; i < params.length; i++) {
-                product = product.multiply(params[i]);
-            }
-            return product;
+            return params[0].divide(params[1]);
         }
     });
     /**
