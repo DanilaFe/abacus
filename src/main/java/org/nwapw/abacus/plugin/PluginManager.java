@@ -140,6 +140,11 @@ public class PluginManager {
         plugins.add(plugin);
         loadedPluginClasses.add(plugin.getClass());
     }
+    public void removeInstantiated(Plugin plugin){
+        if (loadedPluginClasses.contains(plugin.getClass())) return;
+        plugins.remove(plugin);
+        loadedPluginClasses.remove(plugin.getClass());
+    }
 
     /**
      * Instantiates a class of plugin, and adds it to this
@@ -151,6 +156,14 @@ public class PluginManager {
         if (!Plugin.class.isAssignableFrom(newClass) || newClass == Plugin.class) return;
         try {
             addInstantiated((Plugin) newClass.getConstructor(PluginManager.class).newInstance(this));
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
+    public void removeClass(Class<?> newClass){
+        if (!Plugin.class.isAssignableFrom(newClass) || newClass == Plugin.class) return;
+        try {
+            removeInstantiated((Plugin) newClass.getConstructor(PluginManager.class).newInstance(this));
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
         }

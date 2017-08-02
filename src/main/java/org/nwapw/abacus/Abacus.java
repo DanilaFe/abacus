@@ -9,7 +9,7 @@ import org.nwapw.abacus.parsing.ShuntingYardParser;
 import org.nwapw.abacus.parsing.TreeBuilder;
 import org.nwapw.abacus.plugin.ClassFinder;
 import org.nwapw.abacus.plugin.PluginManager;
-import org.nwapw.abacus.plugin.StandardPlugin;
+//import org.nwapw.abacus.plugin.StandardPlugin;
 import org.nwapw.abacus.tree.NumberReducer;
 import org.nwapw.abacus.tree.TreeNode;
 
@@ -67,16 +67,22 @@ public class Abacus {
 
         pluginManager.addListener(lexerTokenizer);
         pluginManager.addListener(shuntingYardParser);
-        pluginManager.addInstantiated(new StandardPlugin(pluginManager));
+        //pluginManager.addInstantiated(new StandardPlugin(pluginManager));
+        /*
         try {
             ClassFinder.loadJars("plugins")
                     .forEach(plugin -> pluginManager.addClass(plugin));
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
-        }
+        }//*/
         pluginManager.load();
     }
-
+    public void loadClass(Class<?> newClass){
+        pluginManager.addClass(newClass);
+    }
+    public void unloadClass(Class<?> newClass){
+        pluginManager.removeClass(newClass);
+    }
     public static void main(String[] args) {
         AbacusApplication.launch(AbacusApplication.class, args);
     }

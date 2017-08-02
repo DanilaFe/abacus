@@ -46,6 +46,9 @@
                     <padding><Insets left="10" right="10" top="10" bottom="10"/></padding>
                     <Label text="Number Implementation" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
                     <ComboBox fx:id="numberImplementationBox" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                    <Button fx:id="loadButton" text="Load" GridPane.rowIndex="1" GridPane.columnIndex="0" maxWidth = "Infinity" onAction="#loadClass"/>
+                    <Button fx:id="unloadButton" text="Unload" GridPane.rowIndex="1" GridPane.columnIndex="1" maxWidth = "Infinity" onAction="#unloadClass"/>
+                    <TextField fx:id="loadField" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
                 </GridPane>
             </Tab>
         </TabPane>

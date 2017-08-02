@@ -8,7 +8,10 @@ import javafx.scene.text.Text;
 import javafx.util.Callback;
 import org.nwapw.abacus.Abacus;
 import org.nwapw.abacus.number.NumberInterface;
+import org.nwapw.abacus.plugin.ClassFinder;
 import org.nwapw.abacus.tree.TreeNode;
+
+import java.io.IOException;
 
 
 /**
@@ -42,6 +45,12 @@ public class AbacusController {
     private Button inputButton;
     @FXML
     private ComboBox<String> numberImplementationBox;
+    @FXML
+    private Button loadButton;
+    @FXML
+    private Button unloadButton;
+    @FXML
+    private TextField loadField;
 
     /**
      * The list of history entries, created by the users.
@@ -105,6 +114,39 @@ public class AbacusController {
 
         inputButton.setDisable(false);
         inputField.setText("");
+    }
+    @FXML
+    private void loadClass(){
+        try {
+            for(Class<?> plugin :ClassFinder.loadJars("plugins")){
+                String name = "";
+                //String name = plugin.getName();
+                while(!(name.indexOf('/') ==-1)){
+                    name=name.substring(name.indexOf('/')+1);
+                }
+                if(loadField.getText().equals("")||loadField.getText().equals(name)||(loadField.getText()+".class").equals(name)){
+                    //abacus.loadClass(plugin);
+                }
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    private void unloadClass(){
+        try {
+            for(Class<?> plugin :ClassFinder.loadJars("plugins")){
+                String name = plugin.getName();
+                while(!(name.indexOf('/') ==-1)){
+                    name=name.substring(name.indexOf('/')+1);
+                }
+                if(loadField.getText().equals("")||loadField.getText().equals(name)||(loadField.getText()+".class").equals(name)){
+                    //abacus.unloadClass(plugin);
+                }
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
 }
