@@ -55,9 +55,12 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
     public List<Match<TokenType>> intoPostfix(List<Match<TokenType>> from) {
         ArrayList<Match<TokenType>> output = new ArrayList<>();
         Stack<Match<TokenType>> tokenStack = new Stack<>();
+        TokenType previousType;
+        TokenType matchType = null;
         while (!from.isEmpty()) {
             Match<TokenType> match = from.remove(0);
-            TokenType matchType = match.getType();
+            previousType = matchType;
+            matchType = match.getType();
             if (matchType == TokenType.NUM) {
                 output.add(match);
             } else if (matchType == TokenType.FUNCTION) {
@@ -74,7 +77,13 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
                     continue;
                 }
 
-                while (!tokenStack.empty()) {
+                if(tokenString.equals("-") && (previousType == null || previousType == TokenType.OP ||
+                        previousType == TokenType.OPEN_PARENTH)){
+                    from.add(0, new Match<>("`", TokenType.OP));
+                    continue;
+                }
+
+                while (!tokenStack.empty() && type == OperatorType.BINARY_INFIX) {
                     Match<TokenType> otherMatch = tokenStack.peek();
                     TokenType otherMatchType = otherMatch.getType();
                     if (!(otherMatchType == TokenType.OP || otherMatchType == TokenType.FUNCTION)) break;
@@ -103,8 +112,8 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
         }
         while (!tokenStack.empty()) {
             Match<TokenType> match = tokenStack.peek();
-            TokenType matchType = match.getType();
-            if (!(matchType == TokenType.OP || matchType == TokenType.FUNCTION)) return null;
+            TokenType newMatchType = match.getType();
+            if (!(newMatchType == TokenType.OP || newMatchType == TokenType.FUNCTION)) return null;
             output.add(tokenStack.pop());
         }
         return output;
