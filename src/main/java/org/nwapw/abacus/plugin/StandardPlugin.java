@@ -174,7 +174,7 @@ public class StandardPlugin extends Plugin {
                 //right and left refer to lhs and rhs in the above inequality.
                 NumberInterface sum = NaiveNumber.ONE.promoteTo(params[0].getClass());
                 NumberInterface nextNumerator = params[0];
-                NumberInterface left = params[0].multiply((new NaiveNumber(3)).promoteTo(params[0].getClass()).intPow(params[0].ceiling())), right = maxError;
+                NumberInterface left = params[0].multiply((new NaiveNumber(3)).promoteTo(params[0].getClass()).intPow(params[0].ceiling().intValue())), right = maxError;
                 do{
                     sum = sum.add(nextNumerator.divide(factorial(params[0].getClass(), n+1)));
                     n++;
@@ -434,7 +434,7 @@ public class StandardPlugin extends Plugin {
     private static NumberInterface getSmallAngle(NumberInterface phi){
         NumberInterface twoPi = getPi(phi.getClass()).multiply(new NaiveNumber("2").promoteTo(phi.getClass()));
         NumberInterface theta = FUNCTION_ABS.apply(phi).subtract(twoPi
-        .multiply(new NaiveNumber(FUNCTION_ABS.apply(phi).divide(twoPi).floor()).promoteTo(phi.getClass()))); //Now theta is in [0, 2pi).
+        .multiply(FUNCTION_ABS.apply(phi).divide(twoPi))); //Now theta is in [0, 2pi).
         if(phi.signum() < 0){
             theta = twoPi.subtract(theta);
         }

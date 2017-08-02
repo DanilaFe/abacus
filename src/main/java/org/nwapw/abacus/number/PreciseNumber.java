@@ -96,13 +96,38 @@ public class PreciseNumber implements NumberInterface {
     }
 
     @Override
-    public int ceiling() {
-        return (int) Math.ceil(value.doubleValue());
+    public NumberInterface ceiling() {
+        String str = value.toPlainString();
+        int decimalIndex = str.indexOf('.');
+        if(decimalIndex != -1){
+            return this.floor().add(ONE);
+        }
+        return this;
     }
 
     @Override
-    public int floor() {
-        return (int) Math.floor(value.doubleValue());
+    public NumberInterface floor() {
+        String str = value.toPlainString();
+        int decimalIndex = str.indexOf('.');
+        if(decimalIndex != -1){
+            return new PreciseNumber(str.substring(0, decimalIndex));
+        }
+        return this;
+    }
+
+    @Override
+    public NumberInterface fractionalPart() {
+        String str = value.toPlainString();
+        int decimalIndex = str.indexOf('.');
+        if(decimalIndex != -1){
+            return new PreciseNumber(str.substring(decimalIndex + 1));
+        }
+        return ZERO;
+    }
+
+    @Override
+    public int intValue() {
+        return value.intValue();
     }
 
     @Override
