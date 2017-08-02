@@ -53,6 +53,20 @@ public class StandardPlugin extends Plugin {
         }
     });
     /**
+     * The negation operator, -
+     */
+    public static final Operator OP_NEGATE = new Operator(OperatorAssociativity.LEFT, OperatorType.UNARY_PREFIX, 0, new Function() {
+        @Override
+        protected boolean matchesParams(NumberInterface[] params) {
+            return params.length == 1;
+        }
+
+        @Override
+        protected NumberInterface applyInternal(NumberInterface[] params) {
+            return params[0].negate();
+        }
+    });
+    /**
      * The multiplication operator, *
      */
     public static final Operator OP_MULTIPLY = new Operator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 1, new Function() {
@@ -313,6 +327,7 @@ public class StandardPlugin extends Plugin {
 
         registerOperator("+", OP_ADD);
         registerOperator("-", OP_SUBTRACT);
+        registerOperator("`", OP_NEGATE);
         registerOperator("*", OP_MULTIPLY);
         registerOperator("/", OP_DIVIDE);
         registerOperator("^", OP_CARET);
@@ -331,7 +346,7 @@ public class StandardPlugin extends Plugin {
 
     public static NumberInterface factorial(Class<? extends NumberInterface> numberClass, int n){
         if(!factorialLists.containsKey(numberClass)){
-            factorialLists.put(numberClass, new ArrayList<NumberInterface>());
+            factorialLists.put(numberClass, new ArrayList<>());
             factorialLists.get(numberClass).add(NaiveNumber.ONE.promoteTo(numberClass));
             factorialLists.get(numberClass).add(NaiveNumber.ONE.promoteTo(numberClass));
         }
