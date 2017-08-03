@@ -1,5 +1,6 @@
 package org.nwapw.abacus.plugin;
 
+import org.nwapw.abacus.Abacus;
 import org.nwapw.abacus.function.Function;
 import org.nwapw.abacus.function.Operator;
 import org.nwapw.abacus.number.NumberInterface;
@@ -52,11 +53,17 @@ public class PluginManager {
      * The list of plugin listeners attached to this instance.
      */
     private Set<PluginListener> listeners;
+    /**
+     * The abacus instance used to access other
+     * components of the application.
+     */
+    private Abacus abacus;
 
     /**
      * Creates a new plugin manager.
      */
-    public PluginManager() {
+    public PluginManager(Abacus abacus) {
+        this.abacus = abacus;
         loadedPluginClasses = new HashSet<>();
         plugins = new HashSet<>();
         cachedFunctions = new HashMap<>();
@@ -160,8 +167,13 @@ public class PluginManager {
      * Loads all the plugins in the PluginManager.
      */
     public void load() {
-        for (Plugin plugin : plugins) plugin.enable();
+        Set<String> disabledPlugins = abacus.getConfiguration().getDisabledPlugins();
         for (Plugin plugin : plugins) {
+            if(disabledPlugins.contains(plugin.getClass().getName())) continue;
+            plugin.enable();
+        }
+        for (Plugin plugin : plugins) {
+            if(disabledPlugins.contains(plugin.getClass().getName())) continue;
             allFunctions.addAll(plugin.providedFunctions());
             allOperators.addAll(plugin.providedOperators());
             allNumbers.addAll(plugin.providedNumbers());
@@ -173,7 +185,11 @@ public class PluginManager {
      * Unloads all the plugins in the PluginManager.
      */
     public void unload() {
-        for (Plugin plugin : plugins) plugin.disable();
+        Set<String> disabledPlugins = abacus.getConfiguration().getDisabledPlugins();
+        for (Plugin plugin : plugins) {
+            if(disabledPlugins.contains(plugin.getClass().getName())) continue;
+            plugin.disable();
+        }
         allFunctions.clear();
         allOperators.clear();
         allNumbers.clear();

@@ -57,7 +57,7 @@ public class Abacus {
      * Creates a new instance of the Abacus calculator.
      */
     public Abacus() {
-        pluginManager = new PluginManager();
+        pluginManager = new PluginManager(this);
         numberReducer = new NumberReducer(this);
         configuration = new Configuration(CONFIG_FILE);
         configuration.saveTo(CONFIG_FILE);
