@@ -4,8 +4,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
+import javafx.util.StringConverter;
 import org.nwapw.abacus.Abacus;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.tree.TreeNode;
@@ -43,7 +45,7 @@ public class AbacusController {
     @FXML
     private ComboBox<String> numberImplementationBox;
     @FXML
-    private ListView enabledPluginView;
+    private ListView<ToggleablePlugin> enabledPluginView;
     @FXML
     private Button reloadButton;
 
@@ -58,12 +60,30 @@ public class AbacusController {
      */
     private ObservableList<String> numberImplementationOptions;
 
+    /**
+     * The list of plugin objects that can be toggled on and off,
+     * and, when reloaded, get added to the plugin manager's black list.
+     */
+    private ObservableList<ToggleablePlugin> enabledPlugins;
+
     private Abacus abacus;
 
     @FXML
     public void initialize(){
         Callback<TableColumn<HistoryModel, String>, TableCell<HistoryModel, String>> cellFactory =
                 param -> new CopyableCell<>();
+        Callback<ListView<ToggleablePlugin>, ListCell<ToggleablePlugin>> pluginCellFactory =
+                param -> new CheckBoxListCell<>(ToggleablePlugin::enabledProperty, new StringConverter<ToggleablePlugin>() {
+                    @Override
+                    public String toString(ToggleablePlugin object) {
+                        return object.getClassName().substring(object.getClassName().lastIndexOf('.') + 1);
+                    }
+
+                    @Override
+                    public ToggleablePlugin fromString(String string) {
+                        return new ToggleablePlugin(true, string);
+                    }
+                });
 
         historyData = FXCollections.observableArrayList();
         historyTable.setItems(historyData);
@@ -75,6 +95,9 @@ public class AbacusController {
             abacus.getConfiguration().saveTo(Abacus.CONFIG_FILE);
         });
         historyTable.getSelectionModel().setCellSelectionEnabled(true);
+        enabledPlugins = FXCollections.observableArrayList();
+        enabledPluginView.setItems(enabledPlugins);
+        enabledPluginView.setCellFactory(pluginCellFactory);
         inputColumn.setCellFactory(cellFactory);
         inputColumn.setCellValueFactory(cell -> cell.getValue().inputProperty());
         parsedColumn.setCellFactory(cellFactory);
