@@ -2,7 +2,6 @@ package org.nwapw.abacus.plugin;
 
 import org.nwapw.abacus.function.Function;
 import org.nwapw.abacus.function.Operator;
-import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
 
 import java.lang.reflect.InvocationTargetException;
@@ -41,7 +40,7 @@ public class PluginManager {
      * List of registered constant providers for every
      * number class.
      */
-    private Map<Class<?>, java.util.function.Function<String, NaiveNumber>> cachedConstantProviders;
+    private Map<Class<?>, java.util.function.Function<String, NumberInterface>> cachedConstantProviders;
     /**
      * List of all functions loaded by the plugins.
      */
@@ -54,6 +53,10 @@ public class PluginManager {
      * List of all numbers loaded by the plugins.
      */
     private Set<String> allNumbers;
+    /**
+     * List of all the constant providers loaded by the plugins.
+     */
+    private Set<Class<?>> allConstantProviders;
     /**
      * The list of plugin listeners attached to this instance.
      */
@@ -72,6 +75,7 @@ public class PluginManager {
         allFunctions = new HashSet<>();
         allOperators = new HashSet<>();
         allNumbers = new HashSet<>();
+        allConstantProviders = new HashSet<>();
         listeners = new HashSet<>();
     }
 
@@ -87,6 +91,7 @@ public class PluginManager {
      * @param getFunction the function to get the T value under the given name
      * @param name        the name to search for
      * @param <T>         the type of element being search
+     * @param <K>         the type of key that the cache is indexed by.
      * @return the retrieved element, or null if it was not found.
      */
     private static <T, K> T searchCached(Collection<Plugin> plugins, Map<K, T> cache,
@@ -138,6 +143,15 @@ public class PluginManager {
     }
 
     /**
+     * Gets the constant provider for the given class.
+     * @param forClass the class to get the provider for.
+     * @return the provider.
+     */
+    public java.util.function.Function<String, NumberInterface> constantProviderFor(Class<?> forClass){
+        return searchCached(plugins, cachedConstantProviders, Plugin::providedConstantProviders, Plugin::getConstantProvider, forClass);
+    }
+
+    /**
      * Adds an instance of Plugin that already has been instantiated.
      *
      * @param plugin the plugin to add.
@@ -172,6 +186,7 @@ public class PluginManager {
             allFunctions.addAll(plugin.providedFunctions());
             allOperators.addAll(plugin.providedOperators());
             allNumbers.addAll(plugin.providedNumbers());
+            allConstantProviders.addAll(plugin.providedConstantProviders());
         }
         listeners.forEach(e -> e.onLoad(this));
     }
@@ -184,6 +199,7 @@ public class PluginManager {
         allFunctions.clear();
         allOperators.clear();
         allNumbers.clear();
+        allConstantProviders.clear();
         listeners.forEach(e -> e.onUnload(this));
     }
 
@@ -220,6 +236,14 @@ public class PluginManager {
      */
     public Set<String> getAllNumbers() {
         return allNumbers;
+    }
+
+    /**
+     * Gets all the constant providers loaded by the Plugin Manager.
+     * @return the set of all constant providers that were loaded.
+     */
+    public Set<Class<?>> getAllConstantProviders() {
+        return allConstantProviders;
     }
 
     /**
