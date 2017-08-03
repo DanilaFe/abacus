@@ -31,9 +31,13 @@ public class StandardPlugin extends Plugin {
 
         @Override
         protected NumberInterface applyInternal(NumberInterface[] params) {
+            if(Thread.currentThread().isInterrupted())
+                return null;
             NumberInterface sum = params[0];
             for (int i = 1; i < params.length; i++) {
                 sum = sum.add(params[i]);
+                if(Thread.currentThread().isInterrupted())
+                    return null;
             }
             return sum;
         }
@@ -49,7 +53,10 @@ public class StandardPlugin extends Plugin {
 
         @Override
         protected NumberInterface applyInternal(NumberInterface[] params) {
+            if(Thread.currentThread().isInterrupted())
+                return null;
             return params[0].subtract(params[1]);
+
         }
     });
     /**
@@ -63,6 +70,8 @@ public class StandardPlugin extends Plugin {
 
         @Override
         protected NumberInterface applyInternal(NumberInterface[] params) {
+            if(Thread.currentThread().isInterrupted())
+                return null;
             return params[0].negate();
         }
     });
@@ -77,9 +86,13 @@ public class StandardPlugin extends Plugin {
 
         @Override
         protected NumberInterface applyInternal(NumberInterface[] params) {
+            if(Thread.currentThread().isInterrupted())
+                return null;
             NumberInterface product = params[0];
             for (int i = 1; i < params.length; i++) {
                 product = product.multiply(params[i]);
+                if(Thread.currentThread().isInterrupted())
+                    return null;
             }
             return product;
         }
@@ -95,6 +108,8 @@ public class StandardPlugin extends Plugin {
 
         @Override
         protected NumberInterface applyInternal(NumberInterface[] params) {
+            if(Thread.currentThread().isInterrupted())
+                return null;
             return params[0].divide(params[1]);
         }
     });
@@ -110,15 +125,19 @@ public class StandardPlugin extends Plugin {
 
         @Override
         protected NumberInterface applyInternal(NumberInterface[] params) {
+            if(Thread.currentThread().isInterrupted())
+                return null;
             if (params[0].signum() == 0) {
                 return (new NaiveNumber(1)).promoteTo(params[0].getClass());
             }
             NumberInterface factorial = params[0];
             NumberInterface multiplier = params[0];
             //It is necessary to later prevent calls of factorial on anything but non-negative integers.
-            while (!Thread.currentThread().isInterrupted()&&(multiplier = multiplier.subtract(NaiveNumber.ONE.promoteTo(multiplier.getClass()))).signum() == 1) {
+            while ((multiplier = multiplier.subtract(NaiveNumber.ONE.promoteTo(multiplier.getClass())))!=null&&multiplier.signum() == 1) {
                 factorial = factorial.multiply(multiplier);
             }
+            if(Thread.currentThread().isInterrupted())
+                return null;
             return factorial;
                 /*if(!storedList.containsKey(params[0].getClass())){
                     storedList.put(params[0].getClass(), new ArrayList<NumberInterface>());
@@ -138,6 +157,8 @@ public class StandardPlugin extends Plugin {
 
         @Override
         protected NumberInterface applyInternal(NumberInterface[] params) {
+            if(Thread.currentThread().isInterrupted())
+                return null;
             return FUNCTION_EXP.apply(FUNCTION_LN.apply(params[0]).multiply(params[1]));
         }
     });
@@ -246,7 +267,7 @@ public class StandardPlugin extends Plugin {
             x = x.subtract(NaiveNumber.ONE.promoteTo(x.getClass())); //Terms used are for log(x+1).
             NumberInterface currentNumerator = x, currentTerm = x, sum = x;
             int n = 1;
-            while (FUNCTION_ABS.apply(currentTerm).compareTo(maxError) > 0) {
+            while (!Thread.currentThread().isInterrupted()&&FUNCTION_ABS.apply(currentTerm).compareTo(maxError) > 0) {
                 n++;
                 currentNumerator = currentNumerator.multiply(x).negate();
                 currentTerm = currentNumerator.divide(new NaiveNumber(n).promoteTo(x.getClass()));
@@ -361,7 +382,7 @@ public class StandardPlugin extends Plugin {
             }
         }
         if(Thread.currentThread().isInterrupted())
-            return null;
+            return NaiveNumber.ONE.promoteTo(numberClass);
         return list.get(n);
     }
 

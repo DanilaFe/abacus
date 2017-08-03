@@ -68,6 +68,10 @@ public class AbacusController {
      */
     private boolean calculating;
 
+    /**
+     * Seconds delayed for timer;
+     */
+    private double delay = 0;
     private Abacus abacus;
 
     @FXML
@@ -103,6 +107,20 @@ public class AbacusController {
     private void performCalculation(){
         Runnable calculator = new Runnable(){
             public void run() {
+                if(delay>0) {
+                    Runnable timer = new Runnable() {
+                        public void run() {
+                            long gap = (long) (delay * 1000);
+                            long startTime = System.currentTimeMillis();
+                            while (System.currentTimeMillis() - startTime <= gap) {
+                            }
+                            stopCalculation();
+                        }
+                    };
+                    Thread maxTime = new Thread(timer);
+                    maxTime.setName("maxTime");
+                    maxTime.start();
+                }
                 calculating = true;
                 Platform.runLater(() -> inputButton.setDisable(true));
                 TreeNode constructedTree = abacus.parseString(inputField.getText());
@@ -135,6 +153,7 @@ public class AbacusController {
         };
         if(!calculating) {
                 calcThread = new Thread(calculator);
+                calcThread.setName("calcThread");
                 calcThread.start();
         }
     }
@@ -142,7 +161,7 @@ public class AbacusController {
     private void stopCalculation(){
         calcThread.interrupt();
         calculating = false;
-        inputButton.setDisable(false);
+        Platform.runLater(() ->inputButton.setDisable(false));
     }
 
 }
