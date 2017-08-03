@@ -185,7 +185,7 @@ public class PluginManager {
      */
     public void reload() {
         unload();
-        reload();
+        load();
     }
 
     /**
@@ -233,4 +233,12 @@ public class PluginManager {
         listeners.remove(listener);
     }
 
+    /**
+     * Gets a list of all the plugin class files that have been
+     * added to the plugin manager.
+     * @return the list of all the added plugin classes.
+     */
+    public Set<Class<?>> getLoadedPluginClasses() {
+        return loadedPluginClasses;
+    }
 }
