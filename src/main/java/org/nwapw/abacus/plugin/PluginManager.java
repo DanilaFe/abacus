@@ -2,6 +2,7 @@ package org.nwapw.abacus.plugin;
 
 import org.nwapw.abacus.function.Function;
 import org.nwapw.abacus.function.Operator;
+import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
 
 import java.lang.reflect.InvocationTargetException;
@@ -37,6 +38,11 @@ public class PluginManager {
      */
     private Map<String, Class<? extends NumberInterface>> cachedNumbers;
     /**
+     * List of registered constant providers for every
+     * number class.
+     */
+    private Map<Class<?>, java.util.function.Function<String, NaiveNumber>> cachedConstantProviders;
+    /**
      * List of all functions loaded by the plugins.
      */
     private Set<String> allFunctions;
@@ -62,6 +68,7 @@ public class PluginManager {
         cachedFunctions = new HashMap<>();
         cachedOperators = new HashMap<>();
         cachedNumbers = new HashMap<>();
+        cachedConstantProviders = new HashMap<>();
         allFunctions = new HashSet<>();
         allOperators = new HashSet<>();
         allNumbers = new HashSet<>();
