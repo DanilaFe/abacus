@@ -1,5 +1,6 @@
 package org.nwapw.abacus.plugin;
 
+import org.nwapw.abacus.Abacus;
 import org.nwapw.abacus.function.Function;
 import org.nwapw.abacus.function.Operator;
 import org.nwapw.abacus.number.NumberInterface;
@@ -52,11 +53,17 @@ public class PluginManager {
      * The list of plugin listeners attached to this instance.
      */
     private Set<PluginListener> listeners;
+    /**
+     * The abacus instance used to access other
+     * components of the application.
+     */
+    private Abacus abacus;
 
     /**
      * Creates a new plugin manager.
      */
-    public PluginManager() {
+    public PluginManager(Abacus abacus) {
+        this.abacus = abacus;
         loadedPluginClasses = new HashSet<>();
         plugins = new HashSet<>();
         cachedFunctions = new HashMap<>();
@@ -160,8 +167,13 @@ public class PluginManager {
      * Loads all the plugins in the PluginManager.
      */
     public void load() {
-        for (Plugin plugin : plugins) plugin.enable();
+        Set<String> disabledPlugins = abacus.getConfiguration().getDisabledPlugins();
         for (Plugin plugin : plugins) {
+            if(disabledPlugins.contains(plugin.getClass().getName())) continue;
+            plugin.enable();
+        }
+        for (Plugin plugin : plugins) {
+            if(disabledPlugins.contains(plugin.getClass().getName())) continue;
             allFunctions.addAll(plugin.providedFunctions());
             allOperators.addAll(plugin.providedOperators());
             allNumbers.addAll(plugin.providedNumbers());
@@ -173,11 +185,18 @@ public class PluginManager {
      * Unloads all the plugins in the PluginManager.
      */
     public void unload() {
-        for (Plugin plugin : plugins) plugin.disable();
+        listeners.forEach(e -> e.onUnload(this));
+        Set<String> disabledPlugins = abacus.getConfiguration().getDisabledPlugins();
+        for (Plugin plugin : plugins) {
+            if(disabledPlugins.contains(plugin.getClass().getName())) continue;
+            plugin.disable();
+        }
+        cachedFunctions.clear();
+        cachedOperators.clear();
+        cachedNumbers.clear();
         allFunctions.clear();
         allOperators.clear();
         allNumbers.clear();
-        listeners.forEach(e -> e.onUnload(this));
     }
 
     /**
@@ -185,7 +204,7 @@ public class PluginManager {
      */
     public void reload() {
         unload();
-        reload();
+        load();
     }
 
     /**
@@ -233,4 +252,12 @@ public class PluginManager {
         listeners.remove(listener);
     }
 
+    /**
+     * Gets a list of all the plugin class files that have been
+     * added to the plugin manager.
+     * @return the list of all the added plugin classes.
+     */
+    public Set<Class<?>> getLoadedPluginClasses() {
+        return loadedPluginClasses;
+    }
 }
