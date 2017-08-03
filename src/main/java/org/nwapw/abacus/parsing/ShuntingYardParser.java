@@ -89,7 +89,7 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
                     if (!(otherMatchType == TokenType.OP || otherMatchType == TokenType.FUNCTION)) break;
 
                     if (otherMatchType == TokenType.OP) {
-                        int otherPrecedence = precedenceMap.get(match.getContent());
+                        int otherPrecedence = precedenceMap.get(otherMatch.getContent());
                         if (otherPrecedence < precedence ||
                                 (associativity == OperatorAssociativity.RIGHT && otherPrecedence == precedence)) {
                             break;
