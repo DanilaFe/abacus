@@ -155,7 +155,7 @@ public class AbacusController implements PluginListener {
         Set<String> disabledPlugins = configuration.getDisabledPlugins();
         numberImplementationOptions.addAll(abacus.getPluginManager().getAllNumbers());
         String actualImplementation = configuration.getNumberImplementation();
-        String toSelect = (numberImplementationOptions.contains(actualImplementation)) ? actualImplementation : "naive";
+        String toSelect = (numberImplementationOptions.contains(actualImplementation)) ? actualImplementation : "<default>";
         numberImplementationBox.getSelectionModel().select(toSelect);
         for(Class<?> pluginClass : abacus.getPluginManager().getLoadedPluginClasses()){
             String fullName = pluginClass.getName();
