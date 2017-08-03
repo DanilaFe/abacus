@@ -42,6 +42,10 @@ public class AbacusController {
     private Button inputButton;
     @FXML
     private ComboBox<String> numberImplementationBox;
+    @FXML
+    private ListView enabledPluginView;
+    @FXML
+    private Button reloadButton;
 
     /**
      * The list of history entries, created by the users.
