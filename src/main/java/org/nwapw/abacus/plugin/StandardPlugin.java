@@ -116,7 +116,7 @@ public class StandardPlugin extends Plugin {
             NumberInterface factorial = params[0];
             NumberInterface multiplier = params[0];
             //It is necessary to later prevent calls of factorial on anything but non-negative integers.
-            while ((multiplier = multiplier.subtract(NaiveNumber.ONE.promoteTo(multiplier.getClass()))).signum() == 1) {
+            while (!Thread.currentThread().isInterrupted()&&(multiplier = multiplier.subtract(NaiveNumber.ONE.promoteTo(multiplier.getClass()))).signum() == 1) {
                 factorial = factorial.multiply(multiplier);
             }
             return factorial;
@@ -170,11 +170,12 @@ public class StandardPlugin extends Plugin {
             int n = 0;
             if(params[0].signum() <= 0){
                 NumberInterface currentTerm = NaiveNumber.ONE.promoteTo(params[0].getClass()), sum = currentTerm;
-                while(FUNCTION_ABS.apply(currentTerm).compareTo(maxError) > 0){
+                while(!Thread.currentThread().isInterrupted()&&FUNCTION_ABS.apply(currentTerm).compareTo(maxError) > 0){
                     n++;
                     currentTerm = currentTerm.multiply(params[0]).divide((new NaiveNumber(n)).promoteTo(params[0].getClass()));
                     sum = sum.add(currentTerm);
                 }
+                //System.out.println(Thread.currentThread().isInterrupted());
                 return sum;
             }
             else{
@@ -192,8 +193,11 @@ public class StandardPlugin extends Plugin {
                     right = right.multiply(nextN);
                     //System.out.println(left + ", " + right);
                 }
-                while(left.compareTo(right) > 0);
+                while(!Thread.currentThread().isInterrupted()&&left.compareTo(right) > 0);
                 //System.out.println(n+1);
+                //System.out.println(Thread.currentThread().isInterrupted());
+                if(Thread.currentThread().isInterrupted())
+                    return left;
                 return sum;
             }
         }
@@ -211,7 +215,7 @@ public class StandardPlugin extends Plugin {
         protected NumberInterface applyInternal(NumberInterface[] params) {
             NumberInterface param = params[0];
             int powersOf2 = 0;
-            while (FUNCTION_ABS.apply(param.subtract(NaiveNumber.ONE.promoteTo(param.getClass()))).compareTo((new NaiveNumber(0.1)).promoteTo(param.getClass())) >= 0) {
+            while (!Thread.currentThread().isInterrupted()&&FUNCTION_ABS.apply(param.subtract(NaiveNumber.ONE.promoteTo(param.getClass()))).compareTo((new NaiveNumber(0.1)).promoteTo(param.getClass())) >= 0) {
                 if (param.subtract(NaiveNumber.ONE.promoteTo(param.getClass())).signum() == 1) {
                     param = param.divide(new NaiveNumber(2).promoteTo(param.getClass()));
                     powersOf2++;
@@ -265,7 +269,7 @@ public class StandardPlugin extends Plugin {
             NumberInterface a = (new NaiveNumber(1)).promoteTo(number.getClass()), b = a, c = a;
             NumberInterface sum = NaiveNumber.ZERO.promoteTo(number.getClass());
             int n = 0;
-            while (a.compareTo(maxError) >= 1) {
+            while (!Thread.currentThread().isInterrupted()&&a.compareTo(maxError) >= 1) {
                 n++;
                 a = a.divide((new NaiveNumber(3)).promoteTo(number.getClass()));
                 b = b.divide((new NaiveNumber(4)).promoteTo(number.getClass()));
@@ -352,10 +356,12 @@ public class StandardPlugin extends Plugin {
         }
         ArrayList<NumberInterface> list = factorialLists.get(numberClass);
         if(n >= list.size()){
-            while(list.size() < n + 16){
+            while(!Thread.currentThread().isInterrupted()&&list.size() < n + 16){
                 list.add(list.get(list.size()-1).multiply(new NaiveNumber(list.size()).promoteTo(numberClass)));
             }
         }
+        if(Thread.currentThread().isInterrupted())
+            return null;
         return list.get(n);
     }
 
