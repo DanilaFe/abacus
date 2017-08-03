@@ -82,10 +82,10 @@ public class PluginManager {
      * @param <T>         the type of element being search
      * @return the retrieved element, or null if it was not found.
      */
-    private static <T> T searchCached(Collection<Plugin> plugins, Map<String, T> cache,
-                                      java.util.function.Function<Plugin, Set<String>> setFunction,
-                                      java.util.function.BiFunction<Plugin, String, T> getFunction,
-                                      String name) {
+    private static <T, K> T searchCached(Collection<Plugin> plugins, Map<K, T> cache,
+                                      java.util.function.Function<Plugin, Set<K>> setFunction,
+                                      java.util.function.BiFunction<Plugin, K, T> getFunction,
+                                      K name) {
         if (cache.containsKey(name)) return cache.get(name);
 
         T loadedValue = null;
