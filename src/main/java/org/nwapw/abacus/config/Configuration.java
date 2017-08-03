@@ -5,6 +5,10 @@ import com.moandjiezana.toml.TomlWriter;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * The configuration object that stores
@@ -25,13 +29,19 @@ public class Configuration {
      * The implementation of the number that should be used.
      */
     private String numberImplementation = "naive";
+    /**
+     * The list of disabled plugins in this Configuration.
+     */
+    private Set<String> disabledPlugins = new HashSet<>();
 
     /**
      * Creates a new configuration with the given values.
      * @param numberImplementation the number implementation, like "naive" or "precise"
+     * @param disabledPlugins the list of disabled plugins.
      */
-    public Configuration(String numberImplementation){
+    public Configuration(String numberImplementation, String[] disabledPlugins){
         this.numberImplementation = numberImplementation;
+        this.disabledPlugins.addAll(Arrays.asList(disabledPlugins));
     }
 
     /**
@@ -49,6 +59,7 @@ public class Configuration {
      */
     public void copyFrom(Configuration otherConfiguration){
         this.numberImplementation = otherConfiguration.numberImplementation;
+        this.disabledPlugins.addAll(otherConfiguration.disabledPlugins);
     }
 
     /**
@@ -80,4 +91,38 @@ public class Configuration {
     public void setNumberImplementation(String numberImplementation) {
         this.numberImplementation = numberImplementation;
     }
+
+    /**
+     * Gets the list of disabled plugins.
+     * @return the list of disabled plugins.
+     */
+    public Set<String> getDisabledPlugins() {
+        return disabledPlugins;
+    }
+
+    /**
+     * Adds the given plugin to the disabled plugins list.
+     * @param pluginClass the plugin to disable.
+     */
+    public void disablePlugin(String pluginClass){
+        disabledPlugins.add(pluginClass);
+    }
+
+    /**
+     * Removes the given plugin from the disabled plugins list.
+     * @param pluginClass the plugin to enable.
+     */
+    public void enablePlugin(String pluginClass){
+        disabledPlugins.remove(pluginClass);
+    }
+
+    /**
+     * Sets the disabled plugins to be as specified.
+     * @param newDisabled the new list of disabled plugins.
+     */
+    public void setDisabledPlugins(Collection<String> newDisabled){
+        disabledPlugins.clear();
+        disabledPlugins.addAll(newDisabled);
+    }
+
 }
