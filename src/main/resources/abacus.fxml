@@ -46,6 +46,13 @@
                     <padding><Insets left="10" right="10" top="10" bottom="10"/></padding>
                     <Label text="Number Implementation" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
                     <ComboBox fx:id="numberImplementationBox" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                    <ListView fx:id="enabledPluginView"
+                              GridPane.rowIndex="1" GridPane.columnIndex="0"
+                              GridPane.columnSpan="2" maxHeight="100"/>
+                    <HBox GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="2" spacing="10">
+                        <Button text="Apply" onAction="#performSave"/>
+                        <Button text="Reload" onAction="#performReload"/>
+                    </HBox>
                 </GridPane>
             </Tab>
         </TabPane>

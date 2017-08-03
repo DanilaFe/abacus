@@ -4,18 +4,25 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
+import javafx.util.StringConverter;
 import org.nwapw.abacus.Abacus;
+import org.nwapw.abacus.config.Configuration;
 import org.nwapw.abacus.number.NumberInterface;
+import org.nwapw.abacus.plugin.PluginListener;
+import org.nwapw.abacus.plugin.PluginManager;
 import org.nwapw.abacus.tree.TreeNode;
+
+import java.util.Set;
 
 
 /**
  * The controller for the abacus FX UI, responsible
  * for all the user interaction.
  */
-public class AbacusController {
+public class AbacusController implements PluginListener {
 
     /**
      * Constant string that is displayed if the text could not be lexed or parsed.
@@ -42,6 +49,8 @@ public class AbacusController {
     private Button inputButton;
     @FXML
     private ComboBox<String> numberImplementationBox;
+    @FXML
+    private ListView<ToggleablePlugin> enabledPluginView;
 
     /**
      * The list of history entries, created by the users.
@@ -54,23 +63,39 @@ public class AbacusController {
      */
     private ObservableList<String> numberImplementationOptions;
 
+    /**
+     * The list of plugin objects that can be toggled on and off,
+     * and, when reloaded, get added to the plugin manager's black list.
+     */
+    private ObservableList<ToggleablePlugin> enabledPlugins;
+
     private Abacus abacus;
 
     @FXML
     public void initialize(){
         Callback<TableColumn<HistoryModel, String>, TableCell<HistoryModel, String>> cellFactory =
                 param -> new CopyableCell<>();
+        Callback<ListView<ToggleablePlugin>, ListCell<ToggleablePlugin>> pluginCellFactory =
+                param -> new CheckBoxListCell<>(ToggleablePlugin::enabledProperty, new StringConverter<ToggleablePlugin>() {
+                    @Override
+                    public String toString(ToggleablePlugin object) {
+                        return object.getClassName().substring(object.getClassName().lastIndexOf('.') + 1);
+                    }
+
+                    @Override
+                    public ToggleablePlugin fromString(String string) {
+                        return new ToggleablePlugin(true, string);
+                    }
+                });
 
         historyData = FXCollections.observableArrayList();
         historyTable.setItems(historyData);
         numberImplementationOptions = FXCollections.observableArrayList();
         numberImplementationBox.setItems(numberImplementationOptions);
-        numberImplementationBox.valueProperty().addListener((observable, oldValue, newValue)
-                -> {
-            abacus.getConfiguration().setNumberImplementation(newValue);
-            abacus.getConfiguration().saveTo(Abacus.CONFIG_FILE);
-        });
         historyTable.getSelectionModel().setCellSelectionEnabled(true);
+        enabledPlugins = FXCollections.observableArrayList();
+        enabledPluginView.setItems(enabledPlugins);
+        enabledPluginView.setCellFactory(pluginCellFactory);
         inputColumn.setCellFactory(cellFactory);
         inputColumn.setCellValueFactory(cell -> cell.getValue().inputProperty());
         parsedColumn.setCellFactory(cellFactory);
@@ -79,10 +104,8 @@ public class AbacusController {
         outputColumn.setCellValueFactory(cell -> cell.getValue().outputProperty());
 
         abacus = new Abacus();
-        numberImplementationOptions.addAll(abacus.getPluginManager().getAllNumbers());
-        String actualImplementation = abacus.getConfiguration().getNumberImplementation();
-        String toSelect = (numberImplementationOptions.contains(actualImplementation)) ? actualImplementation : "naive";
-        numberImplementationBox.getSelectionModel().select(toSelect);
+        abacus.getPluginManager().addListener(this);
+        abacus.getPluginManager().reload();
     }
 
     @FXML
@@ -107,4 +130,41 @@ public class AbacusController {
         inputField.setText("");
     }
 
+    @FXML
+    private void performReload(){
+        Configuration configuration = abacus.getConfiguration();
+        Set<String> disabledPlugins = configuration.getDisabledPlugins();
+        disabledPlugins.clear();
+        for(ToggleablePlugin pluginEntry : enabledPlugins){
+            if(!pluginEntry.isEnabled()) disabledPlugins.add(pluginEntry.getClassName());
+        }
+        abacus.getPluginManager().reload();
+    }
+
+    @FXML
+    private void performSave(){
+        Configuration configuration = abacus.getConfiguration();
+        configuration.setNumberImplementation(numberImplementationBox.getSelectionModel().getSelectedItem());
+        configuration.saveTo(Abacus.CONFIG_FILE);
+    }
+
+    @Override
+    public void onLoad(PluginManager manager) {
+        Configuration configuration = abacus.getConfiguration();
+        Set<String> disabledPlugins = configuration.getDisabledPlugins();
+        numberImplementationOptions.addAll(abacus.getPluginManager().getAllNumbers());
+        String actualImplementation = configuration.getNumberImplementation();
+        String toSelect = (numberImplementationOptions.contains(actualImplementation)) ? actualImplementation : "<default>";
+        numberImplementationBox.getSelectionModel().select(toSelect);
+        for(Class<?> pluginClass : abacus.getPluginManager().getLoadedPluginClasses()){
+            String fullName = pluginClass.getName();
+            enabledPlugins.add(new ToggleablePlugin(!disabledPlugins.contains(fullName), fullName));
+        }
+    }
+
+    @Override
+    public void onUnload(PluginManager manager) {
+        enabledPlugins.clear();
+        numberImplementationOptions.clear();
+    }
 }
