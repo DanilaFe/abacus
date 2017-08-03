@@ -185,15 +185,18 @@ public class PluginManager {
      * Unloads all the plugins in the PluginManager.
      */
     public void unload() {
+        listeners.forEach(e -> e.onUnload(this));
         Set<String> disabledPlugins = abacus.getConfiguration().getDisabledPlugins();
         for (Plugin plugin : plugins) {
             if(disabledPlugins.contains(plugin.getClass().getName())) continue;
             plugin.disable();
         }
+        cachedFunctions.clear();
+        cachedOperators.clear();
+        cachedNumbers.clear();
         allFunctions.clear();
         allOperators.clear();
         allNumbers.clear();
-        listeners.forEach(e -> e.onUnload(this));
     }
 
     /**
