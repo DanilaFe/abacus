@@ -49,8 +49,10 @@
                     <ListView fx:id="enabledPluginView"
                               GridPane.rowIndex="1" GridPane.columnIndex="0"
                               GridPane.columnSpan="2" maxHeight="100"/>
-                    <Button fx:id="reloadButton" text="Reload" GridPane.rowIndex="2" GridPane.columnIndex="0"
-                            onAction="#performReload"/>
+                    <HBox GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="2" spacing="10">
+                        <Button text="Apply" onAction="#performSave"/>
+                        <Button text="Reload" onAction="#performReload"/>
+                    </HBox>
                 </GridPane>
             </Tab>
         </TabPane>

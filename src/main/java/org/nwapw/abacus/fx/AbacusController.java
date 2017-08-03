@@ -51,8 +51,6 @@ public class AbacusController implements PluginListener {
     private ComboBox<String> numberImplementationBox;
     @FXML
     private ListView<ToggleablePlugin> enabledPluginView;
-    @FXML
-    private Button reloadButton;
 
     /**
      * The list of history entries, created by the users.
@@ -94,11 +92,6 @@ public class AbacusController implements PluginListener {
         historyTable.setItems(historyData);
         numberImplementationOptions = FXCollections.observableArrayList();
         numberImplementationBox.setItems(numberImplementationOptions);
-        numberImplementationBox.valueProperty().addListener((observable, oldValue, newValue)
-                -> {
-            abacus.getConfiguration().setNumberImplementation(newValue);
-            abacus.getConfiguration().saveTo(Abacus.CONFIG_FILE);
-        });
         historyTable.getSelectionModel().setCellSelectionEnabled(true);
         enabledPlugins = FXCollections.observableArrayList();
         enabledPluginView.setItems(enabledPlugins);
@@ -146,7 +139,13 @@ public class AbacusController implements PluginListener {
             if(!pluginEntry.isEnabled()) disabledPlugins.add(pluginEntry.getClassName());
         }
         abacus.getPluginManager().reload();
-        abacus.getConfiguration().saveTo(Abacus.CONFIG_FILE);
+    }
+
+    @FXML
+    private void performSave(){
+        Configuration configuration = abacus.getConfiguration();
+        configuration.setNumberImplementation(numberImplementationBox.getSelectionModel().getSelectedItem());
+        configuration.saveTo(Abacus.CONFIG_FILE);
     }
 
     @Override
