@@ -321,6 +321,54 @@ public class StandardPlugin extends Plugin {
         }
     };
 
+    public static final Function FUNCTION_TAN = new Function() {
+        @Override
+        protected boolean matchesParams(NumberInterface[] params) {
+            return params.length == 1;
+        }
+
+        @Override
+        protected NumberInterface applyInternal(NumberInterface[] params) {
+            return FUNCTION_SIN.apply(params[0]).divide(FUNCTION_COS.apply(params[0]));
+        }
+    };
+
+    public static final Function FUNCTION_SEC = new Function() {
+        @Override
+        protected boolean matchesParams(NumberInterface[] params) {
+            return params.length == 1;
+        }
+
+        @Override
+        protected NumberInterface applyInternal(NumberInterface[] params) {
+            return NaiveNumber.ONE.promoteTo(params[0].getClass()).divide(FUNCTION_COS.apply(params[0]));
+        }
+    };
+
+    public static final Function FUNCTION_CSC = new Function() {
+        @Override
+        protected boolean matchesParams(NumberInterface[] params) {
+            return params.length == 1;
+        }
+
+        @Override
+        protected NumberInterface applyInternal(NumberInterface[] params) {
+            return NaiveNumber.ONE.promoteTo(params[0].getClass()).divide(FUNCTION_SIN.apply(params[0]));
+        }
+    };
+
+    public static final Function FUNCTION_COT = new Function() {
+        @Override
+        protected boolean matchesParams(NumberInterface[] params) {
+            return params.length == 1;
+        }
+
+        @Override
+        protected NumberInterface applyInternal(NumberInterface[] params) {
+            return FUNCTION_COS.apply(params[0]).divide(FUNCTION_COS.apply(params[0]));
+        }
+    };
+
     public StandardPlugin(PluginManager manager) {
         super(manager);
     }
@@ -369,6 +417,10 @@ public class StandardPlugin extends Plugin {
         registerFunction("sqrt", FUNCTION_SQRT);
         registerFunction("sin", FUNCTION_SIN);
         registerFunction("cos", FUNCTION_COS);
+        registerFunction("tan", FUNCTION_TAN);
+        registerFunction("sec", FUNCTION_SEC);
+        registerFunction("csc", FUNCTION_CSC);
+        registerFunction("cot", FUNCTION_COT);
     }
 
     @Override
