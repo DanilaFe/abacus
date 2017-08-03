@@ -308,6 +308,19 @@ public class StandardPlugin extends Plugin {
         }
     };
 
+    public static final Function FUNCTION_COS = new Function() {
+        @Override
+        protected boolean matchesParams(NumberInterface[] params) {
+            return params.length == 1;
+        }
+
+        @Override
+        protected NumberInterface applyInternal(NumberInterface[] params) {
+            return FUNCTION_SIN.apply(getPi(params[0].getClass()).divide(new NaiveNumber(2).promoteTo(params[0].getClass()))
+                .subtract(params[0]));
+        }
+    };
+
     public StandardPlugin(PluginManager manager) {
         super(manager);
     }
@@ -355,6 +368,7 @@ public class StandardPlugin extends Plugin {
         registerFunction("ln", FUNCTION_LN);
         registerFunction("sqrt", FUNCTION_SQRT);
         registerFunction("sin", FUNCTION_SIN);
+        registerFunction("cos", FUNCTION_COS);
     }
 
     @Override
