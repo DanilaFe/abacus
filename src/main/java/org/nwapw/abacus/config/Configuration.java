@@ -16,18 +16,24 @@ import java.util.Set;
 public class Configuration {
 
     /**
+     * The defaults TOML string.
+     */
+    private static final String DEFAULT_CONFIG =
+            "numberImplementation = \"naive\"\n" +
+            "disabledPlugins = []";
+    /**
+     * The defaults TOML object, parsed from the string.
+     */
+    private static final Toml DEFAULT_TOML = new Toml().read(DEFAULT_CONFIG);
+    /**
      * The TOML writer used to write this configuration to a file.
      */
     private static final TomlWriter TOML_WRITER = new TomlWriter();
-    /**
-     * The TOML reader used to load this config from a file.
-     */
-    private static final Toml TOML_READER = new Toml();
 
     /**
      * The implementation of the number that should be used.
      */
-    private String numberImplementation = "naive";
+    private String numberImplementation = "<default>";
     /**
      * The list of disabled plugins in this Configuration.
      */
@@ -49,7 +55,7 @@ public class Configuration {
      */
     public Configuration(File fromFile){
         if(!fromFile.exists()) return;
-        copyFrom(TOML_READER.read(fromFile).to(Configuration.class));
+        copyFrom(new Toml(DEFAULT_TOML).read(fromFile).to(Configuration.class));
     }
 
     /**
