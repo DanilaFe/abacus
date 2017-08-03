@@ -6,7 +6,6 @@ import com.moandjiezana.toml.TomlWriter;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -98,31 +97,6 @@ public class Configuration {
      */
     public Set<String> getDisabledPlugins() {
         return disabledPlugins;
-    }
-
-    /**
-     * Adds the given plugin to the disabled plugins list.
-     * @param pluginClass the plugin to disable.
-     */
-    public void disablePlugin(String pluginClass){
-        disabledPlugins.add(pluginClass);
-    }
-
-    /**
-     * Removes the given plugin from the disabled plugins list.
-     * @param pluginClass the plugin to enable.
-     */
-    public void enablePlugin(String pluginClass){
-        disabledPlugins.remove(pluginClass);
-    }
-
-    /**
-     * Sets the disabled plugins to be as specified.
-     * @param newDisabled the new list of disabled plugins.
-     */
-    public void setDisabledPlugins(Collection<String> newDisabled){
-        disabledPlugins.clear();
-        disabledPlugins.addAll(newDisabled);
     }
 
 }

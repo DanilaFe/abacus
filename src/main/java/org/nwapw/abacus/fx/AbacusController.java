@@ -9,8 +9,11 @@ import javafx.scene.text.Text;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import org.nwapw.abacus.Abacus;
+import org.nwapw.abacus.config.Configuration;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.tree.TreeNode;
+
+import java.util.Set;
 
 
 /**
@@ -106,10 +109,16 @@ public class AbacusController {
         outputColumn.setCellValueFactory(cell -> cell.getValue().outputProperty());
 
         abacus = new Abacus();
+        Configuration configuration = abacus.getConfiguration();
+        Set<String> disabledPlugins = configuration.getDisabledPlugins();
         numberImplementationOptions.addAll(abacus.getPluginManager().getAllNumbers());
-        String actualImplementation = abacus.getConfiguration().getNumberImplementation();
+        String actualImplementation = configuration.getNumberImplementation();
         String toSelect = (numberImplementationOptions.contains(actualImplementation)) ? actualImplementation : "naive";
         numberImplementationBox.getSelectionModel().select(toSelect);
+        for(Class<?> pluginClass : abacus.getPluginManager().getLoadedPluginClasses()){
+            String fullName = pluginClass.getName();
+            enabledPlugins.add(new ToggleablePlugin(!disabledPlugins.contains(fullName), fullName));
+        }
     }
 
     @FXML
@@ -132,6 +141,18 @@ public class AbacusController {
 
         inputButton.setDisable(false);
         inputField.setText("");
+    }
+
+    @FXML
+    private void performReload(){
+        Configuration configuration = abacus.getConfiguration();
+        Set<String> disabledPlugins = configuration.getDisabledPlugins();
+        disabledPlugins.clear();
+        for(ToggleablePlugin pluginEntry : enabledPlugins){
+            if(!pluginEntry.isEnabled()) disabledPlugins.add(pluginEntry.getClassName());
+        }
+        abacus.getPluginManager().reload();
+        abacus.getConfiguration().saveTo(Abacus.CONFIG_FILE);
     }
 
 }
