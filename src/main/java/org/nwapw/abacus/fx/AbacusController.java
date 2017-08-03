@@ -25,6 +25,19 @@ import java.util.Set;
 public class AbacusController implements PluginListener {
 
     /**
+     * The title for the apply alert dialog.
+     */
+    private static final String APPLY_MSG_TITLE = "\"Apply\" Needed";
+    /**
+     * The text for the header of the apply alert dialog.
+     */
+    private static final String APPLY_MSG_HEADER = "The settings have not been applied.";
+    /**
+     * The text for the dialog that is shown if settings haven't been applied.
+     */
+    private static final String APPLY_MSG_TEXT = "You have made changes to the configuration, however, you haven't pressed \"Apply\". " +
+                "The changes to the configuration will not be present in the calculator until \"Apply\" is pressed.";
+    /**
      * Constant string that is displayed if the text could not be lexed or parsed.
      */
     private static final String ERR_SYNTAX = "Syntax Error";
@@ -69,7 +82,19 @@ public class AbacusController implements PluginListener {
      */
     private ObservableList<ToggleablePlugin> enabledPlugins;
 
+    /**
+     * The abacus instance used for changing the plugin configuration.
+     */
     private Abacus abacus;
+
+    /**
+     * Boolean which represents whether changes were made to the configuration.
+     */
+    private boolean changesMade;
+    /**
+     * The alert shown when a press to "apply" is needed.
+     */
+    private Alert reloadAlert;
 
     @FXML
     public void initialize(){
@@ -106,6 +131,13 @@ public class AbacusController implements PluginListener {
         abacus = new Abacus();
         abacus.getPluginManager().addListener(this);
         abacus.getPluginManager().reload();
+
+        changesMade = false;
+
+        reloadAlert = new Alert(Alert.AlertType.WARNING);
+        reloadAlert.setTitle(APPLY_MSG_TITLE);
+        reloadAlert.setTitle(APPLY_MSG_HEADER);
+        reloadAlert.setContentText(APPLY_MSG_TEXT);
     }
 
     @FXML
@@ -132,12 +164,6 @@ public class AbacusController implements PluginListener {
 
     @FXML
     private void performReload(){
-        Configuration configuration = abacus.getConfiguration();
-        Set<String> disabledPlugins = configuration.getDisabledPlugins();
-        disabledPlugins.clear();
-        for(ToggleablePlugin pluginEntry : enabledPlugins){
-            if(!pluginEntry.isEnabled()) disabledPlugins.add(pluginEntry.getClassName());
-        }
         abacus.getPluginManager().reload();
     }
 
@@ -145,7 +171,13 @@ public class AbacusController implements PluginListener {
     private void performSave(){
         Configuration configuration = abacus.getConfiguration();
         configuration.setNumberImplementation(numberImplementationBox.getSelectionModel().getSelectedItem());
+        Set<String> disabledPlugins = configuration.getDisabledPlugins();
+        disabledPlugins.clear();
+        for(ToggleablePlugin pluginEntry : enabledPlugins){
+            if(!pluginEntry.isEnabled()) disabledPlugins.add(pluginEntry.getClassName());
+        }
         configuration.saveTo(Abacus.CONFIG_FILE);
+        changesMade = false;
     }
 
     @Override
