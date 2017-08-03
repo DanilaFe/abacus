@@ -37,8 +37,6 @@ public class UnaryNode extends TreeNode {
             return null;
         Object reducedChild = applyTo.reduce(reducer);
         if (reducedChild == null) return null;
-        if(Thread.currentThread().isInterrupted())
-            return null;
         T a = reducer.reduceNode(this, reducedChild);
         if(Thread.currentThread().isInterrupted())
             return null;
