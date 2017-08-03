@@ -1,5 +1,6 @@
 package org.nwapw.abacus.fx;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -25,7 +26,10 @@ public class AbacusController {
      * Constant string that is displayed if the tree could not be reduced.
      */
     private static final String ERR_EVAL = "Evaluation Error";
-
+    /**
+     * Constant string that is displayed if the calculations are stopped before they are done.
+     */
+    private static final String ERR_STOP = "Stopped";
     @FXML
     private TableView<HistoryModel> historyTable;
     @FXML
@@ -53,6 +57,16 @@ public class AbacusController {
      * other main processing code.
      */
     private ObservableList<String> numberImplementationOptions;
+
+    /**
+     * Thread used for calculating.
+     */
+    private Thread calcThread;
+
+    /**
+     * Checks whether the calculator is calculating.
+     */
+    private boolean calculating;
 
     private Abacus abacus;
 
@@ -87,24 +101,48 @@ public class AbacusController {
 
     @FXML
     private void performCalculation(){
-        inputButton.setDisable(true);
-        TreeNode constructedTree = abacus.parseString(inputField.getText());
-        if(constructedTree == null){
-            outputText.setText(ERR_SYNTAX);
-            inputButton.setDisable(false);
-            return;
-        }
-        NumberInterface evaluatedNumber = abacus.evaluateTree(constructedTree);
-        if(evaluatedNumber == null){
-            outputText.setText(ERR_EVAL);
-            inputButton.setDisable(false);
-            return;
-        }
-        outputText.setText(evaluatedNumber.toString());
-        historyData.add(new HistoryModel(inputField.getText(), constructedTree.toString(), evaluatedNumber.toString()));
+        Runnable calculator = new Runnable(){
+            public void run() {
+                calculating = true;
+                Platform.runLater(() -> inputButton.setDisable(true));
+                TreeNode constructedTree = abacus.parseString(inputField.getText());
+                if (constructedTree == null) {
+                    Platform.runLater(() ->outputText.setText(ERR_SYNTAX));
+                    Platform.runLater(() -> inputButton.setDisable(false));
+                    //return;
+                }else {
+                    NumberInterface evaluatedNumber = abacus.evaluateTree(constructedTree);
+                    if (evaluatedNumber == null) {
+                        if(Thread.currentThread().isInterrupted()){
+                            Platform.runLater(() -> outputText.setText(ERR_STOP));
+                            Platform.runLater(() -> inputButton.setDisable(false));
+                        }else {
+                            Platform.runLater(() -> outputText.setText(ERR_EVAL));
+                            Platform.runLater(() -> inputButton.setDisable(false));
+                            //return;
+                        }
+                    } else {
+                        Platform.runLater(() -> outputText.setText(evaluatedNumber.toString()));
 
+                        historyData.add(new HistoryModel(inputField.getText(), constructedTree.toString(), evaluatedNumber.toString()));
+
+                        Platform.runLater(() -> inputButton.setDisable(false));
+                        Platform.runLater(() -> inputField.setText(""));
+                    }
+                }
+                calculating = false;
+            }
+        };
+        if(!calculating) {
+                calcThread = new Thread(calculator);
+                calcThread.start();
+        }
+    }
+    @FXML
+    private void stopCalculation(){
+        calcThread.interrupt();
+        calculating = false;
         inputButton.setDisable(false);
-        inputField.setText("");
     }
 
 }
