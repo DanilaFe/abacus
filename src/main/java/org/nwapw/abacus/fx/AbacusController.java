@@ -92,9 +92,24 @@ public class AbacusController implements PluginListener {
      */
     private boolean changesMade;
     /**
+     * Whether an alert about changes to the configuration was already shown.
+     */
+    private boolean reloadAlertShown;
+    /**
      * The alert shown when a press to "apply" is needed.
      */
     private Alert reloadAlert;
+
+    /**
+     * Alerts the user if the changes they made
+     * have not yet been applied.
+     */
+    private void alertIfApplyNeeded(boolean ignorePrevious){
+        if(changesMade && (!reloadAlertShown || ignorePrevious)) {
+            reloadAlertShown = true;
+            reloadAlert.showAndWait();
+        }
+    }
 
     @FXML
     public void initialize(){
@@ -117,6 +132,7 @@ public class AbacusController implements PluginListener {
         historyTable.setItems(historyData);
         numberImplementationOptions = FXCollections.observableArrayList();
         numberImplementationBox.setItems(numberImplementationOptions);
+        numberImplementationBox.getSelectionModel().selectedIndexProperty().addListener(e -> changesMade = true);
         historyTable.getSelectionModel().setCellSelectionEnabled(true);
         enabledPlugins = FXCollections.observableArrayList();
         enabledPluginView.setItems(enabledPlugins);
@@ -133,10 +149,11 @@ public class AbacusController implements PluginListener {
         abacus.getPluginManager().reload();
 
         changesMade = false;
+        reloadAlertShown = false;
 
         reloadAlert = new Alert(Alert.AlertType.WARNING);
         reloadAlert.setTitle(APPLY_MSG_TITLE);
-        reloadAlert.setTitle(APPLY_MSG_HEADER);
+        reloadAlert.setHeaderText(APPLY_MSG_HEADER);
         reloadAlert.setContentText(APPLY_MSG_TEXT);
     }
 
@@ -164,6 +181,7 @@ public class AbacusController implements PluginListener {
 
     @FXML
     private void performReload(){
+        alertIfApplyNeeded(true);
         abacus.getPluginManager().reload();
     }
 
@@ -178,6 +196,7 @@ public class AbacusController implements PluginListener {
         }
         configuration.saveTo(Abacus.CONFIG_FILE);
         changesMade = false;
+        reloadAlertShown = false;
     }
 
     @Override
@@ -190,7 +209,9 @@ public class AbacusController implements PluginListener {
         numberImplementationBox.getSelectionModel().select(toSelect);
         for(Class<?> pluginClass : abacus.getPluginManager().getLoadedPluginClasses()){
             String fullName = pluginClass.getName();
-            enabledPlugins.add(new ToggleablePlugin(!disabledPlugins.contains(fullName), fullName));
+            ToggleablePlugin plugin = new ToggleablePlugin(!disabledPlugins.contains(fullName), fullName);
+            plugin.enabledProperty().addListener(e -> changesMade = true);
+            enabledPlugins.add(plugin);
         }
     }
 
