@@ -8,6 +8,7 @@ import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.number.PreciseNumber;
 
+import javax.print.attribute.standard.MediaSize;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.BiFunction;
@@ -133,12 +134,20 @@ public class StandardPlugin extends Plugin {
     public static final Operator OP_CARET = new Operator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 2, new Function() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
-            return params.length == 2;
+            return params.length == 2
+            && !(params[0].compareTo(NaiveNumber.ZERO.promoteTo(params[0].getClass())) == 0
+                    && params[1].compareTo(NaiveNumber.ZERO.promoteTo(params[1].getClass())) == 0);
         }
 
         @Override
         protected NumberInterface applyInternal(NumberInterface[] params) {
-            return FUNCTION_EXP.apply(FUNCTION_LN.apply(params[0]).multiply(params[1]));
+            if(params[0].compareTo(NaiveNumber.ZERO.promoteTo(params[0].getClass())) == 0){
+                return NaiveNumber.ZERO.promoteTo(params[0].getClass());
+            }
+            else if(params[1].compareTo(NaiveNumber.ZERO.promoteTo(params[0].getClass())) == 0){
+                return NaiveNumber.ONE.promoteTo(params[1].getClass());
+            }
+            return FUNCTION_EXP.apply(FUNCTION_LN.apply(FUNCTION_ABS.apply(params[0])).multiply(params[1]));
         }
     });
     /**
