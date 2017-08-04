@@ -11,8 +11,8 @@
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.nwapw.abacus.fx.AbacusController">
     <center>
-        <TabPane>
-            <Tab text="Calculator" closable="false">
+        <TabPane fx:id="coreTabPane">
+            <Tab fx:id="calculateTab" text="Calculator" closable="false">
                 <BorderPane>
                     <center>
                         <TableView fx:id="historyTable">
@@ -41,7 +41,7 @@
                     </bottom>
                 </BorderPane>
             </Tab>
-            <Tab text="Settings" closable="false">
+            <Tab fx:id="settingsTab" text="Settings" closable="false">
                 <GridPane hgap="10" vgap="10">
                     <padding><Insets left="10" right="10" top="10" bottom="10"/></padding>
                     <Label text="Number Implementation" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
