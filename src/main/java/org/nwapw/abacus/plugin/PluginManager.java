@@ -2,6 +2,7 @@ package org.nwapw.abacus.plugin;
 
 import org.nwapw.abacus.function.Function;
 import org.nwapw.abacus.function.Operator;
+import org.nwapw.abacus.number.NumberInterface;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -31,6 +32,7 @@ public class PluginManager {
      */
     private Map<String, Operator> cachedOperators;
     private Map<String, NumberImplementation> cachedNumberImplementations;
+    private Map<Class<? extends NumberInterface>, NumberImplementation> cachedInterfaceImplementations;
     /**
      * List of all functions loaded by the plugins.
      */
@@ -54,6 +56,7 @@ public class PluginManager {
         cachedFunctions = new HashMap<>();
         cachedOperators = new HashMap<>();
         cachedNumberImplementations = new HashMap<>();
+        cachedInterfaceImplementations = new HashMap<>();
         allFunctions = new HashSet<>();
         allOperators = new HashSet<>();
         allNumberImplementations = new HashSet<>();
@@ -117,6 +120,24 @@ public class PluginManager {
         return searchCached(plugins, cachedNumberImplementations, Plugin::providedNumberImplementations,
                 Plugin::getNumberImplementation, name);
     }
+
+    public NumberImplementation interfaceImplementationFor(Class<? extends NumberInterface> name){
+        if(cachedInterfaceImplementations.containsKey(name)) return cachedInterfaceImplementations.get(name);
+        NumberImplementation toReturn = null;
+        outside:
+        for(Plugin plugin : plugins){
+            for(String implementationName : plugin.providedNumberImplementations()){
+                NumberImplementation implementation = plugin.getNumberImplementation(implementationName);
+                if(implementation.getImplementation().equals(name)) {
+                    toReturn = implementation;
+                    break outside;
+                }
+            }
+        }
+        cachedInterfaceImplementations.put(name, toReturn);
+        return toReturn;
+    }
+
     /**
      * Adds an instance of Plugin that already has been instantiated.
      *

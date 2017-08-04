@@ -18,6 +18,18 @@ public abstract class NumberImplementation {
         promotionPaths = new HashMap<>();
     }
 
+    public final Map<Class<? extends NumberInterface>, Function<NumberInterface, NumberInterface>> getPromotionPaths(){
+        return promotionPaths;
+    }
+
+    public final Class<? extends NumberInterface> getImplementation(){
+        return implementation;
+    }
+
+    public final int getPriority(){
+        return priority;
+    }
+
     public abstract NumberInterface instanceForString(String string);
     public abstract NumberInterface instanceForPi();
 
