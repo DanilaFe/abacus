@@ -429,7 +429,7 @@ public class StandardPlugin extends Plugin {
         boolean takeReciprocal = exponent.compareTo((new NaiveNumber(0)).promoteTo(numberClass))<0;
         exponent = FUNCTION_ABS.apply(exponent);
         NumberInterface power = number;
-        for(NumberInterface currentExponent =(new NaiveNumber(1)).promoteTo(numberClass);currentExponent.compareTo(exponent)<0;currentExponent.add((new NaiveNumber(1)).promoteTo(numberClass))){
+        for(NumberInterface currentExponent =(new NaiveNumber(1)).promoteTo(numberClass);currentExponent.compareTo(exponent)<0;currentExponent = currentExponent.add((new NaiveNumber(1)).promoteTo(numberClass))){
             power = power.multiply(number);
             if(Thread.currentThread().isInterrupted())
                 return null;
