@@ -18,8 +18,6 @@ import java.util.function.BiFunction;
  */
 public class StandardPlugin extends Plugin {
 
-    private static final HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>> FACTORIAL_LISTS = new HashMap<>();
-
     /**
      * The addition operator, +
      */
@@ -130,20 +128,6 @@ public class StandardPlugin extends Plugin {
         }
     });
     /**
-     * The caret / pow operator, ^
-     */
-    public static final Operator OP_CARET = new Operator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 2, new Function() {
-        @Override
-        protected boolean matchesParams(NumberInterface[] params) {
-            return params.length == 2;
-        }
-
-        @Override
-        protected NumberInterface applyInternal(NumberInterface[] params) {
-            return FUNCTION_EXP.apply(FUNCTION_LN.apply(params[0]).multiply(params[1]));
-        }
-    });
-    /**
      * The absolute value function, abs(-3) = 3
      */
     public static final Function FUNCTION_ABS = new Function() {
@@ -155,49 +139,6 @@ public class StandardPlugin extends Plugin {
         @Override
         protected NumberInterface applyInternal(NumberInterface[] params) {
             return params[0].multiply((new NaiveNumber(params[0].signum())).promoteTo(params[0].getClass()));
-        }
-    };
-    /**
-     * The exponential function, exp(1) = e^1 = 2.71...
-     */
-    public static final Function FUNCTION_EXP = new Function() {
-        @Override
-        protected boolean matchesParams(NumberInterface[] params) {
-            return params.length == 1;
-        }
-
-        @Override
-        protected NumberInterface applyInternal(NumberInterface[] params) {
-            NumberInterface maxError = getMaxError(params[0]);
-            int n = 0;
-            if(params[0].signum() <= 0){
-                NumberInterface currentTerm = NaiveNumber.ONE.promoteTo(params[0].getClass()), sum = currentTerm;
-                while(FUNCTION_ABS.apply(currentTerm).compareTo(maxError) > 0){
-                    n++;
-                    currentTerm = currentTerm.multiply(params[0]).divide((new NaiveNumber(n)).promoteTo(params[0].getClass()));
-                    sum = sum.add(currentTerm);
-                }
-                return sum;
-            }
-            else{
-                //We need n such that x^(n+1) * 3^ceil(x) <= maxError * (n+1)!.
-                //right and left refer to lhs and rhs in the above inequality.
-                NumberInterface sum = NaiveNumber.ONE.promoteTo(params[0].getClass());
-                NumberInterface nextNumerator = params[0];
-                NumberInterface left = params[0].multiply((new NaiveNumber(3)).promoteTo(params[0].getClass()).intPow(params[0].ceiling().intValue())), right = maxError;
-                do{
-                    sum = sum.add(nextNumerator.divide(factorial(params[0].getClass(), n+1)));
-                    n++;
-                    nextNumerator = nextNumerator.multiply(params[0]);
-                    left = left.multiply(params[0]);
-                    NumberInterface nextN = (new NaiveNumber(n+1)).promoteTo(params[0].getClass());
-                    right = right.multiply(nextN);
-                    //System.out.println(left + ", " + right);
-                }
-                while(left.compareTo(right) > 0);
-                //System.out.println(n+1);
-                return sum;
-            }
         }
     };
     /**
@@ -291,109 +232,6 @@ public class StandardPlugin extends Plugin {
             return OP_CARET.getFunction().apply(params[0], ((new NaiveNumber(0.5)).promoteTo(params[0].getClass())));
         }
     };
-
-    /**
-     * The sine function (the argument is interpreted in radians).
-     */
-    public final Function functionSin = new Function() {
-        @Override
-        protected boolean matchesParams(NumberInterface[] params) {
-            return params.length == 1;
-        }
-
-        @Override
-        protected NumberInterface applyInternal(NumberInterface[] params) {
-            NumberInterface pi = getPi(params[0].getClass());
-            NumberInterface twoPi = pi.multiply(new NaiveNumber(2).promoteTo(pi.getClass()));
-            NumberInterface theta = getSmallAngle(params[0], pi);
-            //System.out.println(theta);
-            if(theta.compareTo(pi.multiply(new NaiveNumber(1.5).promoteTo(twoPi.getClass()))) >= 0){
-                theta = theta.subtract(twoPi);
-            }
-            else if(theta.compareTo(pi.divide(new NaiveNumber(2).promoteTo(pi.getClass()))) > 0){
-                theta = pi.subtract(theta);
-            }
-            //System.out.println(theta);
-            return sinTaylor(theta);
-        }
-    };
-
-    /**
-     * The cosine function (the argument is in radians).
-     */
-    public final Function functionCos = new Function() {
-        @Override
-        protected boolean matchesParams(NumberInterface[] params) {
-            return params.length == 1;
-        }
-
-        @Override
-        protected NumberInterface applyInternal(NumberInterface[] params) {
-            return functionSin.apply(getPi(params[0].getClass()).divide(new NaiveNumber(2).promoteTo(params[0].getClass()))
-                .subtract(params[0]));
-        }
-    };
-
-    /**
-     * The tangent function (the argument is in radians).
-     */
-    public final Function functionTan = new Function() {
-        @Override
-        protected boolean matchesParams(NumberInterface[] params) {
-            return params.length == 1;
-        }
-
-        @Override
-        protected NumberInterface applyInternal(NumberInterface[] params) {
-            return functionSin.apply(params[0]).divide(functionCos.apply(params[0]));
-        }
-    };
-
-    /**
-     * The secant function (the argument is in radians).
-     */
-    public final Function functionSec = new Function() {
-        @Override
-        protected boolean matchesParams(NumberInterface[] params) {
-            return params.length == 1;
-        }
-
-        @Override
-        protected NumberInterface applyInternal(NumberInterface[] params) {
-            return NaiveNumber.ONE.promoteTo(params[0].getClass()).divide(functionCos.apply(params[0]));
-        }
-    };
-
-    /**
-     * The cosecant function (the argument is in radians).
-     */
-    public final Function functionCsc = new Function() {
-        @Override
-        protected boolean matchesParams(NumberInterface[] params) {
-            return params.length == 1;
-        }
-
-        @Override
-        protected NumberInterface applyInternal(NumberInterface[] params) {
-            return NaiveNumber.ONE.promoteTo(params[0].getClass()).divide(functionSin.apply(params[0]));
-        }
-    };
-
-    /**
-     * The cotangent function (the argument is in radians).
-     */
-    public final Function functionCot = new Function() {
-        @Override
-        protected boolean matchesParams(NumberInterface[] params) {
-            return params.length == 1;
-        }
-
-        @Override
-        protected NumberInterface applyInternal(NumberInterface[] params) {
-            return functionCos.apply(params[0]).divide(functionCos.apply(params[0]));
-        }
-    };
-
     /**
      * The implementation for double-based naive numbers.
      */
@@ -408,7 +246,6 @@ public class StandardPlugin extends Plugin {
             return new NaiveNumber(Math.PI);
         }
     };
-
     /**
      * The implementation for the infinite-precision BigDecimal.
      */
@@ -425,24 +262,176 @@ public class StandardPlugin extends Plugin {
             NumberInterface L = new PreciseNumber("13591409");
             NumberInterface X = M;
             NumberInterface sum = L;
-            int termsNeeded = C.getMaxPrecision()/13 + 1;
+            int termsNeeded = C.getMaxPrecision() / 13 + 1;
 
             NumberInterface lSummand = new PreciseNumber("545140134");
             NumberInterface xMultiplier = new PreciseNumber("262537412")
                     .multiply(new PreciseNumber("1000000000"))
                     .add(new PreciseNumber("640768000"))
                     .negate();
-            for(int i = 0; i < termsNeeded; i++){
+            for (int i = 0; i < termsNeeded; i++) {
                 M = M
-                        .multiply(new NaiveNumber(12*i+2).promoteTo(PreciseNumber.class))
-                        .multiply(new NaiveNumber(12*i+6).promoteTo(PreciseNumber.class))
-                        .multiply(new NaiveNumber(12*i+10).promoteTo(PreciseNumber.class))
-                        .divide(new NaiveNumber(Math.pow(i+1,3)).promoteTo(PreciseNumber.class));
+                        .multiply(new NaiveNumber(12 * i + 2).promoteTo(PreciseNumber.class))
+                        .multiply(new NaiveNumber(12 * i + 6).promoteTo(PreciseNumber.class))
+                        .multiply(new NaiveNumber(12 * i + 10).promoteTo(PreciseNumber.class))
+                        .divide(new NaiveNumber(Math.pow(i + 1, 3)).promoteTo(PreciseNumber.class));
                 L = L.add(lSummand);
                 X = X.multiply(xMultiplier);
                 sum = sum.add(M.multiply(L).divide(X));
             }
             return C.divide(sum);
+        }
+    };
+    private static final HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>> FACTORIAL_LISTS = new HashMap<>();
+    /**
+     * The exponential function, exp(1) = e^1 = 2.71...
+     */
+    public static final Function FUNCTION_EXP = new Function() {
+        @Override
+        protected boolean matchesParams(NumberInterface[] params) {
+            return params.length == 1;
+        }
+
+        @Override
+        protected NumberInterface applyInternal(NumberInterface[] params) {
+            NumberInterface maxError = getMaxError(params[0]);
+            int n = 0;
+            if (params[0].signum() <= 0) {
+                NumberInterface currentTerm = NaiveNumber.ONE.promoteTo(params[0].getClass()), sum = currentTerm;
+                while (FUNCTION_ABS.apply(currentTerm).compareTo(maxError) > 0) {
+                    n++;
+                    currentTerm = currentTerm.multiply(params[0]).divide((new NaiveNumber(n)).promoteTo(params[0].getClass()));
+                    sum = sum.add(currentTerm);
+                }
+                return sum;
+            } else {
+                //We need n such that x^(n+1) * 3^ceil(x) <= maxError * (n+1)!.
+                //right and left refer to lhs and rhs in the above inequality.
+                NumberInterface sum = NaiveNumber.ONE.promoteTo(params[0].getClass());
+                NumberInterface nextNumerator = params[0];
+                NumberInterface left = params[0].multiply((new NaiveNumber(3)).promoteTo(params[0].getClass()).intPow(params[0].ceiling().intValue())), right = maxError;
+                do {
+                    sum = sum.add(nextNumerator.divide(factorial(params[0].getClass(), n + 1)));
+                    n++;
+                    nextNumerator = nextNumerator.multiply(params[0]);
+                    left = left.multiply(params[0]);
+                    NumberInterface nextN = (new NaiveNumber(n + 1)).promoteTo(params[0].getClass());
+                    right = right.multiply(nextN);
+                    //System.out.println(left + ", " + right);
+                }
+                while (left.compareTo(right) > 0);
+                //System.out.println(n+1);
+                return sum;
+            }
+        }
+    };
+    /**
+     * The caret / pow operator, ^
+     */
+    public static final Operator OP_CARET = new Operator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 2, new Function() {
+        @Override
+        protected boolean matchesParams(NumberInterface[] params) {
+            return params.length == 2;
+        }
+
+        @Override
+        protected NumberInterface applyInternal(NumberInterface[] params) {
+            return FUNCTION_EXP.apply(FUNCTION_LN.apply(params[0]).multiply(params[1]));
+        }
+    });
+    /**
+     * The sine function (the argument is interpreted in radians).
+     */
+    public final Function functionSin = new Function() {
+        @Override
+        protected boolean matchesParams(NumberInterface[] params) {
+            return params.length == 1;
+        }
+
+        @Override
+        protected NumberInterface applyInternal(NumberInterface[] params) {
+            NumberInterface pi = getPi(params[0].getClass());
+            NumberInterface twoPi = pi.multiply(new NaiveNumber(2).promoteTo(pi.getClass()));
+            NumberInterface theta = getSmallAngle(params[0], pi);
+            //System.out.println(theta);
+            if (theta.compareTo(pi.multiply(new NaiveNumber(1.5).promoteTo(twoPi.getClass()))) >= 0) {
+                theta = theta.subtract(twoPi);
+            } else if (theta.compareTo(pi.divide(new NaiveNumber(2).promoteTo(pi.getClass()))) > 0) {
+                theta = pi.subtract(theta);
+            }
+            //System.out.println(theta);
+            return sinTaylor(theta);
+        }
+    };
+    /**
+     * The cosine function (the argument is in radians).
+     */
+    public final Function functionCos = new Function() {
+        @Override
+        protected boolean matchesParams(NumberInterface[] params) {
+            return params.length == 1;
+        }
+
+        @Override
+        protected NumberInterface applyInternal(NumberInterface[] params) {
+            return functionSin.apply(getPi(params[0].getClass()).divide(new NaiveNumber(2).promoteTo(params[0].getClass()))
+                    .subtract(params[0]));
+        }
+    };
+    /**
+     * The tangent function (the argument is in radians).
+     */
+    public final Function functionTan = new Function() {
+        @Override
+        protected boolean matchesParams(NumberInterface[] params) {
+            return params.length == 1;
+        }
+
+        @Override
+        protected NumberInterface applyInternal(NumberInterface[] params) {
+            return functionSin.apply(params[0]).divide(functionCos.apply(params[0]));
+        }
+    };
+    /**
+     * The secant function (the argument is in radians).
+     */
+    public final Function functionSec = new Function() {
+        @Override
+        protected boolean matchesParams(NumberInterface[] params) {
+            return params.length == 1;
+        }
+
+        @Override
+        protected NumberInterface applyInternal(NumberInterface[] params) {
+            return NaiveNumber.ONE.promoteTo(params[0].getClass()).divide(functionCos.apply(params[0]));
+        }
+    };
+    /**
+     * The cosecant function (the argument is in radians).
+     */
+    public final Function functionCsc = new Function() {
+        @Override
+        protected boolean matchesParams(NumberInterface[] params) {
+            return params.length == 1;
+        }
+
+        @Override
+        protected NumberInterface applyInternal(NumberInterface[] params) {
+            return NaiveNumber.ONE.promoteTo(params[0].getClass()).divide(functionSin.apply(params[0]));
+        }
+    };
+    /**
+     * The cotangent function (the argument is in radians).
+     */
+    public final Function functionCot = new Function() {
+        @Override
+        protected boolean matchesParams(NumberInterface[] params) {
+            return params.length == 1;
+        }
+
+        @Override
+        protected NumberInterface applyInternal(NumberInterface[] params) {
+            return functionCos.apply(params[0]).divide(functionCos.apply(params[0]));
         }
     };
 
@@ -476,6 +465,64 @@ public class StandardPlugin extends Plugin {
         return (new NaiveNumber(10)).promoteTo(number.getClass()).intPow(-number.getMaxPrecision());
     }
 
+    /**
+     * A factorial function that uses memoization for each number class; it efficiently
+     * computes factorials of non-negative integers.
+     *
+     * @param numberClass type of number to return.
+     * @param n           non-negative integer.
+     * @return a number of numClass with value n factorial.
+     */
+    public static NumberInterface factorial(Class<? extends NumberInterface> numberClass, int n) {
+        if (!FACTORIAL_LISTS.containsKey(numberClass)) {
+            FACTORIAL_LISTS.put(numberClass, new ArrayList<>());
+            FACTORIAL_LISTS.get(numberClass).add(NaiveNumber.ONE.promoteTo(numberClass));
+            FACTORIAL_LISTS.get(numberClass).add(NaiveNumber.ONE.promoteTo(numberClass));
+        }
+        ArrayList<NumberInterface> list = FACTORIAL_LISTS.get(numberClass);
+        if (n >= list.size()) {
+            while (list.size() < n + 16) {
+                list.add(list.get(list.size() - 1).multiply(new NaiveNumber(list.size()).promoteTo(numberClass)));
+            }
+        }
+        return list.get(n);
+    }
+
+    /**
+     * Returns the value of the Taylor series for sin (centered at 0) at x.
+     *
+     * @param x where the series is evaluated.
+     * @return the value of the series
+     */
+    private static NumberInterface sinTaylor(NumberInterface x) {
+        NumberInterface power = x, multiplier = x.multiply(x).negate(), currentTerm = x, sum = x;
+        NumberInterface maxError = getMaxError(x);
+        int n = 1;
+        do {
+            n += 2;
+            power = power.multiply(multiplier);
+            currentTerm = power.divide(factorial(x.getClass(), n));
+            sum = sum.add(currentTerm);
+        } while (FUNCTION_ABS.apply(currentTerm).compareTo(maxError) > 0);
+        return sum;
+    }
+
+    /**
+     * Returns an equivalent angle in the interval [0, 2pi)
+     *
+     * @param phi an angle (in radians).
+     * @return theta in [0, 2pi) that differs from phi by a multiple of 2pi.
+     */
+    private static NumberInterface getSmallAngle(NumberInterface phi, NumberInterface pi) {
+        NumberInterface twoPi = pi.multiply(new NaiveNumber("2").promoteTo(phi.getClass()));
+        NumberInterface theta = FUNCTION_ABS.apply(phi).subtract(twoPi
+                .multiply(FUNCTION_ABS.apply(phi).divide(twoPi).floor())); //Now theta is in [0, 2pi).
+        if (phi.signum() < 0) {
+            theta = twoPi.subtract(theta);
+        }
+        return theta;
+    }
+
     @Override
     public void onEnable() {
         registerNumberImplementation("naive", IMPLEMENTATION_NAIVE);
@@ -504,60 +551,5 @@ public class StandardPlugin extends Plugin {
     @Override
     public void onDisable() {
 
-    }
-
-    /**
-     * A factorial function that uses memoization for each number class; it efficiently
-     * computes factorials of non-negative integers.
-     * @param numberClass type of number to return.
-     * @param n non-negative integer.
-     * @return a number of numClass with value n factorial.
-     */
-    public static NumberInterface factorial(Class<? extends NumberInterface> numberClass, int n){
-        if(!FACTORIAL_LISTS.containsKey(numberClass)){
-            FACTORIAL_LISTS.put(numberClass, new ArrayList<>());
-            FACTORIAL_LISTS.get(numberClass).add(NaiveNumber.ONE.promoteTo(numberClass));
-            FACTORIAL_LISTS.get(numberClass).add(NaiveNumber.ONE.promoteTo(numberClass));
-        }
-        ArrayList<NumberInterface> list = FACTORIAL_LISTS.get(numberClass);
-        if(n >= list.size()){
-            while(list.size() < n + 16){
-                list.add(list.get(list.size()-1).multiply(new NaiveNumber(list.size()).promoteTo(numberClass)));
-            }
-        }
-        return list.get(n);
-    }
-
-    /**
-     * Returns the value of the Taylor series for sin (centered at 0) at x.
-     * @param x where the series is evaluated.
-     * @return the value of the series
-     */
-    private static NumberInterface sinTaylor(NumberInterface x){
-        NumberInterface power = x, multiplier = x.multiply(x).negate(), currentTerm = x, sum = x;
-        NumberInterface maxError = getMaxError(x);
-        int n = 1;
-        do{
-            n += 2;
-            power = power.multiply(multiplier);
-            currentTerm = power.divide(factorial(x.getClass(), n));
-            sum = sum.add(currentTerm);
-        } while (FUNCTION_ABS.apply(currentTerm).compareTo(maxError) > 0);
-        return sum;
-    }
-
-    /**
-     * Returns an equivalent angle in the interval [0, 2pi)
-     * @param phi an angle (in radians).
-     * @return theta in [0, 2pi) that differs from phi by a multiple of 2pi.
-     */
-    private static NumberInterface getSmallAngle(NumberInterface phi, NumberInterface pi){
-        NumberInterface twoPi = pi.multiply(new NaiveNumber("2").promoteTo(phi.getClass()));
-        NumberInterface theta = FUNCTION_ABS.apply(phi).subtract(twoPi
-        .multiply(FUNCTION_ABS.apply(phi).divide(twoPi).floor())); //Now theta is in [0, 2pi).
-        if(phi.signum() < 0){
-            theta = twoPi.subtract(theta);
-        }
-        return theta;
     }
 }

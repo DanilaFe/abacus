@@ -102,7 +102,7 @@ public class PreciseNumber implements NumberInterface {
     public NumberInterface ceiling() {
         String str = value.toPlainString();
         int decimalIndex = str.indexOf('.');
-        if(decimalIndex != -1){
+        if (decimalIndex != -1) {
             return this.floor().add(ONE);
         }
         return this;
@@ -112,7 +112,7 @@ public class PreciseNumber implements NumberInterface {
     public NumberInterface floor() {
         String str = value.toPlainString();
         int decimalIndex = str.indexOf('.');
-        if(decimalIndex != -1){
+        if (decimalIndex != -1) {
             return new PreciseNumber(str.substring(0, decimalIndex));
         }
         return this;
@@ -122,7 +122,7 @@ public class PreciseNumber implements NumberInterface {
     public NumberInterface fractionalPart() {
         String str = value.toPlainString();
         int decimalIndex = str.indexOf('.');
-        if(decimalIndex != -1){
+        if (decimalIndex != -1) {
             return new PreciseNumber(str.substring(decimalIndex + 1));
         }
         return ZERO;

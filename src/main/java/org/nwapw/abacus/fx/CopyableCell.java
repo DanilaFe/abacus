@@ -9,6 +9,7 @@ import java.awt.datatransfer.StringSelection;
 /**
  * A cell that copies its value to the clipboard
  * when double clicked.
+ *
  * @param <S> The type of the table view generic type.
  * @param <T> The type of the value contained in the cell.
  */
@@ -17,9 +18,9 @@ public class CopyableCell<S, T> extends TableCell<S, T> {
     /**
      * Creates a new copyable cell.
      */
-    public CopyableCell(){
+    public CopyableCell() {
         addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-            if(event.getClickCount() == 2){
+            if (event.getClickCount() == 2) {
                 Toolkit.getDefaultToolkit().getSystemClipboard()
                         .setContents(new StringSelection(getText()), null);
             }

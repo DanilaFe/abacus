@@ -78,7 +78,7 @@ public abstract class Plugin {
      *
      * @return the list of registered number implementations.
      */
-    public final Set<String> providedNumberImplementations(){
+    public final Set<String> providedNumberImplementations() {
         return numberImplementations.keySet();
     }
 
@@ -108,7 +108,7 @@ public abstract class Plugin {
      * @param name the name of the number implementation to look up.
      * @return the number implementation associated with that name, or null if the plugin doesn't provide it.
      */
-    public final NumberImplementation getNumberImplementation(String name){
+    public final NumberImplementation getNumberImplementation(String name) {
         return numberImplementations.get(name);
     }
 
@@ -160,10 +160,11 @@ public abstract class Plugin {
     /**
      * To be used in load(). Registers a new number implementation with the plugin.
      * This makes it accessible to the plugin manager.
-     * @param name the name of the implementation.
+     *
+     * @param name           the name of the implementation.
      * @param implementation the actual implementation class to register.
      */
-    protected final void registerNumberImplementation(String name, NumberImplementation implementation){
+    protected final void registerNumberImplementation(String name, NumberImplementation implementation) {
         numberImplementations.put(name, implementation);
     }
 
@@ -199,7 +200,7 @@ public abstract class Plugin {
      * @param name the name for which to search.
      * @return the resulting number implementation, or null if none was found.
      */
-    protected final NumberImplementation numberImplementationFor(String name){
+    protected final NumberImplementation numberImplementationFor(String name) {
         return manager.numberImplementationFor(name);
     }
 
@@ -208,10 +209,11 @@ public abstract class Plugin {
      * This is done so that number implementations with various degrees of precision
      * can provide their own pi values, without losing said precision by
      * promoting NaiveNumbers.
+     *
      * @param forClass the class to which to find the pi instance.
      * @return the pi value for the given class.
      */
-    protected final NumberInterface getPi(Class<? extends NumberInterface> forClass){
+    protected final NumberInterface getPi(Class<? extends NumberInterface> forClass) {
         return manager.piFor(forClass);
     }
 

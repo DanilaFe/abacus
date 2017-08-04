@@ -26,6 +26,7 @@ public class NaiveNumber implements NumberInterface {
     public NaiveNumber(String value) {
         this(Double.parseDouble(value));
     }
+
     /**
      * Creates a new NaiveNumber with the given value.
      *
@@ -110,7 +111,7 @@ public class NaiveNumber implements NumberInterface {
 
     @Override
     public int intValue() {
-        return (int)value;
+        return (int) value;
     }
 
     @Override

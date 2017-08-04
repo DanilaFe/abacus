@@ -77,8 +77,8 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
                     continue;
                 }
 
-                if(tokenString.equals("-") && (previousType == null || previousType == TokenType.OP ||
-                        previousType == TokenType.OPEN_PARENTH)){
+                if (tokenString.equals("-") && (previousType == null || previousType == TokenType.OP ||
+                        previousType == TokenType.OPEN_PARENTH)) {
                     from.add(0, new Match<>("`", TokenType.OP));
                     continue;
                 }

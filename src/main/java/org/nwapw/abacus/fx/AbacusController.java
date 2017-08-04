@@ -36,7 +36,7 @@ public class AbacusController implements PluginListener {
      * The text for the dialog that is shown if settings haven't been applied.
      */
     private static final String APPLY_MSG_TEXT = "You have made changes to the configuration, however, you haven't pressed \"Apply\". " +
-                "The changes to the configuration will not be present in the calculator until \"Apply\" is pressed.";
+            "The changes to the configuration will not be present in the calculator until \"Apply\" is pressed.";
     /**
      * Constant string that is displayed if the text could not be lexed or parsed.
      */
@@ -110,15 +110,15 @@ public class AbacusController implements PluginListener {
      * Alerts the user if the changes they made
      * have not yet been applied.
      */
-    private void alertIfApplyNeeded(boolean ignorePrevious){
-        if(changesMade && (!reloadAlertShown || ignorePrevious)) {
+    private void alertIfApplyNeeded(boolean ignorePrevious) {
+        if (changesMade && (!reloadAlertShown || ignorePrevious)) {
             reloadAlertShown = true;
             reloadAlert.showAndWait();
         }
     }
 
     @FXML
-    public void initialize(){
+    public void initialize() {
         Callback<TableColumn<HistoryModel, String>, TableCell<HistoryModel, String>> cellFactory =
                 param -> new CopyableCell<>();
         Callback<ListView<ToggleablePlugin>, ListCell<ToggleablePlugin>> pluginCellFactory =
@@ -150,7 +150,7 @@ public class AbacusController implements PluginListener {
         outputColumn.setCellFactory(cellFactory);
         outputColumn.setCellValueFactory(cell -> cell.getValue().outputProperty());
         coreTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if(oldValue.equals(settingsTab)) alertIfApplyNeeded(true);
+            if (oldValue.equals(settingsTab)) alertIfApplyNeeded(true);
         });
 
         abacus = new Abacus();
@@ -167,16 +167,16 @@ public class AbacusController implements PluginListener {
     }
 
     @FXML
-    private void performCalculation(){
+    private void performCalculation() {
         inputButton.setDisable(true);
         TreeNode constructedTree = abacus.parseString(inputField.getText());
-        if(constructedTree == null){
+        if (constructedTree == null) {
             outputText.setText(ERR_SYNTAX);
             inputButton.setDisable(false);
             return;
         }
         NumberInterface evaluatedNumber = abacus.evaluateTree(constructedTree);
-        if(evaluatedNumber == null){
+        if (evaluatedNumber == null) {
             outputText.setText(ERR_EVAL);
             inputButton.setDisable(false);
             return;
@@ -189,7 +189,7 @@ public class AbacusController implements PluginListener {
     }
 
     @FXML
-    private void performSaveAndReload(){
+    private void performSaveAndReload() {
         performSave();
         performReload();
         changesMade = false;
@@ -197,19 +197,19 @@ public class AbacusController implements PluginListener {
     }
 
     @FXML
-    private void performReload(){
+    private void performReload() {
         alertIfApplyNeeded(true);
         abacus.getPluginManager().reload();
     }
 
     @FXML
-    private void performSave(){
+    private void performSave() {
         Configuration configuration = abacus.getConfiguration();
         configuration.setNumberImplementation(numberImplementationBox.getSelectionModel().getSelectedItem());
         Set<String> disabledPlugins = configuration.getDisabledPlugins();
         disabledPlugins.clear();
-        for(ToggleablePlugin pluginEntry : enabledPlugins){
-            if(!pluginEntry.isEnabled()) disabledPlugins.add(pluginEntry.getClassName());
+        for (ToggleablePlugin pluginEntry : enabledPlugins) {
+            if (!pluginEntry.isEnabled()) disabledPlugins.add(pluginEntry.getClassName());
         }
         configuration.saveTo(Abacus.CONFIG_FILE);
         changesMade = false;
@@ -224,7 +224,7 @@ public class AbacusController implements PluginListener {
         String actualImplementation = configuration.getNumberImplementation();
         String toSelect = (numberImplementationOptions.contains(actualImplementation)) ? actualImplementation : "<default>";
         numberImplementationBox.getSelectionModel().select(toSelect);
-        for(Class<?> pluginClass : abacus.getPluginManager().getLoadedPluginClasses()){
+        for (Class<?> pluginClass : abacus.getPluginManager().getLoadedPluginClasses()) {
             String fullName = pluginClass.getName();
             ToggleablePlugin plugin = new ToggleablePlugin(!disabledPlugins.contains(fullName), fullName);
             plugin.enabledProperty().addListener(e -> changesMade = true);
