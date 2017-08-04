@@ -23,6 +23,9 @@ import java.io.IOException;
  */
 public class Abacus {
 
+    /**
+     * The default number implementation to be used if no other one is available / selected.
+     */
     public static final NumberImplementation DEFAULT_IMPLEMENTATION = StandardPlugin.IMPLEMENTATION_NAIVE;
     /**
      * The file used for saving and loading configuration.
