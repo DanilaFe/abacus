@@ -47,6 +47,12 @@ public class AbacusController implements PluginListener {
     private static final String ERR_EVAL = "Evaluation Error";
 
     @FXML
+    private TabPane coreTabPane;
+    @FXML
+    private Tab calculateTab;
+    @FXML
+    private Tab settingsTab;
+    @FXML
     private TableView<HistoryModel> historyTable;
     @FXML
     private TableColumn<HistoryModel, String> inputColumn;
@@ -143,6 +149,9 @@ public class AbacusController implements PluginListener {
         parsedColumn.setCellValueFactory(cell -> cell.getValue().parsedProperty());
         outputColumn.setCellFactory(cellFactory);
         outputColumn.setCellValueFactory(cell -> cell.getValue().outputProperty());
+        coreTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if(oldValue.equals(settingsTab)) alertIfApplyNeeded(true);
+        });
 
         abacus = new Abacus();
         abacus.getPluginManager().addListener(this);
