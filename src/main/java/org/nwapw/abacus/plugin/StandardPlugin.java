@@ -366,8 +366,6 @@ public class StandardPlugin extends Plugin {
         }
     };
     /**
-     * <<<<<<< HEAD
-     * =======
      * The caret / pow operator, ^
      */
     public static final Operator OP_CARET = new Operator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 2, new Function() {
