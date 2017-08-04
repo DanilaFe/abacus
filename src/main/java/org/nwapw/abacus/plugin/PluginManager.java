@@ -102,9 +102,9 @@ public class PluginManager {
      * @return the retrieved element, or null if it was not found.
      */
     private static <T, K> T searchCached(Collection<Plugin> plugins, Map<K, T> cache,
-                                      java.util.function.Function<Plugin, Set<K>> setFunction,
-                                      java.util.function.BiFunction<Plugin, K, T> getFunction,
-                                      K name) {
+                                         java.util.function.Function<Plugin, Set<K>> setFunction,
+                                         java.util.function.BiFunction<Plugin, K, T> getFunction,
+                                         K name) {
         if (cache.containsKey(name)) return cache.get(name);
 
         T loadedValue = null;
@@ -141,27 +141,29 @@ public class PluginManager {
 
     /**
      * Gets the number implementation under the given name.
+     *
      * @param name the name of the implementation.
      * @return the implementation.
      */
-    public NumberImplementation numberImplementationFor(String name){
+    public NumberImplementation numberImplementationFor(String name) {
         return searchCached(plugins, cachedNumberImplementations, Plugin::providedNumberImplementations,
                 Plugin::getNumberImplementation, name);
     }
 
     /**
      * Gets the number implementation for the given implementation class.
+     *
      * @param name the class for which to find the implementation.
      * @return the implementation.
      */
-    public NumberImplementation interfaceImplementationFor(Class<? extends NumberInterface> name){
-        if(cachedInterfaceImplementations.containsKey(name)) return cachedInterfaceImplementations.get(name);
+    public NumberImplementation interfaceImplementationFor(Class<? extends NumberInterface> name) {
+        if (cachedInterfaceImplementations.containsKey(name)) return cachedInterfaceImplementations.get(name);
         NumberImplementation toReturn = null;
         outside:
-        for(Plugin plugin : plugins){
-            for(String implementationName : plugin.providedNumberImplementations()){
+        for (Plugin plugin : plugins) {
+            for (String implementationName : plugin.providedNumberImplementations()) {
                 NumberImplementation implementation = plugin.getNumberImplementation(implementationName);
-                if(implementation.getImplementation().equals(name)) {
+                if (implementation.getImplementation().equals(name)) {
                     toReturn = implementation;
                     break outside;
                 }
@@ -173,14 +175,15 @@ public class PluginManager {
 
     /**
      * Gets the mathematical constant pi for the given implementation class.
+     *
      * @param forClass the class for which to find pi.
      * @return pi
      */
-    public NumberInterface piFor(Class<? extends NumberInterface> forClass){
-        if(cachedPi.containsKey(forClass)) return cachedPi.get(forClass);
+    public NumberInterface piFor(Class<? extends NumberInterface> forClass) {
+        if (cachedPi.containsKey(forClass)) return cachedPi.get(forClass);
         NumberImplementation implementation = interfaceImplementationFor(forClass);
         NumberInterface generatedPi = null;
-        if(implementation != null){
+        if (implementation != null) {
             generatedPi = implementation.instanceForPi();
         }
         cachedPi.put(forClass, generatedPi);
@@ -219,11 +222,11 @@ public class PluginManager {
     public void load() {
         Set<String> disabledPlugins = abacus.getConfiguration().getDisabledPlugins();
         for (Plugin plugin : plugins) {
-            if(disabledPlugins.contains(plugin.getClass().getName())) continue;
+            if (disabledPlugins.contains(plugin.getClass().getName())) continue;
             plugin.enable();
         }
         for (Plugin plugin : plugins) {
-            if(disabledPlugins.contains(plugin.getClass().getName())) continue;
+            if (disabledPlugins.contains(plugin.getClass().getName())) continue;
             allFunctions.addAll(plugin.providedFunctions());
             allOperators.addAll(plugin.providedOperators());
             allNumberImplementations.addAll(plugin.providedNumberImplementations());
@@ -238,7 +241,7 @@ public class PluginManager {
         listeners.forEach(e -> e.onUnload(this));
         Set<String> disabledPlugins = abacus.getConfiguration().getDisabledPlugins();
         for (Plugin plugin : plugins) {
-            if(disabledPlugins.contains(plugin.getClass().getName())) continue;
+            if (disabledPlugins.contains(plugin.getClass().getName())) continue;
             plugin.disable();
         }
         cachedFunctions.clear();
@@ -283,7 +286,7 @@ public class PluginManager {
      *
      * @return the set of all implementations that were loaded.
      */
-    public Set<String> getAllNumberImplementations(){
+    public Set<String> getAllNumberImplementations() {
         return allNumberImplementations;
     }
 
@@ -308,6 +311,7 @@ public class PluginManager {
     /**
      * Gets a list of all the plugin class files that have been
      * added to the plugin manager.
+     *
      * @return the list of all the added plugin classes.
      */
     public Set<Class<?>> getLoadedPluginClasses() {

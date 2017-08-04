@@ -20,10 +20,11 @@ public class ToggleablePlugin {
 
     /**
      * Creates a new toggleable plugin with the given properties.
-     * @param enabled the enabled / disabled state at the beginning.
+     *
+     * @param enabled   the enabled / disabled state at the beginning.
      * @param className the name of the class this plugin toggles.
      */
-    public ToggleablePlugin(boolean enabled, String className){
+    public ToggleablePlugin(boolean enabled, String className) {
         this.enabled = new SimpleBooleanProperty();
         this.enabled.setValue(enabled);
         this.className = className;
@@ -31,6 +32,7 @@ public class ToggleablePlugin {
 
     /**
      * Gets the enabled property of this plugin.
+     *
      * @return the enabled property.
      */
     public BooleanProperty enabledProperty() {
@@ -39,6 +41,7 @@ public class ToggleablePlugin {
 
     /**
      * Checks if this plugin entry should be enabled.
+     *
      * @return whether this plugin will be enabled.
      */
     public boolean isEnabled() {
@@ -47,6 +50,7 @@ public class ToggleablePlugin {
 
     /**
      * Gets the class name this plugin toggles.
+     *
      * @return the class name that should be disabled.
      */
     public String getClassName() {

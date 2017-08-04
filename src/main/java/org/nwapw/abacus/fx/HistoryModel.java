@@ -26,11 +26,12 @@ public class HistoryModel {
 
     /**
      * Creates a new history model with the given variables.
-     * @param input the user input
+     *
+     * @param input  the user input
      * @param parsed the parsed input
      * @param output the program output.
      */
-    public HistoryModel(String input, String parsed, String output){
+    public HistoryModel(String input, String parsed, String output) {
         this.input = new SimpleStringProperty();
         this.parsed = new SimpleStringProperty();
         this.output = new SimpleStringProperty();
@@ -41,13 +42,16 @@ public class HistoryModel {
 
     /**
      * Gets the input property.
+     *
      * @return the input property.
      */
     public StringProperty inputProperty() {
         return input;
     }
+
     /**
      * Gets the input.
+     *
      * @return the input.
      */
     public String getInput() {
@@ -56,13 +60,16 @@ public class HistoryModel {
 
     /**
      * Gets the parsed input property.
+     *
      * @return the parsed input property.
      */
     public StringProperty parsedProperty() {
         return parsed;
     }
+
     /**
      * Gets the parsed input.
+     *
      * @return the parsed input.
      */
     public String getParsed() {
@@ -71,13 +78,16 @@ public class HistoryModel {
 
     /**
      * Gets the output property.
+     *
      * @return the output property.
      */
     public StringProperty outputProperty() {
         return output;
     }
+
     /**
      * Gets the program output.
+     *
      * @return the output.
      */
     public String getOutput() {
