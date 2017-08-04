@@ -12,15 +12,15 @@ public class PreciseNumber implements NumberInterface {
     /**
      * The number one.
      */
-    static final PreciseNumber ONE = new PreciseNumber(BigDecimal.ONE);
+    public static final PreciseNumber ONE = new PreciseNumber(BigDecimal.ONE);
     /**
      * The number zero.
      */
-    static final PreciseNumber ZERO = new PreciseNumber(BigDecimal.ZERO);
+    public static final PreciseNumber ZERO = new PreciseNumber(BigDecimal.ZERO);
     /**
      * The number ten.
      */
-    static final PreciseNumber TEN = new PreciseNumber(BigDecimal.TEN);
+    public static final PreciseNumber TEN = new PreciseNumber(BigDecimal.TEN);
 
     /**
      * The value of the PreciseNumber.
@@ -99,8 +99,38 @@ public class PreciseNumber implements NumberInterface {
     }
 
     @Override
-    public int ceiling() {
-        return (int) Math.ceil(value.doubleValue());
+    public NumberInterface ceiling() {
+        String str = value.toPlainString();
+        int decimalIndex = str.indexOf('.');
+        if(decimalIndex != -1){
+            return this.floor().add(ONE);
+        }
+        return this;
+    }
+
+    @Override
+    public NumberInterface floor() {
+        String str = value.toPlainString();
+        int decimalIndex = str.indexOf('.');
+        if(decimalIndex != -1){
+            return new PreciseNumber(str.substring(0, decimalIndex));
+        }
+        return this;
+    }
+
+    @Override
+    public NumberInterface fractionalPart() {
+        String str = value.toPlainString();
+        int decimalIndex = str.indexOf('.');
+        if(decimalIndex != -1){
+            return new PreciseNumber(str.substring(decimalIndex + 1));
+        }
+        return ZERO;
+    }
+
+    @Override
+    public int intValue() {
+        return value.intValue();
     }
 
     @Override

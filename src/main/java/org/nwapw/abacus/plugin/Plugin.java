@@ -26,9 +26,9 @@ public abstract class Plugin {
      */
     private Map<String, Operator> operators;
     /**
-     * A hash map of operators mapped to their string names.
+     * The map of the number implementations this plugin provides.
      */
-    private Map<String, Class<? extends NumberInterface>> numbers;
+    private Map<String, NumberImplementation> numberImplementations;
     /**
      * The plugin manager in which to search for functions
      * not inside this package,
@@ -51,7 +51,7 @@ public abstract class Plugin {
         this.manager = manager;
         functions = new HashMap<>();
         operators = new HashMap<>();
-        numbers = new HashMap<>();
+        numberImplementations = new HashMap<>();
         enabled = false;
     }
 
@@ -74,12 +74,12 @@ public abstract class Plugin {
     }
 
     /**
-     * Gets the list of all numbers provided by this plugin.
+     * Gets the list of number implementations provided by this plugin.
      *
-     * @return the list of registered numbers.
+     * @return the list of registered number implementations.
      */
-    public final Set<String> providedNumbers() {
-        return numbers.keySet();
+    public final Set<String> providedNumberImplementations(){
+        return numberImplementations.keySet();
     }
 
     /**
@@ -103,13 +103,13 @@ public abstract class Plugin {
     }
 
     /**
-     * Gets the class under the given name.
+     * Gets the number implementation under the given name.
      *
-     * @param numberName the name of the class.
-     * @return the class, or null if the plugin doesn't provide it.
+     * @param name the name of the number implementation to look up.
+     * @return the number implementation associated with that name, or null if the plugin doesn't provide it.
      */
-    public final Class<? extends NumberInterface> getNumber(String numberName) {
-        return numbers.get(numberName);
+    public final NumberImplementation getNumberImplementation(String name){
+        return numberImplementations.get(name);
     }
 
     /**
@@ -158,16 +158,13 @@ public abstract class Plugin {
     }
 
     /**
-     * To be used in load(). Registers a number class
-     * with the plugin internally, which makes it possible
-     * for the user to select it as an "implementation" for the
-     * number that they would like to use.
-     *
-     * @param name       the name to register it under.
-     * @param toRegister the class to register.
+     * To be used in load(). Registers a new number implementation with the plugin.
+     * This makes it accessible to the plugin manager.
+     * @param name the name of the implementation.
+     * @param implementation the actual implementation class to register.
      */
-    protected final void registerNumber(String name, Class<? extends NumberInterface> toRegister) {
-        numbers.put(name, toRegister);
+    protected final void registerNumberImplementation(String name, NumberImplementation implementation){
+        numberImplementations.put(name, implementation);
     }
 
     /**
@@ -192,6 +189,30 @@ public abstract class Plugin {
      */
     protected final Operator operatorFor(String name) {
         return manager.operatorFor(name);
+    }
+
+    /**
+     * Searches the PluginManager for the given number implementation
+     * name. This can be used by the plugins internally in order to find
+     * implementations that they do not provide.
+     *
+     * @param name the name for which to search.
+     * @return the resulting number implementation, or null if none was found.
+     */
+    protected final NumberImplementation numberImplementationFor(String name){
+        return manager.numberImplementationFor(name);
+    }
+
+    /**
+     * Searches the plugin manager for a Pi value for the given number implementation.
+     * This is done so that number implementations with various degrees of precision
+     * can provide their own pi values, without losing said precision by
+     * promoting NaiveNumbers.
+     * @param forClass the class to which to find the pi instance.
+     * @return the pi value for the given class.
+     */
+    protected final NumberInterface getPi(Class<? extends NumberInterface> forClass){
+        return manager.piFor(forClass);
     }
 
     /**

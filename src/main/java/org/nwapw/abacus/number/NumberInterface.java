@@ -83,7 +83,26 @@ public interface NumberInterface {
      * Returns the least integer greater than or equal to the number.
      * @return the least integer >= the number, if int can hold the value.
      */
-    int ceiling();
+    NumberInterface ceiling();
+
+    /**
+     * Return the greatest integer less than or equal to the number.
+     * @return the greatest int >= the number, if int can hold the value.
+     */
+    NumberInterface floor();
+
+    /**
+     * Returns the fractional part of the number.
+     * @return the fractional part of the number.
+     */
+    NumberInterface fractionalPart();
+
+    /**
+     * Returns the integer representation of this number, discarding any fractional part,
+     * if int can hold the value.
+     * @return
+     */
+    int intValue();
 
     /**
      * Promotes this class to another number class.
