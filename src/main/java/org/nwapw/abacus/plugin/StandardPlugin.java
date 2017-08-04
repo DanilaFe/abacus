@@ -97,7 +97,9 @@ public class StandardPlugin extends Plugin {
         //private HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>> storedList = new HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>>();
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
-            return params.length == 1;
+            return params.length == 1
+                    && params[0].fractionalPart().compareTo(NaiveNumber.ZERO.promoteTo(params[0].getClass())) == 0
+                    && params[0].signum() >= 0;
         }
 
         @Override
