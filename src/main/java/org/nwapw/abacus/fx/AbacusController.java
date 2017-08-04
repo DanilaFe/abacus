@@ -87,7 +87,7 @@ public class AbacusController implements PluginListener {
     private ObservableList<String> numberImplementationOptions;
 
     /**
-<<<<<<< HEAD
+     * <<<<<<< HEAD
      * The list of plugin objects that can be toggled on and off,
      * and, when reloaded, get added to the plugin manager's black list.
      */
@@ -186,10 +186,10 @@ public class AbacusController implements PluginListener {
     }
 
     @FXML
-    private void performCalculation(){
-        Runnable calculator = new Runnable(){
+    private void performCalculation() {
+        Runnable calculator = new Runnable() {
             public void run() {
-                if(delay>0) {
+                if (delay > 0) {
                     Runnable timer = new Runnable() {
                         public void run() {
                             long gap = (long) (delay * 1000);
@@ -207,16 +207,16 @@ public class AbacusController implements PluginListener {
                 Platform.runLater(() -> inputButton.setDisable(true));
                 TreeNode constructedTree = abacus.parseString(inputField.getText());
                 if (constructedTree == null) {
-                    Platform.runLater(() ->outputText.setText(ERR_SYNTAX));
+                    Platform.runLater(() -> outputText.setText(ERR_SYNTAX));
                     Platform.runLater(() -> inputButton.setDisable(false));
                     //return;
-                }else {
+                } else {
                     NumberInterface evaluatedNumber = abacus.evaluateTree(constructedTree);
                     if (evaluatedNumber == null) {
-                        if(Thread.currentThread().isInterrupted()){
+                        if (Thread.currentThread().isInterrupted()) {
                             Platform.runLater(() -> outputText.setText(ERR_STOP));
                             Platform.runLater(() -> inputButton.setDisable(false));
-                        }else {
+                        } else {
                             Platform.runLater(() -> outputText.setText(ERR_EVAL));
                             Platform.runLater(() -> inputButton.setDisable(false));
                             //return;
@@ -232,14 +232,15 @@ public class AbacusController implements PluginListener {
                 calculating = false;
             }
         };
-        if(!calculating) {
-                calcThread = new Thread(calculator);
-                calcThread.setName("calcThread");
-                calcThread.start();
+        if (!calculating) {
+            calcThread = new Thread(calculator);
+            calcThread.setName("calcThread");
+            calcThread.start();
         }
     }
+
     @FXML
-    private void stopCalculation(){
+    private void stopCalculation() {
         calcThread.interrupt();
         calculating = false;
         //Platform.runLater(() ->inputButton.setDisable(false));

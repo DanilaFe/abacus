@@ -62,15 +62,15 @@ public class FunctionNode extends TreeNode {
 
     @Override
     public <T> T reduce(Reducer<T> reducer) {
-        if(Thread.currentThread().isInterrupted())
+        if (Thread.currentThread().isInterrupted())
             return null;
         Object[] reducedChildren = new Object[children.size()];
         for (int i = 0; i < reducedChildren.length; i++) {
             reducedChildren[i] = children.get(i).reduce(reducer);
-            if (Thread.currentThread().isInterrupted()||reducedChildren[i] == null) return null;
+            if (Thread.currentThread().isInterrupted() || reducedChildren[i] == null) return null;
         }
         T a = reducer.reduceNode(this, reducedChildren);
-        if(Thread.currentThread().isInterrupted())
+        if (Thread.currentThread().isInterrupted())
             return null;
         return a;
     }
