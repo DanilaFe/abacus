@@ -19,7 +19,6 @@ import java.util.function.BiFunction;
 public class StandardPlugin extends Plugin {
 
     private static HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>> factorialLists = new HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>>();
-    static HashMap<Class<? extends NumberInterface>, NumberInterface> piValues = new HashMap<Class<? extends NumberInterface>, NumberInterface>();
 
     /**
      * The addition operator, +
@@ -284,7 +283,7 @@ public class StandardPlugin extends Plugin {
     /**
      * The sine function (the argument is interpreted in radians).
      */
-    public static final Function FUNCTION_SIN = new Function() {
+    public final Function functionSin = new Function() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
             return params.length == 1;
@@ -294,7 +293,7 @@ public class StandardPlugin extends Plugin {
         protected NumberInterface applyInternal(NumberInterface[] params) {
             NumberInterface pi = getPi(params[0].getClass());
             NumberInterface twoPi = pi.multiply(new NaiveNumber(2).promoteTo(pi.getClass()));
-            NumberInterface theta = getSmallAngle(params[0]);
+            NumberInterface theta = getSmallAngle(params[0], pi);
             //System.out.println(theta);
             if(theta.compareTo(pi.multiply(new NaiveNumber(1.5).promoteTo(twoPi.getClass()))) >= 0){
                 theta = theta.subtract(twoPi);
@@ -327,7 +326,29 @@ public class StandardPlugin extends Plugin {
 
         @Override
         public NumberInterface instanceForPi() {
-            return null;
+            NumberInterface C = FUNCTION_SQRT.apply(new PreciseNumber("10005")).multiply(new PreciseNumber("426880"));
+            NumberInterface M = PreciseNumber.ONE;
+            NumberInterface L = new PreciseNumber("13591409");
+            NumberInterface X = M;
+            NumberInterface sum = L;
+            int termsNeeded = C.getMaxPrecision()/13 + 1;
+
+            NumberInterface lSummand = new PreciseNumber("545140134");
+            NumberInterface xMultiplier = new PreciseNumber("262537412")
+                    .multiply(new PreciseNumber("1000000000"))
+                    .add(new PreciseNumber("640768000"))
+                    .negate();
+            for(int i = 0; i < termsNeeded; i++){
+                M = M
+                        .multiply(new NaiveNumber(12*i+2).promoteTo(PreciseNumber.class))
+                        .multiply(new NaiveNumber(12*i+6).promoteTo(PreciseNumber.class))
+                        .multiply(new NaiveNumber(12*i+10).promoteTo(PreciseNumber.class))
+                        .divide(new NaiveNumber(Math.pow(i+1,3)).promoteTo(PreciseNumber.class));
+                L = L.add(lSummand);
+                X = X.multiply(xMultiplier);
+                sum = sum.add(M.multiply(L).divide(X));
+            }
+            return C.divide(sum);
         }
     };
 
@@ -377,7 +398,7 @@ public class StandardPlugin extends Plugin {
         registerFunction("exp", FUNCTION_EXP);
         registerFunction("ln", FUNCTION_LN);
         registerFunction("sqrt", FUNCTION_SQRT);
-        registerFunction("sin", FUNCTION_SIN);
+        registerFunction("sin", functionSin);
     }
 
     @Override
@@ -426,47 +447,12 @@ public class StandardPlugin extends Plugin {
     }
 
     /**
-     * Returns an approximation of Pi, with appropriate accuracy for given number class.
-     * @param numClass type of number.
-     * @return A number of class numClass, with value approximately Pi = 3.1415...
-     */
-    public static NumberInterface getPi(Class<? extends NumberInterface> numClass){
-        if(!piValues.containsKey(numClass)){
-            //https://en.wikipedia.org/wiki/Chudnovsky_algorithm
-            NumberInterface C = FUNCTION_SQRT.apply(new NaiveNumber(10005).promoteTo(numClass)).multiply(new NaiveNumber(426880).promoteTo(numClass));
-            NumberInterface M = NaiveNumber.ONE.promoteTo(numClass);
-            NumberInterface L = new NaiveNumber(13591409).promoteTo(numClass);
-            NumberInterface X = M;
-            NumberInterface sum = L;
-            int termsNeeded = C.getMaxPrecision()/13 + 1;
-
-            NumberInterface lSummand = new NaiveNumber(545140134).promoteTo(L.getClass());
-            NumberInterface xMultiplier = new NaiveNumber(262537412).promoteTo(X.getClass())
-                    .multiply(new NaiveNumber(1000000000).promoteTo(X.getClass()))
-                    .add(new NaiveNumber(640768000).promoteTo(X.getClass()))
-                    .negate();
-            for(int i = 0; i < termsNeeded; i++){
-                M = M
-                        .multiply(new NaiveNumber(12*i+2).promoteTo(M.getClass()))
-                        .multiply(new NaiveNumber(12*i+6).promoteTo(M.getClass()))
-                        .multiply(new NaiveNumber(12*i+10).promoteTo(M.getClass()))
-                        .divide(new NaiveNumber(Math.pow(i+1,3)).promoteTo(M.getClass()));
-                L = L.add(lSummand);
-                X = X.multiply(xMultiplier);
-                sum = sum.add(M.multiply(L).divide(X));
-            }
-            piValues.put(numClass, C.divide(sum));
-        }
-        return piValues.get(numClass);
-    }
-
-    /**
      * Returns an equivalent angle in the interval [0, 2pi)
      * @param phi an angle (in radians).
      * @return theta in [0, 2pi) that differs from phi by a multiple of 2pi.
      */
-    private static NumberInterface getSmallAngle(NumberInterface phi){
-        NumberInterface twoPi = getPi(phi.getClass()).multiply(new NaiveNumber("2").promoteTo(phi.getClass()));
+    private static NumberInterface getSmallAngle(NumberInterface phi, NumberInterface pi){
+        NumberInterface twoPi = pi.multiply(new NaiveNumber("2").promoteTo(phi.getClass()));
         NumberInterface theta = FUNCTION_ABS.apply(phi).subtract(twoPi
         .multiply(FUNCTION_ABS.apply(phi).divide(twoPi).floor())); //Now theta is in [0, 2pi).
         if(phi.signum() < 0){

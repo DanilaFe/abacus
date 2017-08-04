@@ -2,6 +2,7 @@ package org.nwapw.abacus.plugin;
 
 import org.nwapw.abacus.function.Function;
 import org.nwapw.abacus.function.Operator;
+import org.nwapw.abacus.number.NumberInterface;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -175,6 +176,10 @@ public abstract class Plugin {
 
     protected final NumberImplementation numberImplementationFor(String name){
         return manager.numberImplementationFor(name);
+    }
+
+    protected final NumberInterface getPi(Class<? extends NumberInterface> forClass){
+        return manager.interfaceImplementationFor(forClass).instanceForPi();
     }
 
     /**
