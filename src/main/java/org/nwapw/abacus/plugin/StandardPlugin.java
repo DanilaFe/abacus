@@ -18,7 +18,7 @@ import java.util.function.BiFunction;
  */
 public class StandardPlugin extends Plugin {
 
-    private static HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>> factorialLists = new HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>>();
+    private static final HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>> FACTORIAL_LISTS = new HashMap<>();
 
     /**
      * The addition operator, +
@@ -318,6 +318,9 @@ public class StandardPlugin extends Plugin {
         }
     };
 
+    /**
+     * The cosine function (the argument is in radians).
+     */
     public final Function functionCos = new Function() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
@@ -331,6 +334,9 @@ public class StandardPlugin extends Plugin {
         }
     };
 
+    /**
+     * The tangent function (the argument is in radians).
+     */
     public final Function functionTan = new Function() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
@@ -343,6 +349,9 @@ public class StandardPlugin extends Plugin {
         }
     };
 
+    /**
+     * The secant function (the argument is in radians).
+     */
     public final Function functionSec = new Function() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
@@ -355,6 +364,9 @@ public class StandardPlugin extends Plugin {
         }
     };
 
+    /**
+     * The cosecant function (the argument is in radians).
+     */
     public final Function functionCsc = new Function() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
@@ -367,6 +379,9 @@ public class StandardPlugin extends Plugin {
         }
     };
 
+    /**
+     * The cotangent function (the argument is in radians).
+     */
     public final Function functionCot = new Function() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
@@ -499,12 +514,12 @@ public class StandardPlugin extends Plugin {
      * @return a number of numClass with value n factorial.
      */
     public static NumberInterface factorial(Class<? extends NumberInterface> numberClass, int n){
-        if(!factorialLists.containsKey(numberClass)){
-            factorialLists.put(numberClass, new ArrayList<>());
-            factorialLists.get(numberClass).add(NaiveNumber.ONE.promoteTo(numberClass));
-            factorialLists.get(numberClass).add(NaiveNumber.ONE.promoteTo(numberClass));
+        if(!FACTORIAL_LISTS.containsKey(numberClass)){
+            FACTORIAL_LISTS.put(numberClass, new ArrayList<>());
+            FACTORIAL_LISTS.get(numberClass).add(NaiveNumber.ONE.promoteTo(numberClass));
+            FACTORIAL_LISTS.get(numberClass).add(NaiveNumber.ONE.promoteTo(numberClass));
         }
-        ArrayList<NumberInterface> list = factorialLists.get(numberClass);
+        ArrayList<NumberInterface> list = FACTORIAL_LISTS.get(numberClass);
         if(n >= list.size()){
             while(list.size() < n + 16){
                 list.add(list.get(list.size()-1).multiply(new NaiveNumber(list.size()).promoteTo(numberClass)));
