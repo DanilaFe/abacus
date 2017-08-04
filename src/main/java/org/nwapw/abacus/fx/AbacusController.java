@@ -189,6 +189,14 @@ public class AbacusController implements PluginListener {
     }
 
     @FXML
+    private void performSaveAndReload(){
+        performSave();
+        performReload();
+        changesMade = false;
+        reloadAlertShown = false;
+    }
+
+    @FXML
     private void performReload(){
         alertIfApplyNeeded(true);
         abacus.getPluginManager().reload();
