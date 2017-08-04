@@ -2,12 +2,12 @@ package org.nwapw.abacus;
 
 import org.nwapw.abacus.config.Configuration;
 import org.nwapw.abacus.fx.AbacusApplication;
-import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.parsing.LexerTokenizer;
 import org.nwapw.abacus.parsing.ShuntingYardParser;
 import org.nwapw.abacus.parsing.TreeBuilder;
 import org.nwapw.abacus.plugin.ClassFinder;
+import org.nwapw.abacus.plugin.NumberImplementation;
 import org.nwapw.abacus.plugin.PluginManager;
 import org.nwapw.abacus.plugin.StandardPlugin;
 import org.nwapw.abacus.tree.NumberReducer;
@@ -15,7 +15,6 @@ import org.nwapw.abacus.tree.TreeNode;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * The main calculator class. This is responsible
@@ -24,10 +23,7 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class Abacus {
 
-    /**
-     * The default implementation to use for the number representation.
-     */
-    public static final Class<? extends NumberInterface> DEFAULT_NUMBER = NaiveNumber.class;
+    public static final NumberImplementation DEFAULT_IMPLEMENTATION = StandardPlugin.IMPLEMENTATION_NAIVE;
     /**
      * The file used for saving and loading configuration.
      */
@@ -147,15 +143,10 @@ public class Abacus {
      * @return the resulting number.
      */
     public NumberInterface numberFromString(String numberString) {
-        Class<? extends NumberInterface> toInstantiate =
-                pluginManager.numberFor(configuration.getNumberImplementation());
-        if (toInstantiate == null) toInstantiate = DEFAULT_NUMBER;
+        NumberImplementation toInstantiate =
+                pluginManager.numberImplementationFor(configuration.getNumberImplementation());
+        if (toInstantiate == null) toInstantiate = DEFAULT_IMPLEMENTATION;
 
-        try {
-            return toInstantiate.getConstructor(String.class).newInstance(numberString);
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return toInstantiate.instanceForString(numberString);
     }
 }

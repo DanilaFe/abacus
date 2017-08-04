@@ -1,25 +1,12 @@
 package org.nwapw.abacus.function;
 
-import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
-import org.nwapw.abacus.number.PreciseNumber;
-
-import java.util.HashMap;
 
 /**
  * A function that operates on one or more
  * inputs and returns a single number.
  */
 public abstract class Function {
-
-    /**
-     * A map to correctly promote different number implementations to each other.
-     */
-    private static final HashMap<Class<? extends NumberInterface>, Integer> priorityMap =
-            new HashMap<Class<? extends NumberInterface>, Integer>() {{
-                put(NaiveNumber.class, 0);
-                put(PreciseNumber.class, 1);
-            }};
 
     /**
      * Checks whether the given params will work for the given function.
