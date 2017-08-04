@@ -6,9 +6,7 @@ import org.nwapw.abacus.function.OperatorAssociativity;
 import org.nwapw.abacus.function.OperatorType;
 import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
-import org.nwapw.abacus.number.PreciseNumber;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.BiFunction;
@@ -340,9 +338,6 @@ public class StandardPlugin extends Plugin {
 
     @Override
     public void onEnable() {
-        registerNumber("naive", NaiveNumber.class);
-        registerNumber("precise", PreciseNumber.class);
-
         registerOperator("+", OP_ADD);
         registerOperator("-", OP_SUBTRACT);
         registerOperator("*", OP_MULTIPLY);
