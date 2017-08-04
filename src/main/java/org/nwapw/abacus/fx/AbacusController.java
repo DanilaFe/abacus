@@ -161,7 +161,7 @@ public class AbacusController {
     private void stopCalculation(){
         calcThread.interrupt();
         calculating = false;
-        Platform.runLater(() ->inputButton.setDisable(false));
+        //Platform.runLater(() ->inputButton.setDisable(false));
     }
 
 }
