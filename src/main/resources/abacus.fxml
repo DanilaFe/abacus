@@ -2,14 +2,10 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.FlowPane?>
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            xmlns="http://javafx.com/javafx"
             fx:controller="org.nwapw.abacus.fx.AbacusController">
     <center>
         <TabPane fx:id="coreTabPane">
@@ -46,13 +42,16 @@
             </Tab>
             <Tab fx:id="settingsTab" text="Settings" closable="false">
                 <GridPane hgap="10" vgap="10">
-                    <padding><Insets left="10" right="10" top="10" bottom="10"/></padding>
+                    <padding>
+                        <Insets left="10" right="10" top="10" bottom="10"/>
+                    </padding>
                     <Label text="Number Implementation" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
                     <ComboBox fx:id="numberImplementationBox" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
                     <ListView fx:id="enabledPluginView"
                               GridPane.rowIndex="1" GridPane.columnIndex="0"
                               GridPane.columnSpan="2" maxHeight="100"/>
-                    <FlowPane GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="2" hgap="10" vgap="10">
+                    <FlowPane GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="2" hgap="10"
+                              vgap="10">
                         <Button text="Apply" onAction="#performSave"/>
                         <Button text="Reload Plugins" onAction="#performReload"/>
                         <Button text="Apply and Reload" onAction="#performSaveAndReload"/>
