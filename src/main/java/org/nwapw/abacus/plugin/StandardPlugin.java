@@ -306,6 +306,9 @@ public class StandardPlugin extends Plugin {
         }
     };
 
+    /**
+     * The implementation for double-based naive numbers.
+     */
     public static final NumberImplementation IMPLEMENTATION_NAIVE = new NumberImplementation(NaiveNumber.class, 0) {
         @Override
         public NumberInterface instanceForString(String string) {
@@ -318,6 +321,9 @@ public class StandardPlugin extends Plugin {
         }
     };
 
+    /**
+     * The implementation for the infinite-precision BigDecimal.
+     */
     public static final NumberImplementation IMPLEMENTATION_PRECISE = new NumberImplementation(PreciseNumber.class, 0) {
         @Override
         public NumberInterface instanceForString(String string) {

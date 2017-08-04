@@ -73,6 +73,11 @@ public abstract class Plugin {
         return operators.keySet();
     }
 
+    /**
+     * Gets the list of number implementations provided by this plugin.
+     *
+     * @return the list of registered number implementations.
+     */
     public final Set<String> providedNumberImplementations(){
         return numberImplementations.keySet();
     }
@@ -97,6 +102,12 @@ public abstract class Plugin {
         return operators.get(operatorName);
     }
 
+    /**
+     * Gets the number implementation under the given name.
+     *
+     * @param name the name of the number implementation to look up.
+     * @return the number implementation associated with that name, or null if the plugin doesn't provide it.
+     */
     public final NumberImplementation getNumberImplementation(String name){
         return numberImplementations.get(name);
     }
@@ -146,6 +157,12 @@ public abstract class Plugin {
         operators.put(name, operator);
     }
 
+    /**
+     * To be used in load(). Registers a new number implementation with the plugin.
+     * This makes it accessible to the plugin manager.
+     * @param name the name of the implementation.
+     * @param implementation the actual implementation class to register.
+     */
     protected final void registerNumberImplementation(String name, NumberImplementation implementation){
         numberImplementations.put(name, implementation);
     }
@@ -174,12 +191,28 @@ public abstract class Plugin {
         return manager.operatorFor(name);
     }
 
+    /**
+     * Searches the PluginManager for the given number implementation
+     * name. This can be used by the plugins internally in order to find
+     * implementations that they do not provide.
+     *
+     * @param name the name for which to search.
+     * @return the resulting number implementation, or null if none was found.
+     */
     protected final NumberImplementation numberImplementationFor(String name){
         return manager.numberImplementationFor(name);
     }
 
+    /**
+     * Searches the plugin manager for a Pi value for the given number implementation.
+     * This is done so that number implementations with various degrees of precision
+     * can provide their own pi values, without losing said precision by
+     * promoting NaiveNumbers.
+     * @param forClass the class to which to find the pi instance.
+     * @return the pi value for the given class.
+     */
     protected final NumberInterface getPi(Class<? extends NumberInterface> forClass){
-        return manager.interfaceImplementationFor(forClass).instanceForPi();
+        return manager.piFor(forClass);
     }
 
     /**
