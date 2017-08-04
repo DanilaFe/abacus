@@ -25,6 +25,10 @@ public abstract class Plugin {
      */
     private Map<String, Operator> operators;
     /**
+     * The map of the number implementations this plugin provides.
+     */
+    private Map<String, NumberImplementation> numberImplementations;
+    /**
      * The plugin manager in which to search for functions
      * not inside this package,
      */
@@ -46,6 +50,7 @@ public abstract class Plugin {
         this.manager = manager;
         functions = new HashMap<>();
         operators = new HashMap<>();
+        numberImplementations = new HashMap<>();
         enabled = false;
     }
 
@@ -67,6 +72,10 @@ public abstract class Plugin {
         return operators.keySet();
     }
 
+    public final Set<String> providedNumberImplementations(){
+        return numberImplementations.keySet();
+    }
+
     /**
      * Gets a function under the given function name.
      *
@@ -85,6 +94,10 @@ public abstract class Plugin {
      */
     public final Operator getOperator(String operatorName) {
         return operators.get(operatorName);
+    }
+
+    public final NumberImplementation getNumberImplementation(String name){
+        return numberImplementations.get(name);
     }
 
     /**
@@ -132,6 +145,10 @@ public abstract class Plugin {
         operators.put(name, operator);
     }
 
+    protected final void registerNumberImplementation(String name, NumberImplementation implementation){
+        numberImplementations.put(name, implementation);
+    }
+
     /**
      * Searches the PluginManager for the given function name.
      * This can be used by the plugins internally in order to call functions
@@ -154,6 +171,10 @@ public abstract class Plugin {
      */
     protected final Operator operatorFor(String name) {
         return manager.operatorFor(name);
+    }
+
+    protected final NumberImplementation numberImplementationFor(String name){
+        return manager.numberImplementationFor(name);
     }
 
     /**
