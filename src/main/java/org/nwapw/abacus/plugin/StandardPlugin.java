@@ -6,6 +6,7 @@ import org.nwapw.abacus.function.OperatorAssociativity;
 import org.nwapw.abacus.function.OperatorType;
 import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
+import org.nwapw.abacus.number.PreciseNumber;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -306,6 +307,30 @@ public class StandardPlugin extends Plugin {
         }
     };
 
+    public static final NumberImplementation IMPLEMENTATION_NAIVE = new NumberImplementation(NaiveNumber.class, 0) {
+        @Override
+        public NumberInterface instanceForString(String string) {
+            return new NaiveNumber(string);
+        }
+
+        @Override
+        public NumberInterface instanceForPi() {
+            return new NaiveNumber(Math.PI);
+        }
+    };
+
+    public static final NumberImplementation IMPLEMENTATION_PRECISE = new NumberImplementation(PreciseNumber.class, 0) {
+        @Override
+        public NumberInterface instanceForString(String string) {
+            return new PreciseNumber(string);
+        }
+
+        @Override
+        public NumberInterface instanceForPi() {
+            return null;
+        }
+    };
+
     public StandardPlugin(PluginManager manager) {
         super(manager);
     }
@@ -338,6 +363,9 @@ public class StandardPlugin extends Plugin {
 
     @Override
     public void onEnable() {
+        registerNumberImplementation("naive", IMPLEMENTATION_NAIVE);
+        registerNumberImplementation("precise", IMPLEMENTATION_PRECISE);
+
         registerOperator("+", OP_ADD);
         registerOperator("-", OP_SUBTRACT);
         registerOperator("*", OP_MULTIPLY);

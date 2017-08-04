@@ -30,6 +30,7 @@ public class PluginManager {
      * that is, found in a plugin and returned.
      */
     private Map<String, Operator> cachedOperators;
+    private Map<String, NumberImplementation> cachedNumberImplementations;
     /**
      * List of all functions loaded by the plugins.
      */
@@ -38,6 +39,7 @@ public class PluginManager {
      * List of all operators loaded by the plugins.
      */
     private Set<String> allOperators;
+    private Set<String> allNumberImplementations;
     /**
      * The list of plugin listeners attached to this instance.
      */
@@ -51,8 +53,10 @@ public class PluginManager {
         plugins = new HashSet<>();
         cachedFunctions = new HashMap<>();
         cachedOperators = new HashMap<>();
+        cachedNumberImplementations = new HashMap<>();
         allFunctions = new HashSet<>();
         allOperators = new HashSet<>();
+        allNumberImplementations = new HashSet<>();
         listeners = new HashSet<>();
     }
 
@@ -109,6 +113,10 @@ public class PluginManager {
         return searchCached(plugins, cachedOperators, Plugin::providedOperators, Plugin::getOperator, name);
     }
 
+    public NumberImplementation numberImplementationFor(String name){
+        return searchCached(plugins, cachedNumberImplementations, Plugin::providedNumberImplementations,
+                Plugin::getNumberImplementation, name);
+    }
     /**
      * Adds an instance of Plugin that already has been instantiated.
      *
@@ -143,6 +151,7 @@ public class PluginManager {
         for (Plugin plugin : plugins) {
             allFunctions.addAll(plugin.providedFunctions());
             allOperators.addAll(plugin.providedOperators());
+            allNumberImplementations.addAll(plugin.providedNumberImplementations());
         }
         listeners.forEach(e -> e.onLoad(this));
     }
@@ -154,6 +163,7 @@ public class PluginManager {
         for (Plugin plugin : plugins) plugin.disable();
         allFunctions.clear();
         allOperators.clear();
+        allNumberImplementations.clear();
         listeners.forEach(e -> e.onUnload(this));
     }
 
@@ -181,6 +191,10 @@ public class PluginManager {
      */
     public Set<String> getAllOperators() {
         return allOperators;
+    }
+
+    public Set<String> getAllNumberImplementations(){
+        return allNumberImplementations;
     }
 
     /**
