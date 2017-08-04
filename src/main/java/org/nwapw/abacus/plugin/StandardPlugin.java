@@ -159,7 +159,10 @@ public class StandardPlugin extends Plugin {
         protected NumberInterface applyInternal(NumberInterface[] params) {
             if(Thread.currentThread().isInterrupted())
                 return null;
-            return FUNCTION_EXP.apply(FUNCTION_LN.apply(params[0]).multiply(params[1]));
+            NumberInterface check;
+            if((check = FUNCTION_EXP.apply(FUNCTION_LN.apply(params[0])))!=null&&(check = check.multiply(params[1]))!=null)
+                return check;
+            return null;
         }
     });
     /**
@@ -173,6 +176,8 @@ public class StandardPlugin extends Plugin {
 
         @Override
         protected NumberInterface applyInternal(NumberInterface[] params) {
+            if(Thread.currentThread().isInterrupted())
+                return null;
             return params[0].multiply((new NaiveNumber(params[0].signum())).promoteTo(params[0].getClass()));
         }
     };
@@ -187,16 +192,19 @@ public class StandardPlugin extends Plugin {
 
         @Override
         protected NumberInterface applyInternal(NumberInterface[] params) {
+            if(Thread.currentThread().isInterrupted())
+                return null;
             NumberInterface maxError = getMaxError(params[0]);
             int n = 0;
+            System.out.println(params[0].signum());
             if(params[0].signum() <= 0){
                 NumberInterface currentTerm = NaiveNumber.ONE.promoteTo(params[0].getClass()), sum = currentTerm;
-                while(!Thread.currentThread().isInterrupted()&&FUNCTION_ABS.apply(currentTerm).compareTo(maxError) > 0){
+                NumberInterface check;
+                while((check = FUNCTION_ABS.apply(currentTerm))!=null && (check.compareTo(maxError) > 0)){
                     n++;
-                    currentTerm = currentTerm.multiply(params[0]).divide((new NaiveNumber(n)).promoteTo(params[0].getClass()));
-                    sum = sum.add(currentTerm);
+                    if(Thread.currentThread().isInterrupted()||(currentTerm = currentTerm.multiply(params[0]))==null||(currentTerm = currentTerm.divide((new NaiveNumber(n))))==null||(currentTerm = currentTerm.promoteTo(params[0].getClass()))==null||(sum = (sum.add(currentTerm)))==null)
+                        return null;
                 }
-                //System.out.println(Thread.currentThread().isInterrupted());
                 return sum;
             }
             else{
@@ -206,19 +214,23 @@ public class StandardPlugin extends Plugin {
                 NumberInterface nextNumerator = params[0];
                 NumberInterface left = params[0].multiply((new NaiveNumber(3)).promoteTo(params[0].getClass()).intPow(params[0].ceiling())), right = maxError;
                 do{
-                    sum = sum.add(nextNumerator.divide(factorial(params[0].getClass(), n+1)));
+                    NumberInterface check;
+                    if((check = factorial(params[0].getClass(),n+1))==null||(check = nextNumerator.divide(check))==null||(sum = sum.add(check))==null)
+                        return null;
                     n++;
-                    nextNumerator = nextNumerator.multiply(params[0]);
-                    left = left.multiply(params[0]);
+                    if((nextNumerator = nextNumerator.multiply(params[0]))==null)
+                        return null;
+                    if((left = left.multiply(params[0]))==null)
+                        return null;
                     NumberInterface nextN = (new NaiveNumber(n+1)).promoteTo(params[0].getClass());
-                    right = right.multiply(nextN);
+                    if((right = right.multiply(nextN))==null)
+                        return null;
                     //System.out.println(left + ", " + right);
                 }
                 while(!Thread.currentThread().isInterrupted()&&left.compareTo(right) > 0);
                 //System.out.println(n+1);
-                //System.out.println(Thread.currentThread().isInterrupted());
-                if(Thread.currentThread().isInterrupted())
-                    return left;
+               if(Thread.currentThread().isInterrupted())
+                    return null;
                 return sum;
             }
         }
@@ -234,26 +246,31 @@ public class StandardPlugin extends Plugin {
 
         @Override
         protected NumberInterface applyInternal(NumberInterface[] params) {
+            if(Thread.currentThread().isInterrupted())
+                return null;
             NumberInterface param = params[0];
             int powersOf2 = 0;
-            while (!Thread.currentThread().isInterrupted()&&FUNCTION_ABS.apply(param.subtract(NaiveNumber.ONE.promoteTo(param.getClass()))).compareTo((new NaiveNumber(0.1)).promoteTo(param.getClass())) >= 0) {
-                if (param.subtract(NaiveNumber.ONE.promoteTo(param.getClass())).signum() == 1) {
+            NumberInterface check;
+            while (!Thread.currentThread().isInterrupted()&&(check = FUNCTION_ABS.apply(param.subtract(NaiveNumber.ONE.promoteTo(param.getClass()))))!=null&&(check.compareTo((new NaiveNumber(0.1)).promoteTo(param.getClass()))) >= 0) {
+                if ((check = param.subtract(NaiveNumber.ONE.promoteTo(param.getClass())))!=null&&check.signum() == 1) {
                     param = param.divide(new NaiveNumber(2).promoteTo(param.getClass()));
                     powersOf2++;
-                    if (param.subtract(NaiveNumber.ONE.promoteTo(param.getClass())).signum() != 1) {
+                    if ((check = param.subtract(NaiveNumber.ONE.promoteTo(param.getClass())))!=null||check.signum() != 1) {
                         break;
                         //No infinite loop for you.
                     }
                 } else {
                     param = param.multiply(new NaiveNumber(2).promoteTo(param.getClass()));
                     powersOf2--;
-                    if (param.subtract(NaiveNumber.ONE.promoteTo(param.getClass())).signum() != -1) {
+                    if ((check = param.subtract(NaiveNumber.ONE.promoteTo(param.getClass())))!=null||check.signum() != 1) {
                         break;
                         //No infinite loop for you.
                     }
                 }
             }
-            return getLog2(param).multiply((new NaiveNumber(powersOf2)).promoteTo(param.getClass())).add(getLogPartialSum(param));
+            if(!Thread.currentThread().isInterrupted()&&(check = getLog2(param).multiply((new NaiveNumber(powersOf2)).promoteTo(param.getClass())))!=null&&(check = check.add(getLogPartialSum(param)))!=null)
+                   return check;
+            return null;
         }
 
         /**
@@ -263,16 +280,22 @@ public class StandardPlugin extends Plugin {
          * @return the partial sum.
          */
         private NumberInterface getLogPartialSum(NumberInterface x) {
+            if(Thread.currentThread().isInterrupted())
+                return null;
             NumberInterface maxError = getMaxError(x);
             x = x.subtract(NaiveNumber.ONE.promoteTo(x.getClass())); //Terms used are for log(x+1).
             NumberInterface currentNumerator = x, currentTerm = x, sum = x;
             int n = 1;
-            while (!Thread.currentThread().isInterrupted()&&FUNCTION_ABS.apply(currentTerm).compareTo(maxError) > 0) {
+            NumberInterface check;
+            while (!Thread.currentThread().isInterrupted()&&(check = FUNCTION_ABS.apply(currentTerm))!=null&&check.compareTo(maxError) > 0) {
                 n++;
-                currentNumerator = currentNumerator.multiply(x).negate();
+                if((currentNumerator = currentNumerator.multiply(x))!=null&&(currentNumerator = currentNumerator.negate())!=null)
+                    return null;
                 currentTerm = currentNumerator.divide(new NaiveNumber(n).promoteTo(x.getClass()));
                 sum = sum.add(currentTerm);
             }
+            if(Thread.currentThread().isInterrupted())
+                return null;
             return sum;
         }
 
@@ -282,6 +305,8 @@ public class StandardPlugin extends Plugin {
          * @return the value of log(2) with the appropriate precision.
          */
         private NumberInterface getLog2(NumberInterface number) {
+            if(Thread.currentThread().isInterrupted())
+                return null;
             NumberInterface maxError = getMaxError(number);
             //NumberInterface errorBound = (new NaiveNumber(1)).promoteTo(number.getClass());
             //We'll use the series \sigma_{n >= 1) ((1/3^n + 1/4^n) * 1/n)
@@ -295,8 +320,12 @@ public class StandardPlugin extends Plugin {
                 a = a.divide((new NaiveNumber(3)).promoteTo(number.getClass()));
                 b = b.divide((new NaiveNumber(4)).promoteTo(number.getClass()));
                 c = NaiveNumber.ONE.promoteTo(number.getClass()).divide((new NaiveNumber(n)).promoteTo(number.getClass()));
-                sum = sum.add(a.add(b).multiply(c));
+                NumberInterface check;
+                if(a!=null&&(check = a.add(b))!=null&&(check = check.multiply(c))!=null&&(sum = sum.add(check))!=null)
+                    return null;
             }
+            if(Thread.currentThread().isInterrupted())
+                return null;
             return sum;
         }
     };
@@ -370,6 +399,8 @@ public class StandardPlugin extends Plugin {
     }
 
     public static NumberInterface factorial(Class<? extends NumberInterface> numberClass, int n){
+        if(Thread.currentThread().isInterrupted())
+            return null;
         if(!factorialLists.containsKey(numberClass)){
             factorialLists.put(numberClass, new ArrayList<>());
             factorialLists.get(numberClass).add(NaiveNumber.ONE.promoteTo(numberClass));
@@ -382,7 +413,7 @@ public class StandardPlugin extends Plugin {
             }
         }
         if(Thread.currentThread().isInterrupted())
-            return NaiveNumber.ONE.promoteTo(numberClass);
+            return null;
         return list.get(n);
     }
 
