@@ -8,8 +8,8 @@ import java.util.function.Function;
 
 public abstract class NumberImplementation {
 
+    protected Map<Class<? extends NumberInterface>, Function<NumberInterface, NumberInterface>> promotionPaths;
     private Class<? extends NumberInterface> implementation;
-    private Map<String, Function<NumberInterface, NumberInterface>> promotionPaths;
     private int priority;
 
     public NumberImplementation(Class<? extends NumberInterface> implementation, int priority){
