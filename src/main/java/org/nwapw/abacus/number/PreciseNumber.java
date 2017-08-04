@@ -1,7 +1,6 @@
 package org.nwapw.abacus.number;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 
 public class PreciseNumber implements NumberInterface {
@@ -9,15 +8,15 @@ public class PreciseNumber implements NumberInterface {
     /**
      * The number one.
      */
-    static final PreciseNumber ONE = new PreciseNumber(BigDecimal.ONE);
+    public static final PreciseNumber ONE = new PreciseNumber(BigDecimal.ONE);
     /**
      * The number zero.
      */
-    static final PreciseNumber ZERO = new PreciseNumber(BigDecimal.ZERO);
+    public static final PreciseNumber ZERO = new PreciseNumber(BigDecimal.ZERO);
     /**
      * The number ten.
      */
-    static final PreciseNumber TEN = new PreciseNumber(BigDecimal.TEN);
+    public static final PreciseNumber TEN = new PreciseNumber(BigDecimal.TEN);
 
     /**
      * The value of the PreciseNumber.
