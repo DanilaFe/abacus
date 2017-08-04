@@ -90,7 +90,7 @@ public class StandardPlugin extends Plugin {
     public static final Operator OP_DIVIDE = new Operator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 1, new Function() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
-            return params.length == 2;
+            return params.length == 2 && params[1].compareTo(NaiveNumber.ZERO.promoteTo(params[1].getClass())) != 0;
         }
 
         @Override
@@ -204,7 +204,7 @@ public class StandardPlugin extends Plugin {
     public static final Function FUNCTION_LN = new Function() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
-            return params.length == 1;
+            return params.length == 1 && params[0].compareTo(NaiveNumber.ZERO.promoteTo(params[0].getClass())) > 0;
         }
 
         @Override
