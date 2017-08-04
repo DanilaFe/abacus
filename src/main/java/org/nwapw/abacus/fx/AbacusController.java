@@ -220,7 +220,7 @@ public class AbacusController implements PluginListener {
     public void onLoad(PluginManager manager) {
         Configuration configuration = abacus.getConfiguration();
         Set<String> disabledPlugins = configuration.getDisabledPlugins();
-        numberImplementationOptions.addAll(abacus.getPluginManager().getAllNumbers());
+        numberImplementationOptions.addAll(abacus.getPluginManager().getAllNumberImplementations());
         String actualImplementation = configuration.getNumberImplementation();
         String toSelect = (numberImplementationOptions.contains(actualImplementation)) ? actualImplementation : "<default>";
         numberImplementationBox.getSelectionModel().select(toSelect);

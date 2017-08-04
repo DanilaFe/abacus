@@ -94,8 +94,23 @@ public class NaiveNumber implements NumberInterface {
     }
 
     @Override
-    public int ceiling() {
-        return (int) Math.ceil(value);
+    public NumberInterface ceiling() {
+        return new NaiveNumber(Math.ceil(value));
+    }
+
+    @Override
+    public NumberInterface floor() {
+        return new NaiveNumber(Math.floor(value));
+    }
+
+    @Override
+    public NumberInterface fractionalPart() {
+        return new NaiveNumber(value - Math.floor(value));
+    }
+
+    @Override
+    public int intValue() {
+        return (int)value;
     }
 
     @Override

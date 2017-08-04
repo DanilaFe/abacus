@@ -33,10 +33,19 @@ public class PluginManager {
      */
     private Map<String, Operator> cachedOperators;
     /**
-     * List of registered number implementations that have
+     * The list of number implementations that have
      * been cached, that is, found in a plugin and returned.
      */
-    private Map<String, Class<? extends NumberInterface>> cachedNumbers;
+    private Map<String, NumberImplementation> cachedNumberImplementations;
+    /**
+     * The list of number implementations that have been
+     * found by their implementation class.
+     */
+    private Map<Class<? extends NumberInterface>, NumberImplementation> cachedInterfaceImplementations;
+    /**
+     * The pi values for each implementation class that have already been computer.
+     */
+    private Map<Class<? extends NumberInterface>, NumberInterface> cachedPi;
     /**
      * List of all functions loaded by the plugins.
      */
@@ -46,9 +55,9 @@ public class PluginManager {
      */
     private Set<String> allOperators;
     /**
-     * List of all numbers loaded by the plugins.
+     * List of all the number implementations loaded by the plugins.
      */
-    private Set<String> allNumbers;
+    private Set<String> allNumberImplementations;
     /**
      * The list of plugin listeners attached to this instance.
      */
@@ -68,10 +77,12 @@ public class PluginManager {
         plugins = new HashSet<>();
         cachedFunctions = new HashMap<>();
         cachedOperators = new HashMap<>();
-        cachedNumbers = new HashMap<>();
+        cachedNumberImplementations = new HashMap<>();
+        cachedInterfaceImplementations = new HashMap<>();
+        cachedPi = new HashMap<>();
         allFunctions = new HashSet<>();
         allOperators = new HashSet<>();
-        allNumbers = new HashSet<>();
+        allNumberImplementations = new HashSet<>();
         listeners = new HashSet<>();
     }
 
@@ -87,12 +98,13 @@ public class PluginManager {
      * @param getFunction the function to get the T value under the given name
      * @param name        the name to search for
      * @param <T>         the type of element being search
+     * @param <K>         the type of key that the cache is indexed by.
      * @return the retrieved element, or null if it was not found.
      */
-    private static <T> T searchCached(Collection<Plugin> plugins, Map<String, T> cache,
-                                      java.util.function.Function<Plugin, Set<String>> setFunction,
-                                      java.util.function.BiFunction<Plugin, String, T> getFunction,
-                                      String name) {
+    private static <T, K> T searchCached(Collection<Plugin> plugins, Map<K, T> cache,
+                                      java.util.function.Function<Plugin, Set<K>> setFunction,
+                                      java.util.function.BiFunction<Plugin, K, T> getFunction,
+                                      K name) {
         if (cache.containsKey(name)) return cache.get(name);
 
         T loadedValue = null;
@@ -128,13 +140,51 @@ public class PluginManager {
     }
 
     /**
-     * Gets a numer implementation under the given name.
-     *
+     * Gets the number implementation under the given name.
      * @param name the name of the implementation.
-     * @return the implementation class
+     * @return the implementation.
      */
-    public Class<? extends NumberInterface> numberFor(String name) {
-        return searchCached(plugins, cachedNumbers, Plugin::providedNumbers, Plugin::getNumber, name);
+    public NumberImplementation numberImplementationFor(String name){
+        return searchCached(plugins, cachedNumberImplementations, Plugin::providedNumberImplementations,
+                Plugin::getNumberImplementation, name);
+    }
+
+    /**
+     * Gets the number implementation for the given implementation class.
+     * @param name the class for which to find the implementation.
+     * @return the implementation.
+     */
+    public NumberImplementation interfaceImplementationFor(Class<? extends NumberInterface> name){
+        if(cachedInterfaceImplementations.containsKey(name)) return cachedInterfaceImplementations.get(name);
+        NumberImplementation toReturn = null;
+        outside:
+        for(Plugin plugin : plugins){
+            for(String implementationName : plugin.providedNumberImplementations()){
+                NumberImplementation implementation = plugin.getNumberImplementation(implementationName);
+                if(implementation.getImplementation().equals(name)) {
+                    toReturn = implementation;
+                    break outside;
+                }
+            }
+        }
+        cachedInterfaceImplementations.put(name, toReturn);
+        return toReturn;
+    }
+
+    /**
+     * Gets the mathematical constant pi for the given implementation class.
+     * @param forClass the class for which to find pi.
+     * @return pi
+     */
+    public NumberInterface piFor(Class<? extends NumberInterface> forClass){
+        if(cachedPi.containsKey(forClass)) return cachedPi.get(forClass);
+        NumberImplementation implementation = interfaceImplementationFor(forClass);
+        NumberInterface generatedPi = null;
+        if(implementation != null){
+            generatedPi = implementation.instanceForPi();
+        }
+        cachedPi.put(forClass, generatedPi);
+        return generatedPi;
     }
 
     /**
@@ -176,7 +226,7 @@ public class PluginManager {
             if(disabledPlugins.contains(plugin.getClass().getName())) continue;
             allFunctions.addAll(plugin.providedFunctions());
             allOperators.addAll(plugin.providedOperators());
-            allNumbers.addAll(plugin.providedNumbers());
+            allNumberImplementations.addAll(plugin.providedNumberImplementations());
         }
         listeners.forEach(e -> e.onLoad(this));
     }
@@ -193,10 +243,13 @@ public class PluginManager {
         }
         cachedFunctions.clear();
         cachedOperators.clear();
-        cachedNumbers.clear();
+        cachedNumberImplementations.clear();
+        cachedInterfaceImplementations.clear();
+        cachedPi.clear();
         allFunctions.clear();
         allOperators.clear();
-        allNumbers.clear();
+        allNumberImplementations.clear();
+        listeners.forEach(e -> e.onUnload(this));
     }
 
     /**
@@ -226,12 +279,12 @@ public class PluginManager {
     }
 
     /**
-     * Gets all the number implementations loaded by the Plugin Manager
+     * Gets all the number implementations loaded by the Plugin Manager.
      *
-     * @return the set of all implementations that were loaded
+     * @return the set of all implementations that were loaded.
      */
-    public Set<String> getAllNumbers() {
-        return allNumbers;
+    public Set<String> getAllNumberImplementations(){
+        return allNumberImplementations;
     }
 
     /**
