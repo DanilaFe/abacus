@@ -378,15 +378,15 @@ public class StandardPlugin extends Plugin {
 
         @Override
         protected NumberInterface applyInternal(NumberInterface[] params) {
-            NumberInterface check;
             if (Thread.currentThread().isInterrupted()) return null;
             else if (params[0].compareTo(NaiveNumber.ZERO.promoteTo(params[0].getClass())) == 0)
                 return NaiveNumber.ZERO.promoteTo(params[0].getClass());
             else if (params[1].compareTo(NaiveNumber.ZERO.promoteTo(params[0].getClass())) == 0)
                 return NaiveNumber.ONE.promoteTo(params[1].getClass());
-            if ((check = FUNCTION_EXP.apply(FUNCTION_LN.apply(params[0]))) != null && (check = check.multiply(params[1])) != null)
-                return check;
-            return null;
+            FUNCTION_EXP.apply(FUNCTION_LN.apply(FUNCTION_ABS.apply(params[0])).multiply(params[1]));
+            NumberInterface check = FUNCTION_LN.apply(FUNCTION_ABS.apply(params[0]));
+            if(check == null) return null;
+            return FUNCTION_EXP.apply(check.multiply(params[1]));
         }
     });
     /**
