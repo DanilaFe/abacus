@@ -3,7 +3,7 @@ package org.nwapw.abacus.number;
 /**
  * An implementation of NumberInterface using a double.
  */
-public class NaiveNumber implements NumberInterface {
+public class NaiveNumber extends NumberInterface {
 
     /**
      * The number zero.
@@ -42,32 +42,32 @@ public class NaiveNumber implements NumberInterface {
     }
 
     @Override
-    public NumberInterface multiply(NumberInterface multiplier) {
+    public NumberInterface multiplyInternal(NumberInterface multiplier) {
         return new NaiveNumber(value * ((NaiveNumber) multiplier).value);
     }
 
     @Override
-    public NumberInterface divide(NumberInterface divisor) {
+    public NumberInterface divideInternal(NumberInterface divisor) {
         return new NaiveNumber(value / ((NaiveNumber) divisor).value);
     }
 
     @Override
-    public NumberInterface add(NumberInterface summand) {
+    public NumberInterface addInternal(NumberInterface summand) {
         return new NaiveNumber(value + ((NaiveNumber) summand).value);
     }
 
     @Override
-    public NumberInterface subtract(NumberInterface subtrahend) {
+    public NumberInterface subtractInternal(NumberInterface subtrahend) {
         return new NaiveNumber(value - ((NaiveNumber) subtrahend).value);
     }
 
     @Override
-    public NumberInterface negate() {
+    public NumberInterface negateInternal() {
         return new NaiveNumber(-value);
     }
 
     @Override
-    public NumberInterface intPow(int exponent) {
+    public NumberInterface intPowInternal(int exponent) {
         if (exponent == 0) {
             return NaiveNumber.ONE;
         }
@@ -95,17 +95,17 @@ public class NaiveNumber implements NumberInterface {
     }
 
     @Override
-    public NumberInterface ceiling() {
+    public NumberInterface ceilingInternal() {
         return new NaiveNumber(Math.ceil(value));
     }
 
     @Override
-    public NumberInterface floor() {
+    public NumberInterface floorInternal() {
         return new NaiveNumber(Math.floor(value));
     }
 
     @Override
-    public NumberInterface fractionalPart() {
+    public NumberInterface fractionalPartInternal() {
         return new NaiveNumber(value - Math.floor(value));
     }
 
@@ -115,7 +115,7 @@ public class NaiveNumber implements NumberInterface {
     }
 
     @Override
-    public NumberInterface promoteTo(Class<? extends NumberInterface> toClass) {
+    public NumberInterface promoteToInternal(Class<? extends NumberInterface> toClass) {
         if (toClass == this.getClass()) return this;
         else if (toClass == PreciseNumber.class) {
             return new PreciseNumber(Double.toString(value));
