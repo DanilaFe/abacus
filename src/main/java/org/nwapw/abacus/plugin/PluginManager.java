@@ -70,6 +70,8 @@ public class PluginManager {
 
     /**
      * Creates a new plugin manager.
+     *
+     * @param abacus the abacus instance.
      */
     public PluginManager(Abacus abacus) {
         this.abacus = abacus;
