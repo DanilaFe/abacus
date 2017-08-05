@@ -53,5 +53,51 @@ public class CalculationTests {
     public void testDivision(){
         testOutput("9.5/2", "(9.5/2)", "4.75");
     }
-    
+
+    @Test
+    public void testNegation(){
+        testOutput("-9.5", "(9.5)`", "-9.5");
+    }
+
+    @Test
+    public void testFactorial(){
+        testOutput("7!", "(7)!", "5040");
+    }
+
+    @Test
+    public void testAbs(){
+        testOutput("abs(-1)", "abs((1)`)", "1");
+        testOutput("abs(1)", "abs(1)", "1");
+    }
+
+    @Test
+    public void testLn(){
+        testEvalError("ln(-1)", "ln((1)`)");
+        testOutput("ln2", "ln(2)", "0.6931471805599453094172321214581765680755");
+    }
+
+    @Test
+    public void testSqrt(){
+        testOutput("sqrt0", "sqrt(0)", "0");
+        testOutput("sqrt4", "sqrt(4)", "2");
+        testOutput("sqrt2", "sqrt(2)", "1.4142135623730950488016887242096980785696");
+    }
+
+    @Test
+    public void testExp(){
+        testOutput("exp0", "exp(0)", "1");
+        testOutput("exp1", "exp(1)", "2.718281828459045235360287471352662497757247");
+        testOutput("exp300", "exp(300)", "19424263952412559365842088360176992193662086");
+        testOutput("exp300", "exp(300)", "19424263952412559365842088360176992193662086");
+    }
+
+    @Test
+    public void testPow(){
+        testOutput("0^2", "(0^2)", "0");
+        testOutput("2^0", "(2^0)", "1");
+        testOutput("2^1", "(2^1)", "2");
+        testOutput("2^-1", "(2^(1)`)", "0.5");
+        testOutput("2^300", "(2^300)", "2037035976334486086268445688409378161051468393");
+    }
+
 }
