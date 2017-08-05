@@ -127,11 +127,12 @@ public class AbacusController implements PluginListener {
                 if (evaluatedNumber == null) {
                     return ERR_EVAL;
                 }
-                historyData.add(new HistoryModel(inputField.getText(), constructedTree.toString(), evaluatedNumber.toString()));
+                String resultingString = evaluatedNumber.toString();
+                historyData.add(new HistoryModel(inputField.getText(), constructedTree.toString(), resultingString));
+                return resultingString;
             } catch (ComputationInterruptedException exception) {
                 return ERR_STOP;
             }
-            return "";
         }
 
         @Override
