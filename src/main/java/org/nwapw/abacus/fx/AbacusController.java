@@ -70,6 +70,8 @@ public class AbacusController implements PluginListener {
     @FXML
     private Button inputButton;
     @FXML
+    private Button stopButton;
+    @FXML
     private ComboBox<String> numberImplementationBox;
     @FXML
     private ListView<ToggleablePlugin> enabledPluginView;
@@ -86,7 +88,6 @@ public class AbacusController implements PluginListener {
     private ObservableList<String> numberImplementationOptions;
 
     /**
-     * <<<<<<< HEAD
      * The list of plugin objects that can be toggled on and off,
      * and, when reloaded, get added to the plugin manager's black list.
      */
@@ -190,6 +191,11 @@ public class AbacusController implements PluginListener {
 
         inputButton.setDisable(false);
         inputField.setText("");
+    }
+
+    @FXML
+    private void performStop(){
+        System.out.println("Stopping");
     }
 
     @FXML
