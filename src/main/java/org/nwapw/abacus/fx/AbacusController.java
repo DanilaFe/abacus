@@ -12,10 +12,13 @@ import javafx.util.StringConverter;
 import org.nwapw.abacus.Abacus;
 import org.nwapw.abacus.config.Configuration;
 import org.nwapw.abacus.number.NumberInterface;
+import org.nwapw.abacus.plugin.ClassFinder;
 import org.nwapw.abacus.plugin.PluginListener;
 import org.nwapw.abacus.plugin.PluginManager;
+import org.nwapw.abacus.plugin.StandardPlugin;
 import org.nwapw.abacus.tree.TreeNode;
 
+import java.io.IOException;
 import java.util.Set;
 
 
@@ -173,8 +176,15 @@ public class AbacusController implements PluginListener {
         });
 
         abacus = new Abacus();
-        abacus.getPluginManager().addListener(this);
-        abacus.getPluginManager().reload();
+        PluginManager abacusPluginManager = abacus.getPluginManager();
+        abacusPluginManager.addListener(this);
+        abacusPluginManager.addInstantiated(new StandardPlugin(abacus.getPluginManager()));
+        try {
+            ClassFinder.loadJars("plugins").forEach(abacusPluginManager::addClass);
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        abacusPluginManager.reload();
 
         changesMade = false;
         reloadAlertShown = false;
