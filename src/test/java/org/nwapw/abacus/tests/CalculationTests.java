@@ -2,6 +2,7 @@ package org.nwapw.abacus.tests;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.nwapw.abacus.Abacus;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.plugin.StandardPlugin;
@@ -33,4 +34,24 @@ public class CalculationTests {
         Assert.assertNull(abacus.evaluateTree(parsedTree));
     }
 
+    @Test
+    public void testAddition(){
+        testOutput("9.5+10", "(9.5+10)", "19.5");
+    }
+
+    @Test
+    public void testSubtraction(){
+        testOutput("9.5-10", "(9.5-10)", "-0.5");
+    }
+
+    @Test
+    public void testMultiplication(){
+        testOutput("9.5*10", "(9.5*10)", "95");
+    }
+
+    @Test
+    public void testDivision(){
+        testOutput("9.5/2", "(9.5/2)", "4.75");
+    }
+    
 }
