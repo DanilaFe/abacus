@@ -1,5 +1,6 @@
 package org.nwapw.abacus.fx;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -10,6 +11,7 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 import org.nwapw.abacus.Abacus;
 import org.nwapw.abacus.config.Configuration;
+import org.nwapw.abacus.number.ComputationInterruptedException;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.plugin.PluginListener;
 import org.nwapw.abacus.plugin.PluginManager;
@@ -110,6 +112,39 @@ public class AbacusController implements PluginListener {
      * The alert shown when a press to "apply" is needed.
      */
     private Alert reloadAlert;
+    /**
+     * The runnable used to perform the calculation.
+     */
+    private final Runnable CALCULATION_RUNNABLE = new Runnable() {
+
+        private String attemptCalculation(){
+            TreeNode constructedTree = abacus.parseString(inputField.getText());
+            if (constructedTree == null) {
+                return ERR_SYNTAX;
+            }
+            try {
+                NumberInterface evaluatedNumber = abacus.evaluateTree(constructedTree);
+                if (evaluatedNumber == null) {
+                    return ERR_EVAL;
+                }
+                historyData.add(new HistoryModel(inputField.getText(), constructedTree.toString(), evaluatedNumber.toString()));
+            } catch (ComputationInterruptedException exception) {
+                return ERR_STOP;
+            }
+            return "";
+        }
+
+        @Override
+        public void run() {
+            String calculation = attemptCalculation();
+            Platform.runLater(() -> {
+                outputText.setText(calculation);
+                inputButton.setDisable(false);
+                stopButton.setDisable(true);
+            });
+        }
+    };
+    private Thread calculationThread;
 
     /**
      * Alerts the user if the changes they made
@@ -174,28 +209,15 @@ public class AbacusController implements PluginListener {
     @FXML
     private void performCalculation() {
         inputButton.setDisable(true);
-        TreeNode constructedTree = abacus.parseString(inputField.getText());
-        if (constructedTree == null) {
-            outputText.setText(ERR_SYNTAX);
-            inputButton.setDisable(false);
-            return;
-        }
-        NumberInterface evaluatedNumber = abacus.evaluateTree(constructedTree);
-        if (evaluatedNumber == null) {
-            outputText.setText(ERR_EVAL);
-            inputButton.setDisable(false);
-            return;
-        }
-        outputText.setText(evaluatedNumber.toString());
-        historyData.add(new HistoryModel(inputField.getText(), constructedTree.toString(), evaluatedNumber.toString()));
-
-        inputButton.setDisable(false);
-        inputField.setText("");
+        stopButton.setDisable(false);
+        calculationThread = new Thread(CALCULATION_RUNNABLE);
+        calculationThread.start();
     }
 
     @FXML
     private void performStop(){
-        System.out.println("Stopping");
+        if(calculationThread != null)
+            calculationThread.interrupt();
     }
 
     @FXML
