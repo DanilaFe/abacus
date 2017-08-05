@@ -34,6 +34,8 @@
                             <TextField fx:id="inputField" onAction="#performCalculation"/>
                             <Button fx:id="inputButton" text="Calculate" maxWidth="Infinity"
                                     onAction="#performCalculation"/>
+                            <Button fx:id="stopButton" text="Stop" maxWidth="Infinity"
+                                    onAction="#performStop"/>
                         </VBox>
                     </bottom>
                 </BorderPane>
