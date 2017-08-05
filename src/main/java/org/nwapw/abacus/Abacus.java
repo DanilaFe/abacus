@@ -6,7 +6,6 @@ import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.parsing.LexerTokenizer;
 import org.nwapw.abacus.parsing.ShuntingYardParser;
 import org.nwapw.abacus.parsing.TreeBuilder;
-import org.nwapw.abacus.plugin.ClassFinder;
 import org.nwapw.abacus.plugin.NumberImplementation;
 import org.nwapw.abacus.plugin.PluginManager;
 import org.nwapw.abacus.plugin.StandardPlugin;
@@ -14,7 +13,6 @@ import org.nwapw.abacus.tree.NumberReducer;
 import org.nwapw.abacus.tree.TreeNode;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * The main calculator class. This is responsible
@@ -64,16 +62,8 @@ public class Abacus {
         ShuntingYardParser shuntingYardParser = new ShuntingYardParser(this);
         treeBuilder = new TreeBuilder<>(lexerTokenizer, shuntingYardParser);
 
-        pluginManager.addListener(lexerTokenizer);
         pluginManager.addListener(shuntingYardParser);
-        pluginManager.addInstantiated(new StandardPlugin(pluginManager));
-        try {
-            ClassFinder.loadJars("plugins")
-                    .forEach(plugin -> pluginManager.addClass(plugin));
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        pluginManager.load();
+        pluginManager.addListener(lexerTokenizer);
     }
 
     public static void main(String[] args) {
