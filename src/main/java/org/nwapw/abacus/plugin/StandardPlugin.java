@@ -166,7 +166,7 @@ public class StandardPlugin extends Plugin {
                 } else {
                     param = param.multiply(new NaiveNumber(2).promoteTo(param.getClass()));
                     powersOf2--;
-                    if (param.subtract(NaiveNumber.ONE.promoteTo(param.getClass())).signum() != 1) {
+                    if (param.subtract(NaiveNumber.ONE.promoteTo(param.getClass())).signum() != -1) {
                         break;
                         //No infinite loop for you.
                     }
