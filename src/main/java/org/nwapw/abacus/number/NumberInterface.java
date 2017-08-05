@@ -82,14 +82,14 @@ public interface NumberInterface {
     /**
      * Returns the least integer greater than or equal to the number.
      *
-     * @return the least integer >= the number, if int can hold the value.
+     * @return the least integer bigger or equal to the number, if int can hold the value.
      */
     NumberInterface ceiling();
 
     /**
      * Return the greatest integer less than or equal to the number.
      *
-     * @return the greatest int >= the number, if int can hold the value.
+     * @return the greatest integer smaller or equal the number, if int can hold the value.
      */
     NumberInterface floor();
 
@@ -104,7 +104,7 @@ public interface NumberInterface {
      * Returns the integer representation of this number, discarding any fractional part,
      * if int can hold the value.
      *
-     * @return
+     * @return the integer value of this number.
      */
     int intValue();
 

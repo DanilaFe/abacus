@@ -26,6 +26,7 @@ public class Operator {
      * Creates a new operator with the given parameters.
      *
      * @param associativity the associativity of the operator.
+     * @param operatorType  the type of this operator, like binary infix or unary postfix.
      * @param precedence    the precedence of the operator.
      * @param function      the function that the operator calls.
      */
