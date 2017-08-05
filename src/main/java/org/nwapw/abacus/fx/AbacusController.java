@@ -1,6 +1,5 @@
 package org.nwapw.abacus.fx;
 
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -97,20 +96,6 @@ public class AbacusController implements PluginListener {
      * The abacus instance used for changing the plugin configuration.
      */
     private Abacus abacus;
-    /**
-     * Thread used for calculating.
-     */
-    private Thread calcThread;
-
-    /**
-     * Checks whether the calculator is calculating.
-     */
-    private boolean calculating;
-
-    /**
-     * Seconds delayed for timer;
-     */
-    private double delay = 0;
 
     /**
      * Boolean which represents whether changes were made to the configuration.
@@ -187,63 +172,24 @@ public class AbacusController implements PluginListener {
 
     @FXML
     private void performCalculation() {
-        Runnable calculator = new Runnable() {
-            public void run() {
-                if (delay > 0) {
-                    Runnable timer = new Runnable() {
-                        public void run() {
-                            long gap = (long) (delay * 1000);
-                            long startTime = System.currentTimeMillis();
-                            while (System.currentTimeMillis() - startTime <= gap) {
-                            }
-                            stopCalculation();
-                        }
-                    };
-                    Thread maxTime = new Thread(timer);
-                    maxTime.setName("maxTime");
-                    maxTime.start();
-                }
-                calculating = true;
-                Platform.runLater(() -> inputButton.setDisable(true));
-                TreeNode constructedTree = abacus.parseString(inputField.getText());
-                if (constructedTree == null) {
-                    Platform.runLater(() -> outputText.setText(ERR_SYNTAX));
-                    Platform.runLater(() -> inputButton.setDisable(false));
-                    //return;
-                } else {
-                    NumberInterface evaluatedNumber = abacus.evaluateTree(constructedTree);
-                    if (evaluatedNumber == null) {
-                        if (Thread.currentThread().isInterrupted()) {
-                            Platform.runLater(() -> outputText.setText(ERR_STOP));
-                            Platform.runLater(() -> inputButton.setDisable(false));
-                        } else {
-                            Platform.runLater(() -> outputText.setText(ERR_EVAL));
-                            Platform.runLater(() -> inputButton.setDisable(false));
-                            //return;
-                        }
-                    } else {
-                        Platform.runLater(() -> outputText.setText(evaluatedNumber.toString()));
-                        historyData.add(new HistoryModel(inputField.getText(), constructedTree.toString(), evaluatedNumber.toString()));
-
-                        Platform.runLater(() -> inputButton.setDisable(false));
-                        Platform.runLater(() -> inputField.setText(""));
-                    }
-                }
-                calculating = false;
-            }
-        };
-        if (!calculating) {
-            calcThread = new Thread(calculator);
-            calcThread.setName("calcThread");
-            calcThread.start();
+        inputButton.setDisable(true);
+        TreeNode constructedTree = abacus.parseString(inputField.getText());
+        if (constructedTree == null) {
+            outputText.setText(ERR_SYNTAX);
+            inputButton.setDisable(false);
+            return;
         }
-    }
+        NumberInterface evaluatedNumber = abacus.evaluateTree(constructedTree);
+        if (evaluatedNumber == null) {
+            outputText.setText(ERR_EVAL);
+            inputButton.setDisable(false);
+            return;
+        }
+        outputText.setText(evaluatedNumber.toString());
+        historyData.add(new HistoryModel(inputField.getText(), constructedTree.toString(), evaluatedNumber.toString()));
 
-    @FXML
-    private void stopCalculation() {
-        calcThread.interrupt();
-        calculating = false;
-        //Platform.runLater(() ->inputButton.setDisable(false));
+        inputButton.setDisable(false);
+        inputField.setText("");
     }
 
     @FXML

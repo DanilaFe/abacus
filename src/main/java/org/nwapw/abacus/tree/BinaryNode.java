@@ -92,15 +92,10 @@ public class BinaryNode extends TreeNode {
 
     @Override
     public <T> T reduce(Reducer<T> reducer) {
-        if (Thread.currentThread().isInterrupted())
-            return null;
         T leftReduce = left.reduce(reducer);
         T rightReduce = right.reduce(reducer);
         if (leftReduce == null || rightReduce == null) return null;
-        T a = reducer.reduceNode(this, leftReduce, rightReduce);
-        if (Thread.currentThread().isInterrupted())
-            return null;
-        return a;
+        return reducer.reduceNode(this, leftReduce, rightReduce);
     }
 
     @Override
