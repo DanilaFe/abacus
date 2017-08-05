@@ -7,7 +7,7 @@ import java.math.RoundingMode;
  * A number that uses a BigDecimal to store its value,
  * leading to infinite possible precision.
  */
-public class PreciseNumber implements NumberInterface {
+public class PreciseNumber extends NumberInterface {
 
     /**
      * The number one.
@@ -52,27 +52,27 @@ public class PreciseNumber implements NumberInterface {
     }
 
     @Override
-    public NumberInterface multiply(NumberInterface multiplier) {
+    public NumberInterface multiplyInternal(NumberInterface multiplier) {
         return new PreciseNumber(this.value.multiply(((PreciseNumber) multiplier).value));
     }
 
     @Override
-    public NumberInterface divide(NumberInterface divisor) {
+    public NumberInterface divideInternal(NumberInterface divisor) {
         return new PreciseNumber(value.divide(((PreciseNumber) divisor).value, this.getMaxPrecision(), RoundingMode.HALF_UP));
     }
 
     @Override
-    public NumberInterface add(NumberInterface summand) {
+    public NumberInterface addInternal(NumberInterface summand) {
         return new PreciseNumber(value.add(((PreciseNumber) summand).value));
     }
 
     @Override
-    public NumberInterface subtract(NumberInterface subtrahend) {
+    public NumberInterface subtractInternal(NumberInterface subtrahend) {
         return new PreciseNumber(value.subtract(((PreciseNumber) subtrahend).value));
     }
 
     @Override
-    public NumberInterface intPow(int exponent) {
+    public NumberInterface intPowInternal(int exponent) {
         if (exponent == 0) {
             return PreciseNumber.ONE;
         }
@@ -99,7 +99,7 @@ public class PreciseNumber implements NumberInterface {
     }
 
     @Override
-    public NumberInterface ceiling() {
+    public NumberInterface ceilingInternal() {
         String str = value.toPlainString();
         int decimalIndex = str.indexOf('.');
         if (decimalIndex != -1) {
@@ -109,7 +109,7 @@ public class PreciseNumber implements NumberInterface {
     }
 
     @Override
-    public NumberInterface floor() {
+    public NumberInterface floorInternal() {
         String str = value.toPlainString();
         int decimalIndex = str.indexOf('.');
         if (decimalIndex != -1) {
@@ -119,7 +119,7 @@ public class PreciseNumber implements NumberInterface {
     }
 
     @Override
-    public NumberInterface fractionalPart() {
+    public NumberInterface fractionalPartInternal() {
         String str = value.toPlainString();
         int decimalIndex = str.indexOf('.');
         if (decimalIndex != -1) {
@@ -134,12 +134,12 @@ public class PreciseNumber implements NumberInterface {
     }
 
     @Override
-    public NumberInterface negate() {
+    public NumberInterface negateInternal() {
         return new PreciseNumber(value.negate());
     }
 
     @Override
-    public NumberInterface promoteTo(Class<? extends NumberInterface> toClass) {
+    public NumberInterface promoteToInternal(Class<? extends NumberInterface> toClass) {
         if (toClass == this.getClass()) {
             return this;
         }
