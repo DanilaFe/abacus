@@ -139,6 +139,7 @@ public class AbacusController implements PluginListener {
             String calculation = attemptCalculation();
             Platform.runLater(() -> {
                 outputText.setText(calculation);
+                inputField.setText("");
                 inputButton.setDisable(false);
                 stopButton.setDisable(true);
             });
