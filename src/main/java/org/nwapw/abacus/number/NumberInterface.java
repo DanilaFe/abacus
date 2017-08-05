@@ -29,6 +29,15 @@ public abstract class NumberInterface {
      */
     protected abstract NumberInterface multiplyInternal(NumberInterface multiplier);
 
+    /**
+     * Multiplies this number by another, returning
+     * a new number instance. Also, checks if the
+     * thread has been interrupted, and if so, throws
+     * an exception.
+     *
+     * @param multiplier the multiplier
+     * @return the result of the multiplication.
+     */
     public final NumberInterface multiply(NumberInterface multiplier){
         checkInterrupted();
         return multiplyInternal(multiplier);
@@ -43,6 +52,15 @@ public abstract class NumberInterface {
      */
     protected abstract NumberInterface divideInternal(NumberInterface divisor);
 
+    /**
+     * Divides this number by another, returning
+     * a new number instance. Also, checks if the
+     * thread has been interrupted, and if so, throws
+     * an exception.
+     *
+     * @param divisor the divisor
+     * @return the result of the division.
+     */
     public final NumberInterface divide(NumberInterface divisor){
         checkInterrupted();
         return divideInternal(divisor);
@@ -57,6 +75,15 @@ public abstract class NumberInterface {
      */
     protected abstract NumberInterface addInternal(NumberInterface summand);
 
+    /**
+     * Adds this number to another, returning
+     * a new number instance. Also, checks if the
+     * thread has been interrupted, and if so, throws
+     * an exception.
+     *
+     * @param summand the summand
+     * @return the result of the summation.
+     */
     public final NumberInterface add(NumberInterface summand){
         checkInterrupted();
         return addInternal(summand);
@@ -71,6 +98,15 @@ public abstract class NumberInterface {
      */
     protected abstract NumberInterface subtractInternal(NumberInterface subtrahend);
 
+    /**
+     * Subtracts another number from this number,
+     * a new number instance. Also, checks if the
+     * thread has been interrupted, and if so, throws
+     * an exception.
+     *
+     * @param subtrahend the subtrahend.
+     * @return the result of the subtraction.
+     */
     public final NumberInterface subtract(NumberInterface subtrahend){
         checkInterrupted();
         return subtractInternal(subtrahend);
@@ -84,6 +120,15 @@ public abstract class NumberInterface {
      */
     protected abstract NumberInterface negateInternal();
 
+
+    /**
+     * Returns a new instance of this number with
+     * the sign flipped. Also, checks if the
+     * thread has been interrupted, and if so, throws
+     * an exception.
+     *
+     * @return the new instance.
+     */
     public final NumberInterface negate(){
         checkInterrupted();
         return negateInternal();
@@ -97,6 +142,14 @@ public abstract class NumberInterface {
      */
     protected abstract NumberInterface intPowInternal(int exponent);
 
+    /**
+     * Raises this number to an integer power. Also, checks if the
+     * thread has been interrupted, and if so, throws
+     * an exception.
+     *
+     * @param exponent the exponent to which to take the number.
+     * @return the resulting value.
+     */
     public final NumberInterface intPow(int exponent){
         checkInterrupted();
         return intPowInternal(exponent);
@@ -124,6 +177,13 @@ public abstract class NumberInterface {
      */
     protected abstract NumberInterface ceilingInternal();
 
+    /**
+     * Returns the least integer greater than or equal to the number.
+     * Also, checks if the thread has been interrupted, and if so, throws
+     * an exception.
+     *
+     * @return the least integer >= the number, if int can hold the value.
+     */
     public final NumberInterface ceiling(){
         checkInterrupted();
         return ceilingInternal();
@@ -136,6 +196,13 @@ public abstract class NumberInterface {
      */
     protected abstract NumberInterface floorInternal();
 
+    /**
+     * Return the greatest integer less than or equal to the number.
+     * Also, checks if the thread has been interrupted, and if so, throws
+     * an exception.
+     *
+     * @return the greatest int >= the number, if int can hold the value.
+     */
     public final NumberInterface floor(){
         checkInterrupted();
         return floorInternal();
@@ -148,6 +215,12 @@ public abstract class NumberInterface {
      */
     protected abstract NumberInterface fractionalPartInternal();
 
+    /**
+     * Returns the fractional part of the number.
+     * Also, checks if the thread has been interrupted,
+     * and if so, throws an exception.
+     * @return the fractional part of the number.
+     */
     public final NumberInterface fractionalPart(){
         checkInterrupted();
         return fractionalPartInternal();
@@ -169,6 +242,14 @@ public abstract class NumberInterface {
      */
     protected abstract NumberInterface promoteToInternal(Class<? extends NumberInterface> toClass);
 
+    /**
+     * Promotes this class to another number class. Also, checks if the
+     * thread has been interrupted, and if so, throws
+     * an exception.
+     *
+     * @param toClass the class to promote to.
+     * @return the resulting new instance.
+     */
     public final NumberInterface promoteTo(Class<? extends NumberInterface> toClass) {
         checkInterrupted();
         return promoteToInternal(toClass);
