@@ -51,6 +51,10 @@ public class AbacusController implements PluginListener {
      * Constant string that is displayed if the calculations are stopped before they are done.
      */
     private static final String ERR_STOP = "Stopped";
+    /**
+     * Constant string that is displayed if the calculations are interrupted by an exception.
+     */
+    private static final String ERR_EXCEPTION = "Exception Thrown";
     @FXML
     private TabPane coreTabPane;
     @FXML
@@ -118,11 +122,11 @@ public class AbacusController implements PluginListener {
     private final Runnable CALCULATION_RUNNABLE = new Runnable() {
 
         private String attemptCalculation(){
-            TreeNode constructedTree = abacus.parseString(inputField.getText());
-            if (constructedTree == null) {
-                return ERR_SYNTAX;
-            }
             try {
+                TreeNode constructedTree = abacus.parseString(inputField.getText());
+                if (constructedTree == null) {
+                    return ERR_SYNTAX;
+                }
                 NumberInterface evaluatedNumber = abacus.evaluateTree(constructedTree);
                 if (evaluatedNumber == null) {
                     return ERR_EVAL;
@@ -132,6 +136,9 @@ public class AbacusController implements PluginListener {
                 return resultingString;
             } catch (ComputationInterruptedException exception) {
                 return ERR_STOP;
+            } catch (RuntimeException exception){
+                exception.printStackTrace();
+                return ERR_EXCEPTION;
             }
         }
 
