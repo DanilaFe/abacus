@@ -146,6 +146,9 @@ public class AbacusController implements PluginListener {
             });
         }
     };
+    /**
+     * The thread in which the computation runs.
+     */
     private Thread calculationThread;
 
     /**
