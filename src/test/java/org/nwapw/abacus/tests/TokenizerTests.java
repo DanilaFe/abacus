@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.nwapw.abacus.Abacus;
+import org.nwapw.abacus.config.Configuration;
 import org.nwapw.abacus.function.Function;
 import org.nwapw.abacus.function.Operator;
 import org.nwapw.abacus.function.OperatorAssociativity;
@@ -18,7 +19,7 @@ import java.util.List;
 
 public class TokenizerTests {
 
-    private static Abacus abacus = new Abacus();
+    private static Abacus abacus = new Abacus(new Configuration("precise", new String[]{}));
     private static LexerTokenizer lexerTokenizer = new LexerTokenizer();
     private static Function subtractFunction = new Function() {
         @Override
