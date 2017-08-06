@@ -72,6 +72,23 @@ public class PreciseNumber extends NumberInterface {
     }
 
     @Override
+    public NumberInterface intPowInternal(int exponent) {
+        if (exponent == 0) {
+            return PreciseNumber.ONE;
+        }
+        boolean takeReciprocal = exponent < 0;
+        exponent = Math.abs(exponent);
+        NumberInterface power = this;
+        for (int currentExponent = 1; currentExponent < exponent; currentExponent++) {
+            power = power.multiply(this);
+        }
+        if (takeReciprocal) {
+            power = PreciseNumber.ONE.divide(power);
+        }
+        return power;
+    }
+
+    @Override
     public int compareTo(NumberInterface number) {
         return value.compareTo(((PreciseNumber) number).value);
     }
