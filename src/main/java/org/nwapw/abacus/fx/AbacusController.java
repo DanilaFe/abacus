@@ -180,7 +180,7 @@ public class AbacusController implements PluginListener {
             if (oldValue.equals(settingsTab)) alertIfApplyNeeded(true);
         });
 
-        abacus = new Abacus(() -> new Configuration(new java.io.File("config.toml")));
+        abacus = new Abacus(new Configuration(CONFIG_FILE));
         PluginManager abacusPluginManager = abacus.getPluginManager();
         abacusPluginManager.addListener(this);
         abacusPluginManager.addInstantiated(new StandardPlugin(abacus.getPluginManager()));
