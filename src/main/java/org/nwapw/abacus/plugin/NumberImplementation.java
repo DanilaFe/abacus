@@ -28,7 +28,7 @@ public abstract class NumberImplementation {
      * Creates a new number implementation with the given data.
      *
      * @param implementation the implementation class.
-     * @param priority       the priority, higher -> more likely to be converted into.
+     * @param priority       the priority, higher means more likely to be converted into.
      */
     public NumberImplementation(Class<? extends NumberInterface> implementation, int priority) {
         this.implementation = implementation;
