@@ -4,13 +4,14 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.nwapw.abacus.Abacus;
+import org.nwapw.abacus.config.Configuration;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.plugin.StandardPlugin;
 import org.nwapw.abacus.tree.TreeNode;
 
 public class CalculationTests {
 
-    private static Abacus abacus = new Abacus();
+    private static Abacus abacus = new Abacus(new Configuration("precise", new String[]{}));
 
     @BeforeClass
     public static void prepareTests(){
