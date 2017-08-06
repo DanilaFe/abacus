@@ -46,6 +46,8 @@ public class Abacus {
 
     /**
      * Creates a new instance of the Abacus calculator.
+     *
+     * @param configuration the configuration object for this Abacus instance.
      */
     public Abacus(Configuration configuration) {
         pluginManager = new PluginManager(this);
