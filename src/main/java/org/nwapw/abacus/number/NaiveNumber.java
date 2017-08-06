@@ -67,23 +67,6 @@ public class NaiveNumber extends NumberInterface {
     }
 
     @Override
-    public NumberInterface intPowInternal(int exponent) {
-        if (exponent == 0) {
-            return NaiveNumber.ONE;
-        }
-        boolean takeReciprocal = exponent < 0;
-        exponent = Math.abs(exponent);
-        NumberInterface power = this;
-        for (int currentExponent = 1; currentExponent < exponent; currentExponent++) {
-            power = power.multiply(this);
-        }
-        if (takeReciprocal) {
-            power = NaiveNumber.ONE.divide(power);
-        }
-        return power;
-    }
-
-    @Override
     public int compareTo(NumberInterface number) {
         NaiveNumber num = (NaiveNumber) number;
         return Double.compare(value, num.value);
