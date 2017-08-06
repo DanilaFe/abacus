@@ -12,7 +12,7 @@ import org.nwapw.abacus.plugin.StandardPlugin;
 import org.nwapw.abacus.tree.NumberReducer;
 import org.nwapw.abacus.tree.TreeNode;
 
-import java.io.File;
+import java.util.function.Supplier;
 
 /**
  * The main calculator class. This is responsible
@@ -25,10 +25,6 @@ public class Abacus {
      * The default number implementation to be used if no other one is available / selected.
      */
     public static final NumberImplementation DEFAULT_IMPLEMENTATION = StandardPlugin.IMPLEMENTATION_NAIVE;
-    /**
-     * The file used for saving and loading configuration.
-     */
-    public static final File CONFIG_FILE = new File("config.toml");
 
     /**
      * The plugin manager responsible for
@@ -53,11 +49,10 @@ public class Abacus {
     /**
      * Creates a new instance of the Abacus calculator.
      */
-    public Abacus() {
+    public Abacus(Supplier<Configuration> configurationSupplier) {
         pluginManager = new PluginManager(this);
         numberReducer = new NumberReducer(this);
-        configuration = new Configuration(CONFIG_FILE);
-        configuration.saveTo(CONFIG_FILE);
+        configuration = configurationSupplier.get();
         LexerTokenizer lexerTokenizer = new LexerTokenizer();
         ShuntingYardParser shuntingYardParser = new ShuntingYardParser(this);
         treeBuilder = new TreeBuilder<>(lexerTokenizer, shuntingYardParser);

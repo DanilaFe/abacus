@@ -86,6 +86,15 @@ public class Configuration {
     }
 
     /**
+     * Gets the value of this configuration as a string.
+     *
+     * @return the string that represents this configuration.
+     */
+    public String asTomlString(){
+        return TOML_WRITER.write(this);
+    }
+
+    /**
      * Gets the number implementation from this configuration.
      *
      * @return the number implementation.

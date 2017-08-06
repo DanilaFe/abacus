@@ -18,6 +18,7 @@ import org.nwapw.abacus.plugin.PluginManager;
 import org.nwapw.abacus.plugin.StandardPlugin;
 import org.nwapw.abacus.tree.TreeNode;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
@@ -28,6 +29,10 @@ import java.util.Set;
  */
 public class AbacusController implements PluginListener {
 
+    /**
+     * The file used for saving and loading configuration.
+     */
+    public static final File CONFIG_FILE = new File("config.toml");
     /**
      * The title for the apply alert dialog.
      */
@@ -175,7 +180,7 @@ public class AbacusController implements PluginListener {
             if (oldValue.equals(settingsTab)) alertIfApplyNeeded(true);
         });
 
-        abacus = new Abacus();
+        abacus = new Abacus(() -> new Configuration(new java.io.File("config.toml")));
         PluginManager abacusPluginManager = abacus.getPluginManager();
         abacusPluginManager.addListener(this);
         abacusPluginManager.addInstantiated(new StandardPlugin(abacus.getPluginManager()));
@@ -279,7 +284,7 @@ public class AbacusController implements PluginListener {
         for (ToggleablePlugin pluginEntry : enabledPlugins) {
             if (!pluginEntry.isEnabled()) disabledPlugins.add(pluginEntry.getClassName());
         }
-        configuration.saveTo(Abacus.CONFIG_FILE);
+        configuration.saveTo(CONFIG_FILE);
         changesMade = false;
         reloadAlertShown = false;
     }
