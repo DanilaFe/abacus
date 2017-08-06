@@ -11,6 +11,7 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 import org.nwapw.abacus.Abacus;
 import org.nwapw.abacus.config.Configuration;
+import org.nwapw.abacus.number.ComputationInterruptedException;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.plugin.ClassFinder;
 import org.nwapw.abacus.plugin.PluginListener;
@@ -58,6 +59,10 @@ public class AbacusController implements PluginListener {
      * Constant string that is displayed if the calculations are stopped before they are done.
      */
     private static final String ERR_STOP = "Stopped";
+    /**
+     * Constant string that is displayed if the calculations are interrupted by an exception.
+     */
+    private static final String ERR_EXCEPTION = "Exception Thrown";
     @FXML
     private TabPane coreTabPane;
     @FXML
@@ -79,6 +84,8 @@ public class AbacusController implements PluginListener {
     @FXML
     private Button inputButton;
     @FXML
+    private Button stopButton;
+    @FXML
     private ComboBox<String> numberImplementationBox;
     @FXML
     private ListView<ToggleablePlugin> enabledPluginView;
@@ -95,7 +102,6 @@ public class AbacusController implements PluginListener {
     private ObservableList<String> numberImplementationOptions;
 
     /**
-     * <<<<<<< HEAD
      * The list of plugin objects that can be toggled on and off,
      * and, when reloaded, get added to the plugin manager's black list.
      */
@@ -105,20 +111,6 @@ public class AbacusController implements PluginListener {
      * The abacus instance used for changing the plugin configuration.
      */
     private Abacus abacus;
-    /**
-     * Thread used for calculating.
-     */
-    private Thread calcThread;
-
-    /**
-     * Checks whether the calculator is calculating.
-     */
-    private boolean calculating;
-
-    /**
-     * Seconds delayed for timer;
-     */
-    private double delay = 0;
 
     /**
      * Boolean which represents whether changes were made to the configuration.
@@ -132,6 +124,47 @@ public class AbacusController implements PluginListener {
      * The alert shown when a press to "apply" is needed.
      */
     private Alert reloadAlert;
+    /**
+     * The runnable used to perform the calculation.
+     */
+    private final Runnable CALCULATION_RUNNABLE = new Runnable() {
+
+        private String attemptCalculation(){
+            try {
+                TreeNode constructedTree = abacus.parseString(inputField.getText());
+                if (constructedTree == null) {
+                    return ERR_SYNTAX;
+                }
+                NumberInterface evaluatedNumber = abacus.evaluateTree(constructedTree);
+                if (evaluatedNumber == null) {
+                    return ERR_EVAL;
+                }
+                String resultingString = evaluatedNumber.toString();
+                historyData.add(new HistoryModel(inputField.getText(), constructedTree.toString(), resultingString));
+                return resultingString;
+            } catch (ComputationInterruptedException exception) {
+                return ERR_STOP;
+            } catch (RuntimeException exception){
+                exception.printStackTrace();
+                return ERR_EXCEPTION;
+            }
+        }
+
+        @Override
+        public void run() {
+            String calculation = attemptCalculation();
+            Platform.runLater(() -> {
+                outputText.setText(calculation);
+                inputField.setText("");
+                inputButton.setDisable(false);
+                stopButton.setDisable(true);
+            });
+        }
+    };
+    /**
+     * The thread in which the computation runs.
+     */
+    private Thread calculationThread;
 
     /**
      * Alerts the user if the changes they made
@@ -202,63 +235,16 @@ public class AbacusController implements PluginListener {
 
     @FXML
     private void performCalculation() {
-        Runnable calculator = new Runnable() {
-            public void run() {
-                if (delay > 0) {
-                    Runnable timer = new Runnable() {
-                        public void run() {
-                            long gap = (long) (delay * 1000);
-                            long startTime = System.currentTimeMillis();
-                            while (System.currentTimeMillis() - startTime <= gap) {
-                            }
-                            stopCalculation();
-                        }
-                    };
-                    Thread maxTime = new Thread(timer);
-                    maxTime.setName("maxTime");
-                    maxTime.start();
-                }
-                calculating = true;
-                Platform.runLater(() -> inputButton.setDisable(true));
-                TreeNode constructedTree = abacus.parseString(inputField.getText());
-                if (constructedTree == null) {
-                    Platform.runLater(() -> outputText.setText(ERR_SYNTAX));
-                    Platform.runLater(() -> inputButton.setDisable(false));
-                    //return;
-                } else {
-                    NumberInterface evaluatedNumber = abacus.evaluateTree(constructedTree);
-                    if (evaluatedNumber == null) {
-                        if (Thread.currentThread().isInterrupted()) {
-                            Platform.runLater(() -> outputText.setText(ERR_STOP));
-                            Platform.runLater(() -> inputButton.setDisable(false));
-                        } else {
-                            Platform.runLater(() -> outputText.setText(ERR_EVAL));
-                            Platform.runLater(() -> inputButton.setDisable(false));
-                            //return;
-                        }
-                    } else {
-                        Platform.runLater(() -> outputText.setText(evaluatedNumber.toString()));
-                        historyData.add(new HistoryModel(inputField.getText(), constructedTree.toString(), evaluatedNumber.toString()));
-
-                        Platform.runLater(() -> inputButton.setDisable(false));
-                        Platform.runLater(() -> inputField.setText(""));
-                    }
-                }
-                calculating = false;
-            }
-        };
-        if (!calculating) {
-            calcThread = new Thread(calculator);
-            calcThread.setName("calcThread");
-            calcThread.start();
-        }
+        inputButton.setDisable(true);
+        stopButton.setDisable(false);
+        calculationThread = new Thread(CALCULATION_RUNNABLE);
+        calculationThread.start();
     }
 
     @FXML
-    private void stopCalculation() {
-        calcThread.interrupt();
-        calculating = false;
-        //Platform.runLater(() ->inputButton.setDisable(false));
+    private void performStop(){
+        if(calculationThread != null)
+            calculationThread.interrupt();
     }
 
     @FXML

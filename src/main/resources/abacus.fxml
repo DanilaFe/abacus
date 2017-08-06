@@ -35,7 +35,7 @@
                             <Button fx:id="inputButton" text="Calculate" maxWidth="Infinity"
                                     onAction="#performCalculation"/>
                             <Button fx:id="stopButton" text="Stop" maxWidth="Infinity"
-                                    onAction="#stopCalculation"/>
+                                    onAction="#performStop" disable="true"/>
                         </VBox>
                     </bottom>
                 </BorderPane>
