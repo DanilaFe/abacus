@@ -15,7 +15,7 @@ public class ValueNode<T> extends PatternNode<T> {
     /**
      * Creates a new node that matches the given character.
      *
-     * @param value
+     * @param value the character value of the node.
      */
     public ValueNode(char value) {
         this.value = value;
