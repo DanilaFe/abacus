@@ -531,22 +531,6 @@ public class StandardPlugin extends Plugin {
         return theta;
     }
 
-    public static NumberInterface intPow(NumberInterface number, Class<? extends NumberInterface> numberClass, NumberInterface exponent) {
-        if (exponent.compareTo((new NaiveNumber(0)).promoteTo(numberClass)) == 0) {
-            return (new NaiveNumber(1)).promoteTo(numberClass);
-        }
-        boolean takeReciprocal = exponent.compareTo((new NaiveNumber(0)).promoteTo(numberClass)) < 0;
-        exponent = FUNCTION_ABS.apply(exponent);
-        NumberInterface power = number;
-        for (NumberInterface currentExponent = (new NaiveNumber(1)).promoteTo(numberClass); currentExponent.compareTo(exponent) < 0; currentExponent = currentExponent.add((new NaiveNumber(1)).promoteTo(numberClass))) {
-            power = power.multiply(number);
-        }
-        if (takeReciprocal) {
-            power = (new NaiveNumber(1)).promoteTo(numberClass).divide(power);
-        }
-        return power;
-    }
-
     @Override
     public void onEnable() {
         registerNumberImplementation("naive", IMPLEMENTATION_NAIVE);
