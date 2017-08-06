@@ -12,8 +12,6 @@ import org.nwapw.abacus.plugin.StandardPlugin;
 import org.nwapw.abacus.tree.NumberReducer;
 import org.nwapw.abacus.tree.TreeNode;
 
-import java.util.function.Supplier;
-
 /**
  * The main calculator class. This is responsible
  * for piecing together all of the components, allowing
@@ -49,10 +47,10 @@ public class Abacus {
     /**
      * Creates a new instance of the Abacus calculator.
      */
-    public Abacus(Supplier<Configuration> configurationSupplier) {
+    public Abacus(Configuration configuration) {
         pluginManager = new PluginManager(this);
         numberReducer = new NumberReducer(this);
-        configuration = configurationSupplier.get();
+        this.configuration = new Configuration(configuration);
         LexerTokenizer lexerTokenizer = new LexerTokenizer();
         ShuntingYardParser shuntingYardParser = new ShuntingYardParser(this);
         treeBuilder = new TreeBuilder<>(lexerTokenizer, shuntingYardParser);

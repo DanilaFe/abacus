@@ -40,6 +40,15 @@ public class Configuration {
     private Set<String> disabledPlugins = new HashSet<>();
 
     /**
+     * Creates a new configuration form the given configuration.
+     *
+     * @param copyFrom the configuration to copy.
+     */
+    public Configuration(Configuration copyFrom){
+        copyFrom(copyFrom);
+    }
+
+    /**
      * Creates a new configuration with the given values.
      *
      * @param numberImplementation the number implementation, like "naive" or "precise"
