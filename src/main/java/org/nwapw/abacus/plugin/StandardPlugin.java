@@ -311,7 +311,9 @@ public class StandardPlugin extends Plugin {
                 //right and left refer to lhs and rhs in the above inequality.
                 NumberInterface sum = NaiveNumber.ONE.promoteTo(params[0].getClass());
                 NumberInterface nextNumerator = params[0];
-                NumberInterface left = params[0].multiply((new NaiveNumber(3)).promoteTo(params[0].getClass()).intPow(params[0].ceiling().intValue())), right = maxError;
+                NumberInterface left = params[0].multiply((new NaiveNumber(3)).promoteTo(params[0].getClass()));
+                left = intPow(left, left.getClass(), new NaiveNumber(params[0].ceiling().intValue()).promoteTo(left.getClass()));
+                NumberInterface right = maxError;
                 do {
                     sum = sum.add(nextNumerator.divide(factorial(params[0].getClass(), n + 1)));
                     n++;
@@ -470,7 +472,7 @@ public class StandardPlugin extends Plugin {
      * @return the maximum error.
      */
     private static NumberInterface getMaxError(NumberInterface number) {
-        return (new NaiveNumber(10)).promoteTo(number.getClass()).intPow(-number.getMaxPrecision());
+        return intPow(new NaiveNumber(10).promoteTo(number.getClass()), number.getClass(), new NaiveNumber(-number.getMaxPrecision()).promoteTo(number.getClass()));
     }
 
     /**
