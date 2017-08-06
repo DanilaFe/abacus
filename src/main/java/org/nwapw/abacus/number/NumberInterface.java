@@ -135,6 +135,27 @@ public abstract class NumberInterface {
     }
 
     /**
+     * Raises this number to an integer power.
+     *
+     * @param exponent the exponent to which to take the number.
+     * @return the resulting value.
+     */
+    protected abstract NumberInterface intPowInternal(int exponent);
+
+    /**
+     * Raises this number to an integer power. Also, checks if the
+     * thread has been interrupted, and if so, throws
+     * an exception.
+     *
+     * @param exponent the exponent to which to take the number.
+     * @return the resulting value.
+     */
+    public final NumberInterface intPow(int exponent){
+        checkInterrupted();
+        return intPowInternal(exponent);
+    }
+
+    /**
      * Compares this number to another.
      *
      * @param number the number to compare to.
