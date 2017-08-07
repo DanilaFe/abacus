@@ -13,10 +13,7 @@ import org.nwapw.abacus.Abacus;
 import org.nwapw.abacus.config.Configuration;
 import org.nwapw.abacus.number.ComputationInterruptedException;
 import org.nwapw.abacus.number.NumberInterface;
-import org.nwapw.abacus.plugin.ClassFinder;
-import org.nwapw.abacus.plugin.PluginListener;
-import org.nwapw.abacus.plugin.PluginManager;
-import org.nwapw.abacus.plugin.StandardPlugin;
+import org.nwapw.abacus.plugin.*;
 import org.nwapw.abacus.tree.TreeNode;
 
 import java.io.File;
@@ -217,6 +214,7 @@ public class AbacusController implements PluginListener {
         PluginManager abacusPluginManager = abacus.getPluginManager();
         abacusPluginManager.addListener(this);
         abacusPluginManager.addInstantiated(new StandardPlugin(abacus.getPluginManager()));
+        abacusPluginManager.addInstantiated(new VariablePlugin(abacus.getPluginManager()));
         try {
             ClassFinder.loadJars("plugins").forEach(abacusPluginManager::addClass);
         } catch (IOException | ClassNotFoundException e) {

@@ -57,6 +57,7 @@ public class Lexer<T> {
      * @return the best match.
      */
     public Match<T> lexOne(String from, int startAt, Comparator<T> compare) {
+        //boolean variable = true;
         ArrayList<Match<T>> matches = new ArrayList<>();
         HashSet<PatternNode<T>> currentSet = new HashSet<>();
         HashSet<PatternNode<T>> futureSet = new HashSet<>();
@@ -70,6 +71,7 @@ public class Lexer<T> {
                     node.addOutputsInto(futureSet);
                 } else if (node instanceof EndNode) {
                     matches.add(new Match<>(from.substring(startAt, index), ((EndNode<T>) node).getPatternId()));
+                    //variable = false;
                 }
             }
 
@@ -84,6 +86,9 @@ public class Lexer<T> {
         if (compare != null) {
             matches.sort(Comparator.comparingInt(a -> a.getContent().length()));
         }
+        //if(variable&&) {
+        //    matches.add(new Match<>(from.substring(startAt, index), ((EndNode<T>) node).getPatternId()));
+        //}
         return matches.isEmpty() ? null : matches.get(matches.size() - 1);
     }
 

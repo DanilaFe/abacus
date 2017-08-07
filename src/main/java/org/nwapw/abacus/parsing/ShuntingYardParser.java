@@ -63,7 +63,9 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
             matchType = match.getType();
             if (matchType == TokenType.NUM) {
                 output.add(match);
-            } else if (matchType == TokenType.FUNCTION) {
+            }else if(matchType == TokenType.VARIABLE) {
+                output.add(match);
+            }else if (matchType == TokenType.FUNCTION) {
                 output.add(new Match<>("", TokenType.INTERNAL_FUNCTION_END));
                 tokenStack.push(match);
             } else if (matchType == TokenType.OP) {
@@ -144,6 +146,8 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
             }
         } else if (matchType == TokenType.NUM) {
             return new NumberNode(abacus.numberFromString(match.getContent()));
+        } else if (matchType == TokenType.VARIABLE){
+            return new VariableNode(match.getContent());
         } else if (matchType == TokenType.FUNCTION) {
             String functionName = match.getContent();
             FunctionNode node = new FunctionNode(functionName);
