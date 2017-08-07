@@ -1,6 +1,8 @@
 package org.nwapw.abacus.fx;
 
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -86,6 +88,8 @@ public class AbacusController implements PluginListener {
     private ComboBox<String> numberImplementationBox;
     @FXML
     private ListView<ToggleablePlugin> enabledPluginView;
+    @FXML
+    private TextField computationLimitField;
 
     /**
      * The list of history entries, created by the users.
@@ -121,6 +125,17 @@ public class AbacusController implements PluginListener {
      * The alert shown when a press to "apply" is needed.
      */
     private Alert reloadAlert;
+    /**
+     * The runnable that takes care of killing computations that take too long.
+     */
+    private final Runnable TIMER_RUNNABLE = () -> {
+        try {
+            Configuration abacusConfig = abacus.getConfiguration();
+            if(abacusConfig.getComputationDelay() == 0) return;
+            Thread.sleep((long) (abacusConfig.getComputationDelay() * 1000));
+            performStop();
+        } catch (InterruptedException e) { }
+    };
     /**
      * The runnable used to perform the calculation.
      */
@@ -158,6 +173,10 @@ public class AbacusController implements PluginListener {
             });
         }
     };
+    /**
+     * The thread that is waiting to pause the calculation.
+     */
+    private Thread computationLimitThread;
     /**
      * The thread in which the computation runs.
      */
@@ -222,6 +241,15 @@ public class AbacusController implements PluginListener {
         }
         abacusPluginManager.reload();
 
+        computationLimitField.setText(Double.toString(abacus.getConfiguration().getComputationDelay()));
+        computationLimitField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if(!newValue.matches("(\\d+(\\.\\d*)?)?")) {
+                computationLimitField.setText(oldValue);
+            } else {
+                changesMade = true;
+            }
+        });
+
         changesMade = false;
         reloadAlertShown = false;
 
@@ -232,21 +260,29 @@ public class AbacusController implements PluginListener {
     }
 
     @FXML
-    private void performCalculation() {
+    public void performCalculation() {
         inputButton.setDisable(true);
         stopButton.setDisable(false);
         calculationThread = new Thread(CALCULATION_RUNNABLE);
         calculationThread.start();
+        computationLimitThread = new Thread(TIMER_RUNNABLE);
+        computationLimitThread.start();
     }
 
     @FXML
-    private void performStop(){
-        if(calculationThread != null)
+    public void performStop(){
+        if(calculationThread != null) {
             calculationThread.interrupt();
+            calculationThread = null;
+        }
+        if(computationLimitThread != null){
+            computationLimitThread.interrupt();
+            computationLimitThread = null;
+        }
     }
 
     @FXML
-    private void performSaveAndReload() {
+    public void performSaveAndReload() {
         performSave();
         performReload();
         changesMade = false;
@@ -254,13 +290,13 @@ public class AbacusController implements PluginListener {
     }
 
     @FXML
-    private void performReload() {
+    public void performReload() {
         alertIfApplyNeeded(true);
         abacus.getPluginManager().reload();
     }
 
     @FXML
-    private void performSave() {
+    public void performSave() {
         Configuration configuration = abacus.getConfiguration();
         configuration.setNumberImplementation(numberImplementationBox.getSelectionModel().getSelectedItem());
         Set<String> disabledPlugins = configuration.getDisabledPlugins();
@@ -268,6 +304,8 @@ public class AbacusController implements PluginListener {
         for (ToggleablePlugin pluginEntry : enabledPlugins) {
             if (!pluginEntry.isEnabled()) disabledPlugins.add(pluginEntry.getClassName());
         }
+        if(computationLimitField.getText().matches("\\d*(\\.\\d+)?") && computationLimitField.getText().length() != 0)
+            configuration.setComputationDelay(Double.parseDouble(computationLimitField.getText()));
         configuration.saveTo(CONFIG_FILE);
         changesMade = false;
         reloadAlertShown = false;
@@ -294,4 +332,5 @@ public class AbacusController implements PluginListener {
         enabledPlugins.clear();
         numberImplementationOptions.clear();
     }
+
 }

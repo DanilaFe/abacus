@@ -173,7 +173,7 @@ public abstract class NumberInterface {
     /**
      * Returns the least integer greater than or equal to the number.
      *
-     * @return the least integer >= the number, if int can hold the value.
+     * @return the least integer greater or equal to the number, if int can hold the value.
      */
     protected abstract NumberInterface ceilingInternal();
 
@@ -201,7 +201,7 @@ public abstract class NumberInterface {
      * Also, checks if the thread has been interrupted, and if so, throws
      * an exception.
      *
-     * @return the greatest int >= the number, if int can hold the value.
+     * @return the greatest int smaller or equal to the number, if int can hold the value.
      */
     public final NumberInterface floor(){
         checkInterrupted();
