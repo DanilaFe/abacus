@@ -340,7 +340,8 @@ public class StandardPlugin extends Plugin {
         protected boolean matchesParams(NumberInterface[] params) {
             return params.length == 2
                     && !(params[0].compareTo(NaiveNumber.ZERO.promoteTo(params[0].getClass())) == 0
-                    && params[1].compareTo(NaiveNumber.ZERO.promoteTo(params[1].getClass())) == 0);
+                    && params[1].compareTo(NaiveNumber.ZERO.promoteTo(params[1].getClass())) == 0)
+                    && !(params[0].signum() == -1 && params[1].fractionalPart().compareTo(NaiveNumber.ZERO.promoteTo(params[1].getClass())) != 0);
         }
 
         @Override
@@ -349,6 +350,13 @@ public class StandardPlugin extends Plugin {
                 return NaiveNumber.ZERO.promoteTo(params[0].getClass());
             else if (params[1].compareTo(NaiveNumber.ZERO.promoteTo(params[0].getClass())) == 0)
                 return NaiveNumber.ONE.promoteTo(params[1].getClass());
+            //Detect integer bases:
+            if(params[0].fractionalPart().compareTo(fromInt(params[0].getClass(), 0)) == 0
+                    && FUNCTION_ABS.apply(params[0]).compareTo(fromInt(params[0].getClass(), Integer.MAX_VALUE)) < 0
+                    && FUNCTION_ABS.apply(params[1]).compareTo(fromInt(params[1].getClass(), 1)) >= 0){
+                NumberInterface[] newParams = {params[0], params[1].fractionalPart()};
+                return params[0].intPow(params[1].floor().intValue()).multiply(applyInternal(newParams));
+            }
             return FUNCTION_EXP.apply(FUNCTION_LN.apply(FUNCTION_ABS.apply(params[0])).multiply(params[1]));
         }
     });
