@@ -60,6 +60,14 @@
                     </FlowPane>
                 </GridPane>
             </Tab>
+            <Tab fx:id="functionListTab" text="Functions" closable="false">
+                <VBox>
+                    <padding>
+                        <Insets left="10" right="10" top="10" bottom="10"/>
+                    </padding>
+                    <ListView maxWidth="Infinity" fx:id="functionListView"/>
+                </VBox>
+            </Tab>
         </TabPane>
     </center>
 
