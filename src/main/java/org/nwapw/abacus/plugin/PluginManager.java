@@ -209,6 +209,9 @@ public class PluginManager {
             if (disabledPlugins.contains(plugin.getClass().getName())) continue;
             plugin.disable();
         }
+        registeredFunctions.clear();
+        registeredOperators.clear();
+        registeredNumberImplementations.clear();
         cachedInterfaceImplementations.clear();
         cachedPi.clear();
         listeners.forEach(e -> e.onUnload(this));
