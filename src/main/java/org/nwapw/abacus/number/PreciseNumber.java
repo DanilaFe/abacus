@@ -113,19 +113,18 @@ public class PreciseNumber extends NumberInterface {
         String str = value.toPlainString();
         int decimalIndex = str.indexOf('.');
         if (decimalIndex != -1) {
-            return new PreciseNumber(str.substring(0, decimalIndex));
+            NumberInterface floor = new PreciseNumber(str.substring(0, decimalIndex));
+            if(signum() == -1){
+                floor = floor.subtract(ONE);
+            }
+            return floor;
         }
         return this;
     }
 
     @Override
     public NumberInterface fractionalPartInternal() {
-        String str = value.toPlainString();
-        int decimalIndex = str.indexOf('.');
-        if (decimalIndex != -1) {
-            return new PreciseNumber(str.substring(decimalIndex + 1));
-        }
-        return ZERO;
+        return this.subtractInternal(floorInternal());
     }
 
     @Override
