@@ -439,7 +439,7 @@ public class StandardPlugin extends Plugin {
 
         @Override
         protected NumberInterface applyInternal(NumberInterface[] params) {
-            return functionCos.apply(params[0]).divide(functionCos.apply(params[0]));
+            return functionCos.apply(params[0]).divide(functionSin.apply(params[0]));
         }
     };
 
