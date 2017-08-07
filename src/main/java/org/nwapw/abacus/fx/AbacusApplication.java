@@ -12,13 +12,25 @@ import javafx.stage.Stage;
  */
 public class AbacusApplication extends Application {
 
+    /**
+     * The controller currently managing the application.
+     */
+    private AbacusController controller;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent parent = FXMLLoader.load(getClass().getResource("/abacus.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/abacus.fxml"));
+        Parent parent = loader.load();
+        controller = loader.getController();
         Scene mainScene = new Scene(parent, 320, 480);
         primaryStage.setScene(mainScene);
         primaryStage.setTitle("Abacus");
         primaryStage.show();
     }
 
+    @Override
+    public void stop() throws Exception {
+        super.stop();
+        controller.performStop();
+    }
 }

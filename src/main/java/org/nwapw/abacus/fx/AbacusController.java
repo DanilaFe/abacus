@@ -259,7 +259,7 @@ public class AbacusController implements PluginListener {
     }
 
     @FXML
-    private void performCalculation() {
+    public void performCalculation() {
         inputButton.setDisable(true);
         stopButton.setDisable(false);
         calculationThread = new Thread(CALCULATION_RUNNABLE);
@@ -269,7 +269,7 @@ public class AbacusController implements PluginListener {
     }
 
     @FXML
-    private void performStop(){
+    public void performStop(){
         if(calculationThread != null) {
             calculationThread.interrupt();
             calculationThread = null;
@@ -281,7 +281,7 @@ public class AbacusController implements PluginListener {
     }
 
     @FXML
-    private void performSaveAndReload() {
+    public void performSaveAndReload() {
         performSave();
         performReload();
         changesMade = false;
@@ -289,13 +289,13 @@ public class AbacusController implements PluginListener {
     }
 
     @FXML
-    private void performReload() {
+    public void performReload() {
         alertIfApplyNeeded(true);
         abacus.getPluginManager().reload();
     }
 
     @FXML
-    private void performSave() {
+    public void performSave() {
         Configuration configuration = abacus.getConfiguration();
         configuration.setNumberImplementation(numberImplementationBox.getSelectionModel().getSelectedItem());
         Set<String> disabledPlugins = configuration.getDisabledPlugins();
@@ -305,7 +305,6 @@ public class AbacusController implements PluginListener {
         }
         if(computationLimitField.getText().matches("\\d*(\\.\\d+)?") && computationLimitField.getText().length() != 0)
             configuration.setComputationDelay(Double.parseDouble(computationLimitField.getText()));
-        System.out.println(configuration.getComputationDelay());
         configuration.saveTo(CONFIG_FILE);
         changesMade = false;
         reloadAlertShown = false;
