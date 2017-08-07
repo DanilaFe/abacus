@@ -18,18 +18,6 @@ import java.util.Set;
 public abstract class Plugin {
 
     /**
-     * A hash map of functions mapped to their string names.
-     */
-    private Map<String, Function> functions;
-    /**
-     * A hash map of operators mapped to their string names.
-     */
-    private Map<String, Operator> operators;
-    /**
-     * The map of the number implementations this plugin provides.
-     */
-    private Map<String, NumberImplementation> numberImplementations;
-    /**
      * The plugin manager in which to search for functions
      * not inside this package,
      */
@@ -49,67 +37,7 @@ public abstract class Plugin {
      */
     public Plugin(PluginManager manager) {
         this.manager = manager;
-        functions = new HashMap<>();
-        operators = new HashMap<>();
-        numberImplementations = new HashMap<>();
         enabled = false;
-    }
-
-    /**
-     * Gets the list of functions provided by this plugin.
-     *
-     * @return the list of registered functions.
-     */
-    public final Set<String> providedFunctions() {
-        return functions.keySet();
-    }
-
-    /**
-     * Gets the list of functions provided by this plugin.
-     *
-     * @return the list of registered functions.
-     */
-    public final Set<String> providedOperators() {
-        return operators.keySet();
-    }
-
-    /**
-     * Gets the list of number implementations provided by this plugin.
-     *
-     * @return the list of registered number implementations.
-     */
-    public final Set<String> providedNumberImplementations() {
-        return numberImplementations.keySet();
-    }
-
-    /**
-     * Gets a function under the given function name.
-     *
-     * @param functionName the name of the function to get
-     * @return the function, or null if this plugin doesn't provide it.
-     */
-    public final Function getFunction(String functionName) {
-        return functions.get(functionName);
-    }
-
-    /**
-     * Gets an operator under the given operator name.
-     *
-     * @param operatorName the name of the operator to get.
-     * @return the operator, or null if this plugin doesn't provide it.
-     */
-    public final Operator getOperator(String operatorName) {
-        return operators.get(operatorName);
-    }
-
-    /**
-     * Gets the number implementation under the given name.
-     *
-     * @param name the name of the number implementation to look up.
-     * @return the number implementation associated with that name, or null if the plugin doesn't provide it.
-     */
-    public final NumberImplementation getNumberImplementation(String name) {
-        return numberImplementations.get(name);
     }
 
     /**
@@ -129,8 +57,6 @@ public abstract class Plugin {
     public final void disable() {
         if (!enabled) return;
         onDisable();
-        functions.clear();
-        operators.clear();
         enabled = false;
     }
 
@@ -142,7 +68,7 @@ public abstract class Plugin {
      * @param toRegister the function implementation.
      */
     protected final void registerFunction(String name, Function toRegister) {
-        functions.put(name, toRegister);
+        manager.registerFunction(name, toRegister);
     }
 
     /**
@@ -154,7 +80,7 @@ public abstract class Plugin {
      * @param operator the operator to register.
      */
     protected final void registerOperator(String name, Operator operator) {
-        operators.put(name, operator);
+        manager.registerOperator(name, operator);
     }
 
     /**
@@ -165,7 +91,7 @@ public abstract class Plugin {
      * @param implementation the actual implementation class to register.
      */
     protected final void registerNumberImplementation(String name, NumberImplementation implementation) {
-        numberImplementations.put(name, implementation);
+        manager.registerNumberImplementation(name, implementation);
     }
 
     /**
