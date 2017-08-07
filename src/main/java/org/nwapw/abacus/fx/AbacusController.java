@@ -129,7 +129,9 @@ public class AbacusController implements PluginListener {
      */
     private final Runnable TIMER_RUNNABLE = () -> {
         try {
-            Thread.sleep(30 * 1000);
+            Configuration abacusConfig = abacus.getConfiguration();
+            if(abacusConfig.getComputationDelay() != 0)
+            Thread.sleep((long) (abacusConfig.getComputationDelay() * 1000));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
