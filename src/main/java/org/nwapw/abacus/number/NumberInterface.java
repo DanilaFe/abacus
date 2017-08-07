@@ -182,7 +182,7 @@ public abstract class NumberInterface {
      * Also, checks if the thread has been interrupted, and if so, throws
      * an exception.
      *
-     * @return the least integer bigger or equal to the number, if int can hold the value.
+     * @return the least integer bigger or equal to the number.
      */
     public final NumberInterface ceiling(){
         checkInterrupted();
@@ -192,7 +192,7 @@ public abstract class NumberInterface {
     /**
      * Return the greatest integer less than or equal to the number.
      *
-     * @return the greatest integer smaller or equal the number, if int can hold the value.
+     * @return the greatest integer smaller or equal the number.
      */
     protected abstract NumberInterface floorInternal();
 
@@ -201,7 +201,7 @@ public abstract class NumberInterface {
      * Also, checks if the thread has been interrupted, and if so, throws
      * an exception.
      *
-     * @return the greatest int >= the number, if int can hold the value.
+     * @return the greatest int greater than or equal to the number.
      */
     public final NumberInterface floor(){
         checkInterrupted();
@@ -216,7 +216,7 @@ public abstract class NumberInterface {
     protected abstract NumberInterface fractionalPartInternal();
 
     /**
-     * Returns the fractional part of the number.
+     * Returns the fractional part of the number, specifically x - floor(x).
      * Also, checks if the thread has been interrupted,
      * and if so, throws an exception.
      * @return the fractional part of the number.
