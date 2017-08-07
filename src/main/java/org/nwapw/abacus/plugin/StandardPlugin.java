@@ -363,7 +363,7 @@ public class StandardPlugin extends Plugin {
 
         @Override
         protected NumberInterface applyInternal(NumberInterface[] params) {
-            NumberInterface pi = getPi(params[0].getClass());
+            NumberInterface pi = piFor(params[0].getClass());
             NumberInterface twoPi = pi.multiply(fromInt(pi.getClass(), 2));
             NumberInterface theta = getSmallAngle(params[0], pi);
             //System.out.println(theta);
@@ -387,7 +387,7 @@ public class StandardPlugin extends Plugin {
 
         @Override
         protected NumberInterface applyInternal(NumberInterface[] params) {
-            return functionSin.apply(getPi(params[0].getClass()).divide(fromInt(params[0].getClass(), 2))
+            return functionSin.apply(piFor(params[0].getClass()).divide(fromInt(params[0].getClass(), 2))
                     .subtract(params[0]));
         }
     };
