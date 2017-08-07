@@ -23,20 +23,17 @@ public class PluginManager {
      */
     private Set<Plugin> plugins;
     /**
-     * List of functions that have been cached,
-     * that is, found in a plugin and returned.
+     * The map of functions registered by the plugins.
      */
-    private Map<String, Function> cachedFunctions;
+    private Map<String, Function> registeredFunctions;
     /**
-     * List of operators that have been cached,
-     * that is, found in a plugin and returned.
+     * The map of operators registered by the plugins
      */
-    private Map<String, Operator> cachedOperators;
+    private Map<String, Operator> registeredOperators;
     /**
-     * The list of number implementations that have
-     * been cached, that is, found in a plugin and returned.
+     * The map of number implementations registered by the plugins.
      */
-    private Map<String, NumberImplementation> cachedNumberImplementations;
+    private Map<String, NumberImplementation> registeredNumberImplementations;
     /**
      * The list of number implementations that have been
      * found by their implementation class.
@@ -46,18 +43,6 @@ public class PluginManager {
      * The pi values for each implementation class that have already been computer.
      */
     private Map<Class<? extends NumberInterface>, NumberInterface> cachedPi;
-    /**
-     * List of all functions loaded by the plugins.
-     */
-    private Set<String> allFunctions;
-    /**
-     * List of all operators loaded by the plugins.
-     */
-    private Set<String> allOperators;
-    /**
-     * List of all the number implementations loaded by the plugins.
-     */
-    private Set<String> allNumberImplementations;
     /**
      * The list of plugin listeners attached to this instance.
      */
@@ -77,79 +62,66 @@ public class PluginManager {
         this.abacus = abacus;
         loadedPluginClasses = new HashSet<>();
         plugins = new HashSet<>();
-        cachedFunctions = new HashMap<>();
-        cachedOperators = new HashMap<>();
-        cachedNumberImplementations = new HashMap<>();
+        registeredFunctions = new HashMap<>();
+        registeredOperators = new HashMap<>();
+        registeredNumberImplementations = new HashMap<>();
         cachedInterfaceImplementations = new HashMap<>();
         cachedPi = new HashMap<>();
-        allFunctions = new HashSet<>();
-        allOperators = new HashSet<>();
-        allNumberImplementations = new HashSet<>();
         listeners = new HashSet<>();
     }
 
     /**
-     * Searches the plugin list for a certain value, retrieving the Plugin's
-     * list of items of the type using the setFunction and getting the value
-     * of it is available via getFunction. If the value is contained
-     * in the cache, it returns the cached value instead.
-     *
-     * @param plugins     the plugin list to search.
-     * @param cache       the cache to use
-     * @param setFunction the function to retrieve a set of available T's from the plugin
-     * @param getFunction the function to get the T value under the given name
-     * @param name        the name to search for
-     * @param <T>         the type of element being search
-     * @param <K>         the type of key that the cache is indexed by.
-     * @return the retrieved element, or null if it was not found.
+     * Registers a function under the given name.
+     * @param name the name of the function.
+     * @param function the function to register.
      */
-    private static <T, K> T searchCached(Collection<Plugin> plugins, Map<K, T> cache,
-                                         java.util.function.Function<Plugin, Set<K>> setFunction,
-                                         java.util.function.BiFunction<Plugin, K, T> getFunction,
-                                         K name) {
-        if (cache.containsKey(name)) return cache.get(name);
-
-        T loadedValue = null;
-        for (Plugin plugin : plugins) {
-            if (setFunction.apply(plugin).contains(name)) {
-                loadedValue = getFunction.apply(plugin, name);
-                break;
-            }
-        }
-
-        cache.put(name, loadedValue);
-        return loadedValue;
+    public void registerFunction(String name, Function function){
+        registeredFunctions.put(name, function);
     }
 
     /**
-     * Gets a function under the given name.
-     *
-     * @param name the name of the function
-     * @return the function under the given name.
-     */
-    public Function functionFor(String name) {
-        return searchCached(plugins, cachedFunctions, Plugin::providedFunctions, Plugin::getFunction, name);
-    }
-
-    /**
-     * Gets an operator under the given name.
-     *
+     * Registers an operator under the given name.
      * @param name the name of the operator.
-     * @return the operator under the given name.
+     * @param operator the operator to register.
      */
-    public Operator operatorFor(String name) {
-        return searchCached(plugins, cachedOperators, Plugin::providedOperators, Plugin::getOperator, name);
+    public void registerOperator(String name, Operator operator){
+        registeredOperators.put(name, operator);
     }
 
     /**
-     * Gets the number implementation under the given name.
-     *
-     * @param name the name of the implementation.
-     * @return the implementation.
+     * Registers a number implementation under the given name.
+     * @param name the name of the number implementation.
+     * @param implementation the number implementation to register.
      */
-    public NumberImplementation numberImplementationFor(String name) {
-        return searchCached(plugins, cachedNumberImplementations, Plugin::providedNumberImplementations,
-                Plugin::getNumberImplementation, name);
+    public void registerNumberImplementation(String name, NumberImplementation implementation){
+        registeredNumberImplementations.put(name, implementation);
+    }
+
+    /**
+     * Gets the function registered under the given name.
+     * @param name the name of the function.
+     * @return the function, or null if it was not found.
+     */
+    public Function functionFor(String name){
+        return registeredFunctions.get(name);
+    }
+
+    /**
+     * Gets the operator registered under the given name.
+     * @param name the name of the operator.
+     * @return the operator, or null if it was not found.
+     */
+    public Operator operatorFor(String name){
+        return registeredOperators.get(name);
+    }
+
+    /**
+     * Gets the number implementation registered under the given name.
+     * @param name the name of the number implementation.
+     * @return the number implementation, or null if it was not found.
+     */
+    public NumberImplementation numberImplementationFor(String name){
+        return registeredNumberImplementations.get(name);
     }
 
     /**
@@ -161,14 +133,11 @@ public class PluginManager {
     public NumberImplementation interfaceImplementationFor(Class<? extends NumberInterface> name) {
         if (cachedInterfaceImplementations.containsKey(name)) return cachedInterfaceImplementations.get(name);
         NumberImplementation toReturn = null;
-        outside:
-        for (Plugin plugin : plugins) {
-            for (String implementationName : plugin.providedNumberImplementations()) {
-                NumberImplementation implementation = plugin.getNumberImplementation(implementationName);
-                if (implementation.getImplementation().equals(name)) {
-                    toReturn = implementation;
-                    break outside;
-                }
+        for(String key : registeredNumberImplementations.keySet()){
+            NumberImplementation implementation = registeredNumberImplementations.get(key);
+            if(implementation.getImplementation() == name) {
+                toReturn = implementation;
+                break;
             }
         }
         cachedInterfaceImplementations.put(name, toReturn);
@@ -227,12 +196,6 @@ public class PluginManager {
             if (disabledPlugins.contains(plugin.getClass().getName())) continue;
             plugin.enable();
         }
-        for (Plugin plugin : plugins) {
-            if (disabledPlugins.contains(plugin.getClass().getName())) continue;
-            allFunctions.addAll(plugin.providedFunctions());
-            allOperators.addAll(plugin.providedOperators());
-            allNumberImplementations.addAll(plugin.providedNumberImplementations());
-        }
         listeners.forEach(e -> e.onLoad(this));
     }
 
@@ -246,14 +209,8 @@ public class PluginManager {
             if (disabledPlugins.contains(plugin.getClass().getName())) continue;
             plugin.disable();
         }
-        cachedFunctions.clear();
-        cachedOperators.clear();
-        cachedNumberImplementations.clear();
         cachedInterfaceImplementations.clear();
         cachedPi.clear();
-        allFunctions.clear();
-        allOperators.clear();
-        allNumberImplementations.clear();
         listeners.forEach(e -> e.onUnload(this));
     }
 
@@ -271,7 +228,7 @@ public class PluginManager {
      * @return the set of all functions that were loaded.
      */
     public Set<String> getAllFunctions() {
-        return allFunctions;
+        return registeredFunctions.keySet();
     }
 
     /**
@@ -280,7 +237,7 @@ public class PluginManager {
      * @return the set of all operators that were loaded.
      */
     public Set<String> getAllOperators() {
-        return allOperators;
+        return registeredOperators.keySet();
     }
 
     /**
@@ -289,7 +246,7 @@ public class PluginManager {
      * @return the set of all implementations that were loaded.
      */
     public Set<String> getAllNumberImplementations() {
-        return allNumberImplementations;
+        return registeredNumberImplementations.keySet();
     }
 
     /**
