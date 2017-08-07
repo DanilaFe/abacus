@@ -61,10 +61,11 @@
                 </GridPane>
             </Tab>
             <Tab fx:id="functionListTab" text="Functions" closable="false">
-                <VBox>
+                <VBox spacing="10">
                     <padding>
                         <Insets left="10" right="10" top="10" bottom="10"/>
                     </padding>
+                    <TextField fx:id="functionListSearchField" maxWidth="Infinity"/>
                     <ListView maxWidth="Infinity" fx:id="functionListView"/>
                 </VBox>
             </Tab>
