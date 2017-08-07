@@ -340,7 +340,8 @@ public class StandardPlugin extends Plugin {
         protected boolean matchesParams(NumberInterface[] params) {
             return params.length == 2
                     && !(params[0].compareTo(NaiveNumber.ZERO.promoteTo(params[0].getClass())) == 0
-                    && params[1].compareTo(NaiveNumber.ZERO.promoteTo(params[1].getClass())) == 0);
+                    && params[1].compareTo(NaiveNumber.ZERO.promoteTo(params[1].getClass())) == 0)
+                    && !(params[0].signum() == -1 && params[1].fractionalPart().compareTo(NaiveNumber.ZERO.promoteTo(params[1].getClass())) != 0);
         }
 
         @Override
