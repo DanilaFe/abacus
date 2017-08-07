@@ -5,6 +5,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxListCell;
@@ -97,6 +98,8 @@ public class AbacusController implements PluginListener {
     private TextField computationLimitField;
     @FXML
     private ListView<String> functionListView;
+    @FXML
+    private TextField functionListSearchField;
 
     /**
      * The list of history entries, created by the users.
@@ -118,6 +121,10 @@ public class AbacusController implements PluginListener {
      * The list of functions that are registered in the calculator.
      */
     private ObservableList<String> functionList;
+    /**
+     * The filtered list displayed to the user.
+     */
+    private FilteredList<String> functionFilter;
 
     /**
      * The abacus instance used for changing the plugin configuration.
@@ -222,7 +229,10 @@ public class AbacusController implements PluginListener {
                 });
 
         functionList = FXCollections.observableArrayList();
-        functionListView.setItems(functionList);
+        functionFilter = new FilteredList<>(functionList, (s) -> true);
+        functionListView.setItems(functionFilter);
+        functionListSearchField.textProperty().addListener((observable, oldValue, newValue) ->
+                functionFilter.setPredicate((newValue.length() == 0) ? ((s) -> true) : ((s) -> s.contains(newValue))));
         historyData = FXCollections.observableArrayList();
         historyTable.setItems(historyData);
         numberImplementationOptions = FXCollections.observableArrayList();
@@ -338,6 +348,7 @@ public class AbacusController implements PluginListener {
             enabledPlugins.add(plugin);
         }
         functionList.addAll(manager.getAllFunctions());
+        functionList.sort(String::compareTo);
     }
 
     @Override
