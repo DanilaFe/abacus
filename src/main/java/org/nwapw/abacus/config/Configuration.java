@@ -31,6 +31,10 @@ public class Configuration {
     private static final TomlWriter TOML_WRITER = new TomlWriter();
 
     /**
+     * The computation delay for which the thread can run without interruption.
+     */
+    private double computationDelay = 0;
+    /**
      * The implementation of the number that should be used.
      */
     private String numberImplementation = "<default>";
@@ -51,10 +55,12 @@ public class Configuration {
     /**
      * Creates a new configuration with the given values.
      *
+     * @param computationDelay     the delay before the computation gets killed.
      * @param numberImplementation the number implementation, like "naive" or "precise"
      * @param disabledPlugins      the list of disabled plugins.
      */
-    public Configuration(String numberImplementation, String[] disabledPlugins) {
+    public Configuration(double computationDelay, String numberImplementation, String[] disabledPlugins) {
+        this.computationDelay = computationDelay;
         this.numberImplementation = numberImplementation;
         this.disabledPlugins.addAll(Arrays.asList(disabledPlugins));
     }
@@ -75,6 +81,7 @@ public class Configuration {
      * @param otherConfiguration the configuration to copy from.
      */
     public void copyFrom(Configuration otherConfiguration) {
+        this.computationDelay = otherConfiguration.computationDelay;
         this.numberImplementation = otherConfiguration.numberImplementation;
         this.disabledPlugins.addAll(otherConfiguration.disabledPlugins);
     }
@@ -128,6 +135,25 @@ public class Configuration {
      */
     public Set<String> getDisabledPlugins() {
         return disabledPlugins;
+    }
+
+
+    /**
+     * Gets the computation delay specified in the configuration.
+     *
+     * @return the computaton delay.
+     */
+    public double getComputationDelay() {
+        return computationDelay;
+    }
+
+    /**
+     * Sets the computation delay.
+     *
+     * @param computationDelay the new computation delay.
+     */
+    public void setComputationDelay(double computationDelay) {
+        this.computationDelay = computationDelay;
     }
 
 }
