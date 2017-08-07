@@ -72,6 +72,8 @@ public class AbacusController implements PluginListener {
     @FXML
     private Tab settingsTab;
     @FXML
+    private Tab functionListTab;
+    @FXML
     private TableView<HistoryModel> historyTable;
     @FXML
     private TableColumn<HistoryModel, String> inputColumn;
@@ -93,6 +95,8 @@ public class AbacusController implements PluginListener {
     private ListView<ToggleablePlugin> enabledPluginView;
     @FXML
     private TextField computationLimitField;
+    @FXML
+    private ListView<String> functionListView;
 
     /**
      * The list of history entries, created by the users.
@@ -110,6 +114,10 @@ public class AbacusController implements PluginListener {
      * and, when reloaded, get added to the plugin manager's black list.
      */
     private ObservableList<ToggleablePlugin> enabledPlugins;
+    /**
+     * The list of functions that are registered in the calculator.
+     */
+    private ObservableList<String> functionList;
 
     /**
      * The abacus instance used for changing the plugin configuration.
@@ -213,6 +221,8 @@ public class AbacusController implements PluginListener {
                     }
                 });
 
+        functionList = FXCollections.observableArrayList();
+        functionListView.setItems(functionList);
         historyData = FXCollections.observableArrayList();
         historyTable.setItems(historyData);
         numberImplementationOptions = FXCollections.observableArrayList();
@@ -327,10 +337,12 @@ public class AbacusController implements PluginListener {
             plugin.enabledProperty().addListener(e -> changesMade = true);
             enabledPlugins.add(plugin);
         }
+        functionList.addAll(manager.getAllFunctions());
     }
 
     @Override
     public void onUnload(PluginManager manager) {
+        functionList.clear();
         enabledPlugins.clear();
         numberImplementationOptions.clear();
     }
