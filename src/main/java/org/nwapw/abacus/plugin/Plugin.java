@@ -139,7 +139,7 @@ public abstract class Plugin {
      * @param forClass the class to which to find the pi instance.
      * @return the pi value for the given class.
      */
-    protected final NumberInterface getPi(Class<? extends NumberInterface> forClass) {
+    protected final NumberInterface piFor(Class<? extends NumberInterface> forClass) {
         return manager.piFor(forClass);
     }
 
