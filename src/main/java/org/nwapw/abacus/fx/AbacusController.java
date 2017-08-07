@@ -125,6 +125,17 @@ public class AbacusController implements PluginListener {
      */
     private Alert reloadAlert;
     /**
+     * The runnable that takes care of killing computations that take too long.
+     */
+    private final Runnable TIMER_RUNNABLE = () -> {
+        try {
+            Thread.sleep(30 * 1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        performStop();
+    };
+    /**
      * The runnable used to perform the calculation.
      */
     private final Runnable CALCULATION_RUNNABLE = new Runnable() {
@@ -239,6 +250,7 @@ public class AbacusController implements PluginListener {
         stopButton.setDisable(false);
         calculationThread = new Thread(CALCULATION_RUNNABLE);
         calculationThread.start();
+        new Thread(TIMER_RUNNABLE).start();
     }
 
     @FXML
