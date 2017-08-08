@@ -14,6 +14,8 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 import org.nwapw.abacus.Abacus;
 import org.nwapw.abacus.config.Configuration;
+import org.nwapw.abacus.function.Documentation;
+import org.nwapw.abacus.function.DocumentationType;
 import org.nwapw.abacus.number.ComputationInterruptedException;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.plugin.ClassFinder;
@@ -24,7 +26,9 @@ import org.nwapw.abacus.tree.TreeNode;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 /**
@@ -97,7 +101,7 @@ public class AbacusController implements PluginListener {
     @FXML
     private TextField computationLimitField;
     @FXML
-    private ListView<String> functionListView;
+    private ListView<Documentation> functionListView;
     @FXML
     private TextField functionListSearchField;
 
@@ -120,11 +124,11 @@ public class AbacusController implements PluginListener {
     /**
      * The list of functions that are registered in the calculator.
      */
-    private ObservableList<String> functionList;
+    private ObservableList<Documentation> functionList;
     /**
      * The filtered list displayed to the user.
      */
-    private FilteredList<String> functionFilter;
+    private FilteredList<Documentation> functionFilter;
 
     /**
      * The abacus instance used for changing the plugin configuration.
@@ -227,12 +231,12 @@ public class AbacusController implements PluginListener {
                         return new ToggleablePlugin(true, string);
                     }
                 });
-
         functionList = FXCollections.observableArrayList();
         functionFilter = new FilteredList<>(functionList, (s) -> true);
         functionListView.setItems(functionFilter);
         functionListSearchField.textProperty().addListener((observable, oldValue, newValue) ->
-                functionFilter.setPredicate((newValue.length() == 0) ? ((s) -> true) : ((s) -> s.contains(newValue))));
+                functionFilter.setPredicate((newValue.length() == 0) ? ((s) -> true) : ((s) -> s.matches(newValue))));
+        functionListView.setCellFactory(param -> new DocumentationCell());
         historyData = FXCollections.observableArrayList();
         historyTable.setItems(historyData);
         numberImplementationOptions = FXCollections.observableArrayList();
@@ -347,8 +351,15 @@ public class AbacusController implements PluginListener {
             plugin.enabledProperty().addListener(e -> changesMade = true);
             enabledPlugins.add(plugin);
         }
-        functionList.addAll(manager.getAllFunctions());
-        functionList.sort(String::compareTo);
+        PluginManager pluginManager = abacus.getPluginManager();
+        functionList.addAll(manager.getAllFunctions().stream().map(name -> pluginManager.documentationFor(name, DocumentationType.FUNCTION))
+                .collect(Collectors.toCollection(ArrayList::new)));
+        functionList.sort((a, b) -> {
+            if(a == null && b == null) return 0;
+            else if(a == null) return -1;
+            else if(b == null) return 1;
+            else return a.getCodeName().compareTo(b.getCodeName());
+        });
     }
 
     @Override
