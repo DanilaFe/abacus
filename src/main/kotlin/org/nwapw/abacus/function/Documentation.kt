@@ -14,4 +14,13 @@ package org.nwapw.abacus.function
  */
 data class Documentation(val codeName: String, val name: String,
                          val description: String, val longDescription: String,
-                         val type: DocumentationType)
+                         val type: DocumentationType) {
+
+    fun matches(other: String): Boolean {
+        return codeName.toLowerCase().contains(other.toLowerCase()) ||
+                name.toLowerCase().contains(other.toLowerCase()) ||
+                description.toLowerCase().contains(other.toLowerCase()) ||
+                longDescription.toLowerCase().contains(other.toLowerCase())
+    }
+
+}
