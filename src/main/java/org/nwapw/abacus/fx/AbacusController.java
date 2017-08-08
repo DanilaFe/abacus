@@ -1,8 +1,6 @@
 package org.nwapw.abacus.fx;
 
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -14,12 +12,14 @@ import javafx.util.StringConverter;
 import org.nwapw.abacus.Abacus;
 import org.nwapw.abacus.config.Configuration;
 import org.nwapw.abacus.number.ComputationInterruptedException;
+import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.plugin.*;
 import org.nwapw.abacus.tree.TreeNode;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Set;
 
 
@@ -125,6 +125,17 @@ public class AbacusController implements PluginListener {
      * The alert shown when a press to "apply" is needed.
      */
     private Alert reloadAlert;
+    private ArrayList<Plugin> plugins;
+    public NumberInterface getVar(String variable){
+        for(Plugin plugin:plugins){
+            if(plugin instanceof VariablePlugin){
+                if(((VariablePlugin)plugin).getValue(variable)!=null)
+                    return ((VariablePlugin)plugin).getValue(variable);
+                return NaiveNumber.ZERO;
+            }
+        }
+        return null;
+    }
     /**
      * The runnable that takes care of killing computations that take too long.
      */
@@ -229,11 +240,15 @@ public class AbacusController implements PluginListener {
             if (oldValue.equals(settingsTab)) alertIfApplyNeeded(true);
         });
 
-        abacus = new Abacus(new Configuration(CONFIG_FILE));
+        abacus = new Abacus(new Configuration(CONFIG_FILE),this);
         PluginManager abacusPluginManager = abacus.getPluginManager();
         abacusPluginManager.addListener(this);
-        abacusPluginManager.addInstantiated(new StandardPlugin(abacus.getPluginManager()));
-        abacusPluginManager.addInstantiated(new VariablePlugin(abacus.getPluginManager()));
+        plugins = new ArrayList<>();
+        plugins.add(new StandardPlugin(abacus.getPluginManager()));
+        plugins.add(new VariablePlugin(abacus.getPluginManager()));
+        for(Plugin plugin: plugins){
+            abacusPluginManager.addInstantiated(plugin);
+        }
         try {
             ClassFinder.loadJars("plugins").forEach(abacusPluginManager::addClass);
         } catch (IOException | ClassNotFoundException e) {

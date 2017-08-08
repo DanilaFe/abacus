@@ -94,7 +94,7 @@ public class StandardPlugin extends Plugin {
     public static final Operator OP_DIVIDE = new Operator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 1, new Function() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
-            return params.length == 2 && params[1].compareTo(NaiveNumber.ZERO.promoteTo(params[1].getClass())) != 0;
+            return params.length == 2 && params[1].compareTo(NaiveNumber.ZERO.promoteTo(params[1].getClassVal())) != 0;
         }
 
         @Override
@@ -110,26 +110,26 @@ public class StandardPlugin extends Plugin {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
             return params.length == 1
-                    && params[0].fractionalPart().compareTo(NaiveNumber.ZERO.promoteTo(params[0].getClass())) == 0
+                    && params[0].fractionalPart().compareTo(NaiveNumber.ZERO.promoteTo(params[0].getClassVal())) == 0
                     && params[0].signum() >= 0;
         }
 
         @Override
         protected NumberInterface applyInternal(NumberInterface[] params) {
             if (params[0].signum() == 0) {
-                return fromInt(params[0].getClass(), 1);
+                return fromInt(params[0].getClassVal(), 1);
             }
             NumberInterface factorial = params[0];
             NumberInterface multiplier = params[0];
             //It is necessary to later prevent calls of factorial on anything but non-negative integers.
-            while ((multiplier = multiplier.subtract(NaiveNumber.ONE.promoteTo(multiplier.getClass()))).signum() == 1) {
+            while ((multiplier = multiplier.subtract(NaiveNumber.ONE.promoteTo(multiplier.getClassVal()))).signum() == 1) {
                 factorial = factorial.multiply(multiplier);
             }
             return factorial;
-                /*if(!storedList.containsKey(params[0].getClass())){
-                    storedList.put(params[0].getClass(), new ArrayList<NumberInterface>());
-                    storedList.get(params[0].getClass()).add(NaiveNumber.ONE.promoteTo(params[0].getClass()));
-                    storedList.get(params[0].getClass()).add(NaiveNumber.ONE.promoteTo(params[0].getClass()));
+                /*if(!storedList.containsKey(params[0].getClassVal())){
+                    storedList.put(params[0].getClassVal(), new ArrayList<NumberInterface>());
+                    storedList.get(params[0].getClassVal()).add(NaiveNumber.ONE.promoteTo(params[0].getClassVal()));
+                    storedList.get(params[0].getClassVal()).add(NaiveNumber.ONE.promoteTo(params[0].getClassVal()));
                 }*/
         }
     });
@@ -144,7 +144,7 @@ public class StandardPlugin extends Plugin {
 
         @Override
         protected NumberInterface applyInternal(NumberInterface[] params) {
-            return params[0].multiply((new NaiveNumber(params[0].signum())).promoteTo(params[0].getClass()));
+            return params[0].multiply((new NaiveNumber(params[0].signum())).promoteTo(params[0].getClassVal()));
         }
     };
     /**
@@ -153,31 +153,31 @@ public class StandardPlugin extends Plugin {
     public static final Function FUNCTION_LN = new Function() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
-            return params.length == 1 && params[0].compareTo(NaiveNumber.ZERO.promoteTo(params[0].getClass())) > 0;
+            return params.length == 1 && params[0].compareTo(NaiveNumber.ZERO.promoteTo(params[0].getClassVal())) > 0;
         }
 
         @Override
         protected NumberInterface applyInternal(NumberInterface[] params) {
             NumberInterface param = params[0];
             int powersOf2 = 0;
-            while (FUNCTION_ABS.apply(param.subtract(NaiveNumber.ONE.promoteTo(param.getClass()))).compareTo(new NaiveNumber(0.1).promoteTo(param.getClass())) >= 0) {
-                if (param.subtract(NaiveNumber.ONE.promoteTo(param.getClass())).signum() == 1) {
-                    param = param.divide(fromInt(param.getClass(), 2));
+            while (FUNCTION_ABS.apply(param.subtract(NaiveNumber.ONE.promoteTo(param.getClassVal()))).compareTo(new NaiveNumber(0.1).promoteTo(param.getClassVal())) >= 0) {
+                if (param.subtract(NaiveNumber.ONE.promoteTo(param.getClassVal())).signum() == 1) {
+                    param = param.divide(fromInt(param.getClassVal(), 2));
                     powersOf2++;
-                    if (param.subtract(NaiveNumber.ONE.promoteTo(param.getClass())).signum() != 1) {
+                    if (param.subtract(NaiveNumber.ONE.promoteTo(param.getClassVal())).signum() != 1) {
                         break;
                         //No infinite loop for you.
                     }
                 } else {
-                    param = param.multiply(fromInt(param.getClass(), 2));
+                    param = param.multiply(fromInt(param.getClassVal(), 2));
                     powersOf2--;
-                    if (param.subtract(NaiveNumber.ONE.promoteTo(param.getClass())).signum() != -1) {
+                    if (param.subtract(NaiveNumber.ONE.promoteTo(param.getClassVal())).signum() != -1) {
                         break;
                         //No infinite loop for you.
                     }
                 }
             }
-            return getLog2(param).multiply((new NaiveNumber(powersOf2)).promoteTo(param.getClass())).add(getLogPartialSum(param));
+            return getLog2(param).multiply((new NaiveNumber(powersOf2)).promoteTo(param.getClassVal())).add(getLogPartialSum(param));
         }
 
         /**
@@ -189,13 +189,13 @@ public class StandardPlugin extends Plugin {
         private NumberInterface getLogPartialSum(NumberInterface x) {
 
             NumberInterface maxError = getMaxError(x);
-            x = x.subtract(NaiveNumber.ONE.promoteTo(x.getClass())); //Terms used are for log(x+1).
+            x = x.subtract(NaiveNumber.ONE.promoteTo(x.getClassVal())); //Terms used are for log(x+1).
             NumberInterface currentNumerator = x, currentTerm = x, sum = x;
             int n = 1;
             while (FUNCTION_ABS.apply(currentTerm).compareTo(maxError) > 0) {
                 n++;
                 currentNumerator = currentNumerator.multiply(x).negate();
-                currentTerm = currentNumerator.divide(new NaiveNumber(n).promoteTo(x.getClass()));
+                currentTerm = currentNumerator.divide(new NaiveNumber(n).promoteTo(x.getClassVal()));
                 sum = sum.add(currentTerm);
             }
             return sum;
@@ -208,18 +208,18 @@ public class StandardPlugin extends Plugin {
          */
         private NumberInterface getLog2(NumberInterface number) {
             NumberInterface maxError = getMaxError(number);
-            //NumberInterface errorBound = fromInt(number.getClass(), 1);
+            //NumberInterface errorBound = fromInt(number.getClassVal(), 1);
             //We'll use the series \sigma_{n >= 1) ((1/3^n + 1/4^n) * 1/n)
             //In the following, a=1/3^n, b=1/4^n, c = 1/n.
             //a is also an error bound.
-            NumberInterface a = fromInt(number.getClass(), 1), b = a, c = a;
-            NumberInterface sum = NaiveNumber.ZERO.promoteTo(number.getClass());
+            NumberInterface a = fromInt(number.getClassVal(), 1), b = a, c = a;
+            NumberInterface sum = NaiveNumber.ZERO.promoteTo(number.getClassVal());
             int n = 0;
             while (a.compareTo(maxError) >= 1) {
                 n++;
-                a = a.divide(fromInt(number.getClass(), 3));
-                b = b.divide(fromInt(number.getClass(), 4));
-                c = NaiveNumber.ONE.promoteTo(number.getClass()).divide((new NaiveNumber(n)).promoteTo(number.getClass()));
+                a = a.divide(fromInt(number.getClassVal(), 3));
+                b = b.divide(fromInt(number.getClassVal(), 4));
+                c = NaiveNumber.ONE.promoteTo(number.getClassVal()).divide((new NaiveNumber(n)).promoteTo(number.getClassVal()));
                 sum = sum.add(a.add(b).multiply(c));
             }
             return sum;
@@ -236,7 +236,7 @@ public class StandardPlugin extends Plugin {
 
         @Override
         protected NumberInterface applyInternal(NumberInterface[] params) {
-            return OP_CARET.getFunction().apply(params[0], ((new NaiveNumber(0.5)).promoteTo(params[0].getClass())));
+            return OP_CARET.getFunction().apply(params[0], ((new NaiveNumber(0.5)).promoteTo(params[0].getClassVal())));
         }
     };
     /**
@@ -304,25 +304,25 @@ public class StandardPlugin extends Plugin {
             NumberInterface maxError = getMaxError(params[0]);
             int n = 0;
             if (params[0].signum() <= 0) {
-                NumberInterface currentTerm = NaiveNumber.ONE.promoteTo(params[0].getClass()), sum = currentTerm;
+                NumberInterface currentTerm = NaiveNumber.ONE.promoteTo(params[0].getClassVal()), sum = currentTerm;
                 while (FUNCTION_ABS.apply(currentTerm).compareTo(maxError) > 0) {
                     n++;
-                    currentTerm = currentTerm.multiply(params[0]).divide((new NaiveNumber(n)).promoteTo(params[0].getClass()));
+                    currentTerm = currentTerm.multiply(params[0]).divide((new NaiveNumber(n)).promoteTo(params[0].getClassVal()));
                     sum = sum.add(currentTerm);
                 }
                 return sum;
             } else {
                 //We need n such that x^(n+1) * 3^ceil(x) <= maxError * (n+1)!.
                 //right and left refer to lhs and rhs in the above inequality.
-                NumberInterface sum = NaiveNumber.ONE.promoteTo(params[0].getClass());
+                NumberInterface sum = NaiveNumber.ONE.promoteTo(params[0].getClassVal());
                 NumberInterface nextNumerator = params[0];
-                NumberInterface left = params[0].multiply(fromInt(params[0].getClass(), 3).intPow(params[0].ceiling().intValue())), right = maxError;
+                NumberInterface left = params[0].multiply(fromInt(params[0].getClassVal(), 3).intPow(params[0].ceiling().intValue())), right = maxError;
                 do {
-                    sum = sum.add(nextNumerator.divide(factorial(params[0].getClass(), n + 1)));
+                    sum = sum.add(nextNumerator.divide(factorial(params[0].getClassVal(), n + 1)));
                     n++;
                     nextNumerator = nextNumerator.multiply(params[0]);
                     left = left.multiply(params[0]);
-                    NumberInterface nextN = (new NaiveNumber(n + 1)).promoteTo(params[0].getClass());
+                    NumberInterface nextN = (new NaiveNumber(n + 1)).promoteTo(params[0].getClassVal());
                     right = right.multiply(nextN);
                     //System.out.println(left + ", " + right);
                 }
@@ -339,16 +339,16 @@ public class StandardPlugin extends Plugin {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
             return params.length == 2
-                    && !(params[0].compareTo(NaiveNumber.ZERO.promoteTo(params[0].getClass())) == 0
-                    && params[1].compareTo(NaiveNumber.ZERO.promoteTo(params[1].getClass())) == 0);
+                    && !(params[0].compareTo(NaiveNumber.ZERO.promoteTo(params[0].getClassVal())) == 0
+                    && params[1].compareTo(NaiveNumber.ZERO.promoteTo(params[1].getClassVal())) == 0);
         }
 
         @Override
         protected NumberInterface applyInternal(NumberInterface[] params) {
-            if (params[0].compareTo(NaiveNumber.ZERO.promoteTo(params[0].getClass())) == 0)
-                return NaiveNumber.ZERO.promoteTo(params[0].getClass());
-            else if (params[1].compareTo(NaiveNumber.ZERO.promoteTo(params[0].getClass())) == 0)
-                return NaiveNumber.ONE.promoteTo(params[1].getClass());
+            if (params[0].compareTo(NaiveNumber.ZERO.promoteTo(params[0].getClassVal())) == 0)
+                return NaiveNumber.ZERO.promoteTo(params[0].getClassVal());
+            else if (params[1].compareTo(NaiveNumber.ZERO.promoteTo(params[0].getClassVal())) == 0)
+                return NaiveNumber.ONE.promoteTo(params[1].getClassVal());
             return FUNCTION_EXP.apply(FUNCTION_LN.apply(FUNCTION_ABS.apply(params[0])).multiply(params[1]));
         }
     });
@@ -363,13 +363,13 @@ public class StandardPlugin extends Plugin {
 
         @Override
         protected NumberInterface applyInternal(NumberInterface[] params) {
-            NumberInterface pi = piFor(params[0].getClass());
-            NumberInterface twoPi = pi.multiply(fromInt(pi.getClass(), 2));
+            NumberInterface pi = piFor(params[0].getClassVal());
+            NumberInterface twoPi = pi.multiply(fromInt(pi.getClassVal(), 2));
             NumberInterface theta = getSmallAngle(params[0], pi);
             //System.out.println(theta);
-            if (theta.compareTo(pi.multiply(new NaiveNumber(1.5).promoteTo(twoPi.getClass()))) >= 0) {
+            if (theta.compareTo(pi.multiply(new NaiveNumber(1.5).promoteTo(twoPi.getClassVal()))) >= 0) {
                 theta = theta.subtract(twoPi);
-            } else if (theta.compareTo(pi.divide(fromInt(pi.getClass(), 2))) > 0) {
+            } else if (theta.compareTo(pi.divide(fromInt(pi.getClassVal(), 2))) > 0) {
                 theta = pi.subtract(theta);
             }
             //System.out.println(theta);
@@ -387,7 +387,7 @@ public class StandardPlugin extends Plugin {
 
         @Override
         protected NumberInterface applyInternal(NumberInterface[] params) {
-            return functionSin.apply(piFor(params[0].getClass()).divide(fromInt(params[0].getClass(), 2))
+            return functionSin.apply(piFor(params[0].getClassVal()).divide(fromInt(params[0].getClassVal(), 2))
                     .subtract(params[0]));
         }
     };
@@ -416,7 +416,7 @@ public class StandardPlugin extends Plugin {
 
         @Override
         protected NumberInterface applyInternal(NumberInterface[] params) {
-            return NaiveNumber.ONE.promoteTo(params[0].getClass()).divide(functionCos.apply(params[0]));
+            return NaiveNumber.ONE.promoteTo(params[0].getClassVal()).divide(functionCos.apply(params[0]));
         }
     };
     /**
@@ -430,7 +430,7 @@ public class StandardPlugin extends Plugin {
 
         @Override
         protected NumberInterface applyInternal(NumberInterface[] params) {
-            return NaiveNumber.ONE.promoteTo(params[0].getClass()).divide(functionSin.apply(params[0]));
+            return NaiveNumber.ONE.promoteTo(params[0].getClassVal()).divide(functionSin.apply(params[0]));
         }
     };
     /**
@@ -461,7 +461,7 @@ public class StandardPlugin extends Plugin {
      * @return the value of the partial sum that has the same class as x.
      */
     private static NumberInterface sumSeries(NumberInterface x, BiFunction<Integer, NumberInterface, NumberInterface> nthTermFunction, int n) {
-        NumberInterface sum = NaiveNumber.ZERO.promoteTo(x.getClass());
+        NumberInterface sum = NaiveNumber.ZERO.promoteTo(x.getClassVal());
         for (int i = 0; i <= n; i++) {
             sum = sum.add(nthTermFunction.apply(i, x));
         }
@@ -475,7 +475,7 @@ public class StandardPlugin extends Plugin {
      * @return the maximum error.
      */
     private static NumberInterface getMaxError(NumberInterface number) {
-        return fromInt(number.getClass(), 10).intPow(-number.getMaxPrecision());
+        return fromInt(number.getClassVal(), 10).intPow(-number.getMaxPrecision());
     }
 
     /**
@@ -514,7 +514,7 @@ public class StandardPlugin extends Plugin {
         do {
             n += 2;
             power = power.multiply(multiplier);
-            currentTerm = power.divide(factorial(x.getClass(), n));
+            currentTerm = power.divide(factorial(x.getClassVal(), n));
             sum = sum.add(currentTerm);
         } while (FUNCTION_ABS.apply(currentTerm).compareTo(maxError) > 0);
         return sum;
@@ -527,7 +527,7 @@ public class StandardPlugin extends Plugin {
      * @return theta in [0, 2pi) that differs from phi by a multiple of 2pi.
      */
     private static NumberInterface getSmallAngle(NumberInterface phi, NumberInterface pi) {
-        NumberInterface twoPi = pi.multiply(new NaiveNumber("2").promoteTo(phi.getClass()));
+        NumberInterface twoPi = pi.multiply(new NaiveNumber("2").promoteTo(phi.getClassVal()));
         NumberInterface theta = FUNCTION_ABS.apply(phi).subtract(twoPi
                 .multiply(FUNCTION_ABS.apply(phi).divide(twoPi).floor())); //Now theta is in [0, 2pi).
         if (phi.signum() < 0) {

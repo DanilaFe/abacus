@@ -11,7 +11,7 @@ import org.nwapw.abacus.tree.TreeNode;
 
 public class CalculationTests {
 
-    private static Abacus abacus = new Abacus(new Configuration(0, "precise", new String[]{}));
+    private static Abacus abacus = new Abacus(new Configuration(0, "precise", new String[]{}),null);
 
     @BeforeClass
     public static void prepareTests(){

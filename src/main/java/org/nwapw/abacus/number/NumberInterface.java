@@ -13,6 +13,12 @@ public abstract class NumberInterface {
         if(Thread.currentThread().isInterrupted())
             throw new ComputationInterruptedException();
     }
+    public NumberInterface number(){
+        return this;
+    }
+    public Class<? extends NumberInterface> getClassVal(){
+        return this.getClass();
+    }
     /**
      * The maximum precision to which this number operates.
      *

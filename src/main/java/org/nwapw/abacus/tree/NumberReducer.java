@@ -3,6 +3,7 @@ package org.nwapw.abacus.tree;
 import org.nwapw.abacus.Abacus;
 import org.nwapw.abacus.function.Function;
 import org.nwapw.abacus.number.NumberInterface;
+import org.nwapw.abacus.number.Variable;
 
 /**
  * A reducer implementation that turns a tree into a single number.
@@ -47,6 +48,8 @@ public class NumberReducer implements Reducer<NumberInterface> {
             Function function = abacus.getPluginManager().functionFor(((FunctionNode) node).getFunction());
             if (function == null) return null;
             return function.apply(convertedChildren);
+        } else if (node instanceof VariableNode){
+            return (NumberInterface)new Variable(abacus.getVar(((VariableNode)node).getVariable()),((VariableNode)node).getVariable());
         }
         return null;
     }

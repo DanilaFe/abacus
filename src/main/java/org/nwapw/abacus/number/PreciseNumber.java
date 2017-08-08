@@ -53,22 +53,22 @@ public class PreciseNumber extends NumberInterface {
 
     @Override
     public NumberInterface multiplyInternal(NumberInterface multiplier) {
-        return new PreciseNumber(this.value.multiply(((PreciseNumber) multiplier).value));
+        return new PreciseNumber(this.value.multiply(((PreciseNumber) multiplier.number()).value));
     }
 
     @Override
     public NumberInterface divideInternal(NumberInterface divisor) {
-        return new PreciseNumber(value.divide(((PreciseNumber) divisor).value, this.getMaxPrecision(), RoundingMode.HALF_UP));
+        return new PreciseNumber(value.divide(((PreciseNumber) divisor.number()).value, this.getMaxPrecision(), RoundingMode.HALF_UP));
     }
 
     @Override
     public NumberInterface addInternal(NumberInterface summand) {
-        return new PreciseNumber(value.add(((PreciseNumber) summand).value));
+        return new PreciseNumber(value.add(((PreciseNumber) summand.number()).value));
     }
 
     @Override
     public NumberInterface subtractInternal(NumberInterface subtrahend) {
-        return new PreciseNumber(value.subtract(((PreciseNumber) subtrahend).value));
+        return new PreciseNumber(value.subtract(((PreciseNumber) subtrahend.number()).value));
     }
 
     @Override
@@ -90,7 +90,7 @@ public class PreciseNumber extends NumberInterface {
 
     @Override
     public int compareTo(NumberInterface number) {
-        return value.compareTo(((PreciseNumber) number).value);
+        return value.compareTo(((PreciseNumber) number.number()).value);
     }
 
     @Override

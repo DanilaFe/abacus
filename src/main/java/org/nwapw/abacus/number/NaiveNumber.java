@@ -35,7 +35,6 @@ public class NaiveNumber extends NumberInterface {
     public NaiveNumber(double value) {
         this.value = value;
     }
-
     @Override
     public int getMaxPrecision() {
         return 18;
@@ -43,22 +42,22 @@ public class NaiveNumber extends NumberInterface {
 
     @Override
     public NumberInterface multiplyInternal(NumberInterface multiplier) {
-        return new NaiveNumber(value * ((NaiveNumber) multiplier).value);
+        return new NaiveNumber(value * ((NaiveNumber) multiplier.number()).value);
     }
 
     @Override
     public NumberInterface divideInternal(NumberInterface divisor) {
-        return new NaiveNumber(value / ((NaiveNumber) divisor).value);
+        return new NaiveNumber(value / ((NaiveNumber) divisor.number()).value);
     }
 
     @Override
     public NumberInterface addInternal(NumberInterface summand) {
-        return new NaiveNumber(value + ((NaiveNumber) summand).value);
+        return new NaiveNumber(value + ((NaiveNumber) summand.number()).value);
     }
 
     @Override
     public NumberInterface subtractInternal(NumberInterface subtrahend) {
-        return new NaiveNumber(value - ((NaiveNumber) subtrahend).value);
+        return new NaiveNumber(value - ((NaiveNumber) subtrahend.number()).value);
     }
 
     @Override
@@ -85,7 +84,7 @@ public class NaiveNumber extends NumberInterface {
 
     @Override
     public int compareTo(NumberInterface number) {
-        NaiveNumber num = (NaiveNumber) number;
+        NaiveNumber num = (NaiveNumber) number.number();
         return Double.compare(value, num.value);
     }
 
@@ -119,6 +118,8 @@ public class NaiveNumber extends NumberInterface {
         if (toClass == this.getClass()) return this;
         else if (toClass == PreciseNumber.class) {
             return new PreciseNumber(Double.toString(value));
+        }else if(toClass == Variable.class){
+            return this;
         }
         return null;
     }

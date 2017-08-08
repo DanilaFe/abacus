@@ -2,6 +2,8 @@ package org.nwapw.abacus;
 
 import org.nwapw.abacus.config.Configuration;
 import org.nwapw.abacus.fx.AbacusApplication;
+import org.nwapw.abacus.fx.AbacusController;
+import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.parsing.LexerTokenizer;
 import org.nwapw.abacus.parsing.ShuntingYardParser;
@@ -11,6 +13,8 @@ import org.nwapw.abacus.plugin.PluginManager;
 import org.nwapw.abacus.plugin.StandardPlugin;
 import org.nwapw.abacus.tree.NumberReducer;
 import org.nwapw.abacus.tree.TreeNode;
+
+import java.util.HashMap;
 
 /**
  * The main calculator class. This is responsible
@@ -43,13 +47,13 @@ public class Abacus {
      * from a string.
      */
     private TreeBuilder treeBuilder;
-
+    private AbacusController controller;
     /**
      * Creates a new instance of the Abacus calculator.
      *
      * @param configuration the configuration object for this Abacus instance.
      */
-    public Abacus(Configuration configuration) {
+    public Abacus(Configuration configuration,AbacusController controller) {
         pluginManager = new PluginManager(this);
         numberReducer = new NumberReducer(this);
         this.configuration = new Configuration(configuration);
@@ -59,8 +63,12 @@ public class Abacus {
 
         pluginManager.addListener(shuntingYardParser);
         pluginManager.addListener(lexerTokenizer);
-    }
+        this.controller =controller;
 
+    }
+    public NumberInterface getVar(String variable){
+        return controller.getVar(variable);
+    }
     public static void main(String[] args) {
         AbacusApplication.launch(AbacusApplication.class, args);
     }
