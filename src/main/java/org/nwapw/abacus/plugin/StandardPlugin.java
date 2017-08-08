@@ -596,24 +596,24 @@ public class StandardPlugin extends Plugin {
                         "of the natural logarithm.\n\n" +
                         "Example: exp(1) -> 2.718...", DocumentationType.FUNCTION));
         registerDocumentation(new Documentation("ln", "Natural Logarithm", "Gets the natural " +
-                "logarithm of the given value.", "The natural logarithm of a number is essentially " +
+                "logarithm of the given value.", "The natural logarithm of a number is " +
                 "the power that e has to be brought to to be equal to the number.\n\n" +
                 "Example: ln(2.718) -> 1", DocumentationType.FUNCTION));
         registerDocumentation(new Documentation("sqrt", "Square Root", "Finds the square root " +
                 "of the number.", "A square root a of a number is defined such that a times a is equal " +
                 "to that number.\n\n" +
                 "Example: sqrt(4) -> 2", DocumentationType.FUNCTION));
-        registerDocumentation(new Documentation("sin", "Sine", "Computes the sine of the given angle," +
+        registerDocumentation(new Documentation("sin", "Sine", "Computes the sine of the given angle, " +
                 "in radians.", "", DocumentationType.FUNCTION));
-        registerDocumentation(new Documentation("cos", "Cosine", "Computes the cosine of the given angle," +
+        registerDocumentation(new Documentation("cos", "Cosine", "Computes the cosine of the given angle, " +
                 "in radians.", "", DocumentationType.FUNCTION));
-        registerDocumentation(new Documentation("tan", "Tangent", "Computes the tangent of the given angle," +
+        registerDocumentation(new Documentation("tan", "Tangent", "Computes the tangent of the given angle, " +
                 "in radians.", "", DocumentationType.FUNCTION));
-        registerDocumentation(new Documentation("sec", "Secant", "Computes the sec of the given angle," +
+        registerDocumentation(new Documentation("sec", "Secant", "Computes the secant of the given angle, " +
                 "in radians.", "", DocumentationType.FUNCTION));
-        registerDocumentation(new Documentation("csc", "Cosecant", "Computes the cosecant of the given angle," +
+        registerDocumentation(new Documentation("csc", "Cosecant", "Computes the cosecant of the given angle, " +
                 "in radians.", "", DocumentationType.FUNCTION));
-        registerDocumentation(new Documentation("cot", "Cotangent", "Computes the cotangent of the given angle," +
+        registerDocumentation(new Documentation("cot", "Cotangent", "Computes the cotangent of the given angle, " +
                 "in radians.", "", DocumentationType.FUNCTION));
     }
 
