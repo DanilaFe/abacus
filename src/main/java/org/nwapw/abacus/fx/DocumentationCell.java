@@ -33,7 +33,7 @@ public class DocumentationCell extends ListCell<Documentation> {
         titledPane.textProperty().bindBidirectional(codeNameLabel.textProperty());
         titledPane.setContent(vbox);
         titledPane.setExpanded(false);
-        titledPane.maxWidthProperty().bind(widthProperty());
+        titledPane.prefWidthProperty().bind(widthProperty());
 
         visibleProperty().addListener((a, b, c) -> titledPane.setExpanded(false));
     }
