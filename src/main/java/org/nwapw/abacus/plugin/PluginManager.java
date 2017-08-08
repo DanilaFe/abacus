@@ -147,10 +147,18 @@ public class PluginManager {
      * @return the documentation object.
      */
     public Documentation documentationFor(String name, DocumentationType type){
+        Documentation toReturn = null;
         for(Documentation entry : registeredDocumentation){
-            if(entry.getCodeName().equals(name) && entry.getType() == type) return entry;
+            if(entry.getCodeName().equals(name) && entry.getType() == type) {
+                toReturn = entry;
+                break;
+            }
         }
-        return null;
+        if(toReturn == null){
+            toReturn = new Documentation(name, "", "", "", type);
+            registerDocumentation(toReturn);
+        }
+        return toReturn;
     }
 
     /**
