@@ -216,7 +216,7 @@ public class AbacusController implements PluginListener {
         Callback<TableColumn<HistoryModel, String>, TableCell<HistoryModel, String>> cellFactory =
                 param -> new CopyableCell<>();
         Callback<ListView<ToggleablePlugin>, ListCell<ToggleablePlugin>> pluginCellFactory =
-                param -> new CheckBoxListCell<>(ToggleablePlugin::enabledProperty, new StringConverter<ToggleablePlugin>() {
+                param -> new CheckBoxListCell<>(ToggleablePlugin::getEnabledProperty, new StringConverter<ToggleablePlugin>() {
                     @Override
                     public String toString(ToggleablePlugin object) {
                         return object.getClassName().substring(object.getClassName().lastIndexOf('.') + 1);
@@ -224,7 +224,7 @@ public class AbacusController implements PluginListener {
 
                     @Override
                     public ToggleablePlugin fromString(String string) {
-                        return new ToggleablePlugin(true, string);
+                        return new ToggleablePlugin(string, true);
                     }
                 });
 
@@ -343,8 +343,8 @@ public class AbacusController implements PluginListener {
         numberImplementationBox.getSelectionModel().select(toSelect);
         for (Class<?> pluginClass : abacus.getPluginManager().getLoadedPluginClasses()) {
             String fullName = pluginClass.getName();
-            ToggleablePlugin plugin = new ToggleablePlugin(!disabledPlugins.contains(fullName), fullName);
-            plugin.enabledProperty().addListener(e -> changesMade = true);
+            ToggleablePlugin plugin = new ToggleablePlugin(fullName, !disabledPlugins.contains(fullName));
+            plugin.getEnabledProperty().addListener(e -> changesMade = true);
             enabledPlugins.add(plugin);
         }
         functionList.addAll(manager.getAllFunctions());
