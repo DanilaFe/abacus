@@ -99,6 +99,9 @@ public class CalculationTests {
         testOutput("2^1", "(2^1)", "2");
         testOutput("2^-1", "(2^(1)`)", "0.5");
         testOutput("2^50", "(2^50)", "112589990684262");
+        testOutput("7^(-sqrt2*17)", "(7^((sqrt(2)*17))`)", "4.81354609155297814551845300063563");
+        testEvalError("0^0", "(0^0)");
+        testEvalError("(-13)^.9999", "((13)`^0.9999)");
     }
 
 }
