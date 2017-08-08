@@ -28,7 +28,7 @@ data class FunctionNode(val function: String) : TreeNode() {
             buffer.append(children[i].toString())
             buffer.append(if (i == children.size - 1) ")" else ",")
         }
-        return super.toString()
+        return buffer.toString()
     }
 
     /**
