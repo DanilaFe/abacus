@@ -14,7 +14,7 @@ public abstract class NumberImplementation {
     /**
      * The list of paths through which this implementation can be promoted.
      */
-    protected Map<Class<? extends NumberInterface>, Function<NumberInterface, NumberInterface>> promotionPaths;
+    private Map<Class<? extends NumberInterface>, Function<NumberInterface, NumberInterface>> promotionPaths;
     /**
      * The implementation class for this implementation.
      */
