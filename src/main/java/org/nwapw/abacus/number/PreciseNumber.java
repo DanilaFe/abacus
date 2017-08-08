@@ -1,7 +1,7 @@
 package org.nwapw.abacus.number;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.math.MathContext;
 
 /**
  * A number that uses a BigDecimal to store its value,
@@ -21,6 +21,21 @@ public class PreciseNumber extends NumberInterface {
      * The number ten.
      */
     public static final PreciseNumber TEN = new PreciseNumber(BigDecimal.TEN);
+
+    /**
+     * The number of extra significant figures kept in calculations before rounding for output.
+     */
+    private static int numExtraInternalSigFigs = 15;
+
+    /**
+     * MathContext that is used when rounding a number prior to output.
+     */
+    private static MathContext outputContext = new MathContext(50);
+
+    /**
+     * MathContext that is actually used in calculations.
+     */
+    private static MathContext internalContext = new MathContext(outputContext.getPrecision()+numExtraInternalSigFigs);
 
     /**
      * The value of the PreciseNumber.
@@ -48,7 +63,7 @@ public class PreciseNumber extends NumberInterface {
 
     @Override
     public int getMaxPrecision() {
-        return 65;
+        return internalContext.getPrecision();
     }
 
     @Override
@@ -58,7 +73,7 @@ public class PreciseNumber extends NumberInterface {
 
     @Override
     public NumberInterface divideInternal(NumberInterface divisor) {
-        return new PreciseNumber(value.divide(((PreciseNumber) divisor).value, this.getMaxPrecision(), RoundingMode.HALF_UP));
+        return new PreciseNumber(value.divide(((PreciseNumber) divisor).value, internalContext));
     }
 
     @Override
@@ -147,7 +162,11 @@ public class PreciseNumber extends NumberInterface {
 
     @Override
     public String toString() {
-        BigDecimal rounded = value.setScale(getMaxPrecision() - 15, RoundingMode.HALF_UP);
-        return rounded.stripTrailingZeros().toPlainString();
+        return value.round(outputContext).toString();
+    }
+
+    @Override
+    public NumberInterface getMaxError(){
+        return new PreciseNumber(value.ulp()).multiplyInternal(TEN.intPowInternal(value.precision()-internalContext.getPrecision()));
     }
 }
