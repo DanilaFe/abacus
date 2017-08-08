@@ -7,6 +7,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.text.Text;
@@ -27,6 +28,7 @@ import org.nwapw.abacus.tree.TreeNode;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -354,12 +356,7 @@ public class AbacusController implements PluginListener {
         PluginManager pluginManager = abacus.getPluginManager();
         functionList.addAll(manager.getAllFunctions().stream().map(name -> pluginManager.documentationFor(name, DocumentationType.FUNCTION))
                 .collect(Collectors.toCollection(ArrayList::new)));
-        functionList.sort((a, b) -> {
-            if(a == null && b == null) return 0;
-            else if(a == null) return -1;
-            else if(b == null) return 1;
-            else return a.getCodeName().compareTo(b.getCodeName());
-        });
+        functionList.sort(Comparator.comparing(Documentation::getCodeName));
     }
 
     @Override
