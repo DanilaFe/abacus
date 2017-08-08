@@ -188,7 +188,7 @@ public class StandardPlugin extends Plugin {
          */
         private NumberInterface getLogPartialSum(NumberInterface x) {
 
-            NumberInterface maxError = getMaxError(x);
+            NumberInterface maxError = x.getMaxError();
             x = x.subtract(NaiveNumber.ONE.promoteTo(x.getClass())); //Terms used are for log(x+1).
             NumberInterface currentNumerator = x, currentTerm = x, sum = x;
             int n = 1;
@@ -207,7 +207,7 @@ public class StandardPlugin extends Plugin {
          * @return the value of log(2) with the appropriate precision.
          */
         private NumberInterface getLog2(NumberInterface number) {
-            NumberInterface maxError = getMaxError(number);
+            NumberInterface maxError = number.getMaxError();
             //NumberInterface errorBound = fromInt(number.getClass(), 1);
             //We'll use the series \sigma_{n >= 1) ((1/3^n + 1/4^n) * 1/n)
             //In the following, a=1/3^n, b=1/4^n, c = 1/n.
@@ -301,16 +301,11 @@ public class StandardPlugin extends Plugin {
 
         @Override
         protected NumberInterface applyInternal(NumberInterface[] params) {
-            NumberInterface maxError = getMaxError(params[0]);
+            NumberInterface maxError = params[0].getMaxError();
             int n = 0;
-            if (params[0].signum() <= 0) {
-                NumberInterface currentTerm = NaiveNumber.ONE.promoteTo(params[0].getClass()), sum = currentTerm;
-                while (FUNCTION_ABS.apply(currentTerm).compareTo(maxError) > 0) {
-                    n++;
-                    currentTerm = currentTerm.multiply(params[0]).divide((new NaiveNumber(n)).promoteTo(params[0].getClass()));
-                    sum = sum.add(currentTerm);
-                }
-                return sum;
+            if (params[0].signum() < 0) {
+                NumberInterface[] negatedParams = {params[0].negate()};
+               return fromInt(params[0].getClass(), 1).divide(applyInternal(negatedParams));
             } else {
                 //We need n such that x^(n+1) * 3^ceil(x) <= maxError * (n+1)!.
                 //right and left refer to lhs and rhs in the above inequality.
@@ -352,7 +347,7 @@ public class StandardPlugin extends Plugin {
                 return NaiveNumber.ONE.promoteTo(params[1].getClass());
             //Detect integer bases:
             if(params[0].fractionalPart().compareTo(fromInt(params[0].getClass(), 0)) == 0
-                    && FUNCTION_ABS.apply(params[0]).compareTo(fromInt(params[0].getClass(), Integer.MAX_VALUE)) < 0
+                    && FUNCTION_ABS.apply(params[1]).compareTo(fromInt(params[0].getClass(), Integer.MAX_VALUE)) < 0
                     && FUNCTION_ABS.apply(params[1]).compareTo(fromInt(params[1].getClass(), 1)) >= 0){
                 NumberInterface[] newParams = {params[0], params[1].fractionalPart()};
                 return params[0].intPow(params[1].floor().intValue()).multiply(applyInternal(newParams));
@@ -477,16 +472,6 @@ public class StandardPlugin extends Plugin {
     }
 
     /**
-     * Returns the maximum error based on the precision of the class of number.
-     *
-     * @param number Any instance of the NumberInterface in question (should return an appropriate precision).
-     * @return the maximum error.
-     */
-    private static NumberInterface getMaxError(NumberInterface number) {
-        return fromInt(number.getClass(), 10).intPow(-number.getMaxPrecision());
-    }
-
-    /**
      * A factorial function that uses memoization for each number class; it efficiently
      * computes factorials of non-negative integers.
      *
@@ -517,7 +502,7 @@ public class StandardPlugin extends Plugin {
      */
     private static NumberInterface sinTaylor(NumberInterface x) {
         NumberInterface power = x, multiplier = x.multiply(x).negate(), currentTerm = x, sum = x;
-        NumberInterface maxError = getMaxError(x);
+        NumberInterface maxError = x.getMaxError();
         int n = 1;
         do {
             n += 2;
