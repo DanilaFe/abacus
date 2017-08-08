@@ -1,9 +1,6 @@
 package org.nwapw.abacus.plugin;
 
-import org.nwapw.abacus.function.Function;
-import org.nwapw.abacus.function.Operator;
-import org.nwapw.abacus.function.OperatorAssociativity;
-import org.nwapw.abacus.function.OperatorType;
+import org.nwapw.abacus.function.*;
 import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.number.PreciseNumber;
@@ -583,6 +580,10 @@ public class StandardPlugin extends Plugin {
         registerFunction("sec", functionSec);
         registerFunction("csc", functionCsc);
         registerFunction("cot", functionCot);
+
+        registerDocumentation(new Documentation("abs", "Absolute Value", "Finds the distance " +
+                "from zero of a number.", "Given a number, this function finds the distance form " +
+                "zero of a number, effectively turning negative numbers into positive ones.", DocumentationType.FUNCTION));
     }
 
     @Override
