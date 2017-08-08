@@ -30,7 +30,7 @@ public class PreciseNumber extends NumberInterface {
     /**
      * MathContext that is used when rounding a number prior to output.
      */
-    private static MathContext outputContext = new MathContext(30);
+    private static MathContext outputContext = new MathContext(50);
 
     /**
      * MathContext that is actually used in calculations.
