@@ -1,6 +1,7 @@
 package org.nwapw.abacus.number;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.MathContext;
 
 /**
@@ -59,6 +60,15 @@ public class PreciseNumber extends NumberInterface {
      */
     public PreciseNumber(BigDecimal value) {
         this.value = value;
+    }
+
+    /**
+     * Constructs a precise number from the given BigInteger.
+     *
+     * @param value a BigInteger object representing the value of the number.
+     */
+    public PreciseNumber(BigInteger value) {
+        this.value = new BigDecimal(value);
     }
 
     @Override
