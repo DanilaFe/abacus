@@ -1,7 +1,18 @@
 package org.nwapw.abacus.tree
 
+/**
+ * A tree node that holds a function call.
+ *
+ * The function call node can hold any number of children, and passes the to the appropriate reducer,
+ * but that is its sole purpose.
+ *
+ * @param function the function string.
+ */
 data class FunctionNode(val function: String) : TreeNode() {
 
+    /**
+     * List of function parameters added to this node.
+     */
     val children: MutableList<TreeNode> = mutableListOf()
 
     override fun <T : Any> reduce(reducer: Reducer<T>): T? {
@@ -20,10 +31,20 @@ data class FunctionNode(val function: String) : TreeNode() {
         return super.toString()
     }
 
+    /**
+     * Appends a child to this node's list of children.
+     *
+     * @node the node to append.
+     */
     fun appendChild(node: TreeNode){
         children.add(node)
     }
 
+    /**
+     * Prepends a child to this node's list of children.
+     *
+     * @node the node to prepend.
+     */
     fun prependChild(node: TreeNode){
         children.add(0, node)
     }
