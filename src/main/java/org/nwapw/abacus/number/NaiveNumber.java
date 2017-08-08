@@ -128,5 +128,9 @@ public class NaiveNumber extends NumberInterface {
         return Double.toString(Math.round(value * shiftBy) / shiftBy);
     }
 
+    @Override
+    public NumberInterface getMaxError(){
+        return new NaiveNumber(Math.pow(10, -18));
+    }
 }
 
