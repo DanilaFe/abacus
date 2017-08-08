@@ -303,14 +303,9 @@ public class StandardPlugin extends Plugin {
         protected NumberInterface applyInternal(NumberInterface[] params) {
             NumberInterface maxError = params[0].getMaxError();
             int n = 0;
-            if (params[0].signum() <= 0) {
-                NumberInterface currentTerm = NaiveNumber.ONE.promoteTo(params[0].getClass()), sum = currentTerm;
-                while (FUNCTION_ABS.apply(currentTerm).compareTo(maxError) > 0) {
-                    n++;
-                    currentTerm = currentTerm.multiply(params[0]).divide((new NaiveNumber(n)).promoteTo(params[0].getClass()));
-                    sum = sum.add(currentTerm);
-                }
-                return sum;
+            if (params[0].signum() < 0) {
+                NumberInterface[] negatedParams = {params[0].negate()};
+               return fromInt(params[0].getClass(), 1).divide(applyInternal(negatedParams));
             } else {
                 //We need n such that x^(n+1) * 3^ceil(x) <= maxError * (n+1)!.
                 //right and left refer to lhs and rhs in the above inequality.
