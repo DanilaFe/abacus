@@ -16,7 +16,7 @@ data class FunctionNode(val function: String) : TreeNode() {
     val children: MutableList<TreeNode> = mutableListOf()
 
     override fun <T : Any> reduce(reducer: Reducer<T>): T? {
-        val children = Array<Any?>(children.size, { children[it].reduce(reducer) ?: return null; })
+        val children = Array<Any>(children.size, { children[it].reduce(reducer) ?: return null; })
         return reducer.reduceNode(this, *children)
     }
 
