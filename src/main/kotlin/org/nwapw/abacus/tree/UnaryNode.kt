@@ -16,4 +16,8 @@ data class UnaryNode(val operation: String, val applyTo: TreeNode? = null) : Tre
         return reducer.reduceNode(this, reducedChild)
     }
 
+    override fun toString(): String {
+        return "(" + (applyTo?.toString() ?: "null") + ")" + operation
+    }
+
 }
