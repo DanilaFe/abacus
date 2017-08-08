@@ -11,6 +11,7 @@ repositories {
 }
 
 dependencies {
+    compile group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
     compile 'com.moandjiezana.toml:toml4j:0.7.1'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8"
     testCompile 'junit:junit:4.12'
