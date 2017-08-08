@@ -243,11 +243,11 @@ public class AbacusController implements PluginListener {
         enabledPluginView.setItems(enabledPlugins);
         enabledPluginView.setCellFactory(pluginCellFactory);
         inputColumn.setCellFactory(cellFactory);
-        inputColumn.setCellValueFactory(cell -> cell.getValue().inputProperty());
+        inputColumn.setCellValueFactory(cell -> cell.getValue().getInputProperty());
         parsedColumn.setCellFactory(cellFactory);
-        parsedColumn.setCellValueFactory(cell -> cell.getValue().parsedProperty());
+        parsedColumn.setCellValueFactory(cell -> cell.getValue().getParsedProperty());
         outputColumn.setCellFactory(cellFactory);
-        outputColumn.setCellValueFactory(cell -> cell.getValue().outputProperty());
+        outputColumn.setCellValueFactory(cell -> cell.getValue().getOutputProperty());
         coreTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (oldValue.equals(settingsTab)) alertIfApplyNeeded(true);
         });
