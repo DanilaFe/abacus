@@ -240,6 +240,7 @@ public abstract class NumberInterface {
      * @param toClass the class to promote to.
      * @return the resulting new instance.
      */
+    @Deprecated
     protected abstract NumberInterface promoteToInternal(Class<? extends NumberInterface> toClass);
 
     /**
@@ -250,6 +251,7 @@ public abstract class NumberInterface {
      * @param toClass the class to promote to.
      * @return the resulting new instance.
      */
+    @Deprecated
     public final NumberInterface promoteTo(Class<? extends NumberInterface> toClass) {
         checkInterrupted();
         return promoteToInternal(toClass);
