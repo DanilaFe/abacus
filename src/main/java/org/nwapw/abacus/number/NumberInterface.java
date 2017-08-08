@@ -255,4 +255,11 @@ public abstract class NumberInterface {
         return promoteToInternal(toClass);
     }
 
+    /**
+     * Returns the smallest error this instance can tolerate depending
+     * on its precision and value.
+     * @return the smallest error that should be permitted in calculations.
+     */
+    public abstract NumberInterface getMaxError();
+
 }
