@@ -137,6 +137,47 @@ public class StandardPlugin extends Plugin {
         }
     });
     /**
+     * The permutation operator.
+     */
+    public static final Operator OP_NPR = new Operator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 0, new Function() {
+        @Override
+        protected boolean matchesParams(NumberInterface[] params) {
+            return params.length == 2 && params[0].fractionalPart().signum() == 0
+                    && params[1].fractionalPart().signum() == 0;
+        }
+
+        @Override
+        protected NumberInterface applyInternal(NumberInterface[] params) {
+            if(params[0].compareTo(params[1]) < 0 ||
+                    params[0].signum() < 0 ||
+                    (params[0].signum() == 0 && params[1].signum() != 0)) return fromInt(params[0].getClass(), 0);
+            NumberInterface total = fromInt(params[0].getClass(), 1);
+            NumberInterface multiplyBy = params[0];
+            NumberInterface remainingMultiplications = params[1];
+            while(remainingMultiplications.signum() > 0){
+                total = total.multiply(multiplyBy);
+                remainingMultiplications = remainingMultiplications.subtract(fromInt(params[0].getClass(), 1));
+                multiplyBy = multiplyBy.subtract(fromInt(params[0].getClass(), 1));
+            }
+            return total;
+        }
+    });
+    /**
+     * The combination operator.
+     */
+    public static final Operator OP_NCR = new Operator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 0, new Function() {
+        @Override
+        protected boolean matchesParams(NumberInterface[] params) {
+            return params.length == 2 && params[0].fractionalPart().signum() == 0
+                    && params[1].fractionalPart().signum() == 0;
+        }
+
+        @Override
+        protected NumberInterface applyInternal(NumberInterface[] params) {
+            return OP_NPR.getFunction().apply(params).divide(OP_FACTORIAL.getFunction().apply(params[1]));
+        }
+    });
+    /**
      * The absolute value function, abs(-3) = 3
      */
     public static final Function FUNCTION_ABS = new Function() {
@@ -574,6 +615,9 @@ public class StandardPlugin extends Plugin {
         registerOperator("/", OP_DIVIDE);
         registerOperator("^", OP_CARET);
         registerOperator("!", OP_FACTORIAL);
+
+        registerOperator("npr", OP_NPR);
+        registerOperator("ncr", OP_NCR);
 
         registerFunction("abs", FUNCTION_ABS);
         registerFunction("exp", FUNCTION_EXP);
