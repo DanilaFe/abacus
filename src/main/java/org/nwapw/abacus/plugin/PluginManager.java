@@ -1,6 +1,8 @@
 package org.nwapw.abacus.plugin;
 
 import org.nwapw.abacus.Abacus;
+import org.nwapw.abacus.function.Documentation;
+import org.nwapw.abacus.function.DocumentationType;
 import org.nwapw.abacus.function.Function;
 import org.nwapw.abacus.function.Operator;
 import org.nwapw.abacus.number.NumberInterface;
@@ -35,6 +37,10 @@ public class PluginManager {
      */
     private Map<String, NumberImplementation> registeredNumberImplementations;
     /**
+     * The map of documentation for functions registered by the plugins.
+     */
+    private Set<Documentation> registeredDocumentation;
+    /**
      * The list of number implementations that have been
      * found by their implementation class.
      */
@@ -65,6 +71,7 @@ public class PluginManager {
         registeredFunctions = new HashMap<>();
         registeredOperators = new HashMap<>();
         registeredNumberImplementations = new HashMap<>();
+        registeredDocumentation = new HashSet<>();
         cachedInterfaceImplementations = new HashMap<>();
         cachedPi = new HashMap<>();
         listeners = new HashSet<>();
@@ -98,6 +105,15 @@ public class PluginManager {
     }
 
     /**
+     * Registers the given documentation with the plugin manager,
+     * making it accessible to the plugin manager etc.
+     * @param documentation the documentation to register.
+     */
+    public void registerDocumentation(Documentation documentation){
+        registeredDocumentation.add(documentation);
+    }
+
+    /**
      * Gets the function registered under the given name.
      * @param name the name of the function.
      * @return the function, or null if it was not found.
@@ -122,6 +138,27 @@ public class PluginManager {
      */
     public NumberImplementation numberImplementationFor(String name){
         return registeredNumberImplementations.get(name);
+    }
+
+    /**
+     * Gets the documentation for the given entity of the given type.
+     * @param name the name of the entity to search for.
+     * @param type the type that this entity is, to filter out similarly named documentation.
+     * @return the documentation object.
+     */
+    public Documentation documentationFor(String name, DocumentationType type){
+        Documentation toReturn = null;
+        for(Documentation entry : registeredDocumentation){
+            if(entry.getCodeName().equals(name) && entry.getType() == type) {
+                toReturn = entry;
+                break;
+            }
+        }
+        if(toReturn == null){
+            toReturn = new Documentation(name, "", "", "", type);
+            registerDocumentation(toReturn);
+        }
+        return toReturn;
     }
 
     /**
@@ -230,6 +267,7 @@ public class PluginManager {
         registeredFunctions.clear();
         registeredOperators.clear();
         registeredNumberImplementations.clear();
+        registeredDocumentation.clear();
         cachedInterfaceImplementations.clear();
         cachedPi.clear();
         listeners.forEach(e -> e.onUnload(this));

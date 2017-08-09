@@ -1,15 +1,18 @@
 package org.nwapw.abacus.plugin;
 
-import org.nwapw.abacus.function.Function;
-import org.nwapw.abacus.function.Operator;
-import org.nwapw.abacus.function.OperatorAssociativity;
-import org.nwapw.abacus.function.OperatorType;
+import org.nwapw.abacus.function.*;
+import org.nwapw.abacus.lexing.pattern.Match;
 import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.number.PreciseNumber;
+import org.nwapw.abacus.parsing.Parser;
+import org.nwapw.abacus.parsing.ShuntingYardParser;
+import org.nwapw.abacus.tree.TokenType;
+import org.nwapw.abacus.tree.TreeNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.function.BiFunction;
 
 /**
@@ -568,6 +571,35 @@ public class StandardPlugin extends Plugin {
         registerFunction("sec", functionSec);
         registerFunction("csc", functionCsc);
         registerFunction("cot", functionCot);
+
+        registerDocumentation(new Documentation("abs", "Absolute Value", "Finds the distance " +
+                "from zero of a number.", "Given a number, this function finds the distance form " +
+                "zero of a number, effectively turning negative numbers into positive ones.\n\n" +
+                "Example: abs(-2) -> 2", DocumentationType.FUNCTION));
+        registerDocumentation(new Documentation("exp", "Exponentiate", "Brings e to the given power.",
+                "This function evaluates e to the power of the given value, and is the inverse " +
+                        "of the natural logarithm.\n\n" +
+                        "Example: exp(1) -> 2.718...", DocumentationType.FUNCTION));
+        registerDocumentation(new Documentation("ln", "Natural Logarithm", "Gets the natural " +
+                "logarithm of the given value.", "The natural logarithm of a number is " +
+                "the power that e has to be brought to to be equal to the number.\n\n" +
+                "Example: ln(2.718) -> 1", DocumentationType.FUNCTION));
+        registerDocumentation(new Documentation("sqrt", "Square Root", "Finds the square root " +
+                "of the number.", "A square root a of a number is defined such that a times a is equal " +
+                "to that number.\n\n" +
+                "Example: sqrt(4) -> 2", DocumentationType.FUNCTION));
+        registerDocumentation(new Documentation("sin", "Sine", "Computes the sine of the given angle, " +
+                "in radians.", "", DocumentationType.FUNCTION));
+        registerDocumentation(new Documentation("cos", "Cosine", "Computes the cosine of the given angle, " +
+                "in radians.", "", DocumentationType.FUNCTION));
+        registerDocumentation(new Documentation("tan", "Tangent", "Computes the tangent of the given angle, " +
+                "in radians.", "", DocumentationType.FUNCTION));
+        registerDocumentation(new Documentation("sec", "Secant", "Computes the secant of the given angle, " +
+                "in radians.", "", DocumentationType.FUNCTION));
+        registerDocumentation(new Documentation("csc", "Cosecant", "Computes the cosecant of the given angle, " +
+                "in radians.", "", DocumentationType.FUNCTION));
+        registerDocumentation(new Documentation("cot", "Cotangent", "Computes the cotangent of the given angle, " +
+                "in radians.", "", DocumentationType.FUNCTION));
     }
 
     @Override
