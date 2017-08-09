@@ -57,6 +57,7 @@
                         <Button text="Apply" onAction="#performSave"/>
                         <Button text="Reload Plugins" onAction="#performReload"/>
                         <Button text="Apply and Reload" onAction="#performSaveAndReload"/>
+                        <Button text="Scan Plugins" onAction="#performScan"/>
                     </FlowPane>
                 </GridPane>
             </Tab>

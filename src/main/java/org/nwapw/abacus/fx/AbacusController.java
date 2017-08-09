@@ -255,13 +255,7 @@ public class AbacusController implements PluginListener {
         abacus = new Abacus(new Configuration(CONFIG_FILE));
         PluginManager abacusPluginManager = abacus.getPluginManager();
         abacusPluginManager.addListener(this);
-        abacusPluginManager.addInstantiated(new StandardPlugin(abacus.getPluginManager()));
-        try {
-            ClassFinder.loadJars("plugins").forEach(abacusPluginManager::addClass);
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        abacusPluginManager.reload();
+        performScan();
 
         computationLimitField.setText(Double.toString(abacus.getConfiguration().getComputationDelay()));
         computationLimitField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -309,6 +303,19 @@ public class AbacusController implements PluginListener {
         performReload();
         changesMade = false;
         reloadAlertShown = false;
+    }
+
+    @FXML
+    public void performScan(){
+        PluginManager abacusPluginManager = abacus.getPluginManager();
+        abacusPluginManager.removeAll();
+        abacusPluginManager.addInstantiated(new StandardPlugin(abacus.getPluginManager()));
+        try {
+            ClassFinder.loadJars("plugins").forEach(abacusPluginManager::addClass);
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        abacusPluginManager.reload();
     }
 
     @FXML
