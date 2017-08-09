@@ -243,6 +243,20 @@ public class StandardPlugin extends Plugin {
         }
     };
     /**
+     * Gets a random number smaller or equal to the given number's integer value.
+     */
+    public static final Function FUNCTION_RAND_INT = new Function() {
+        @Override
+        protected boolean matchesParams(NumberInterface[] params) {
+            return params.length == 1;
+        }
+
+        @Override
+        protected NumberInterface applyInternal(NumberInterface[] params) {
+            return fromInt(params[0].getClass(), (int) Math.round(Math.random() * params[0].floor().intValue()));
+        }
+    };
+    /**
      * The implementation for double-based naive numbers.
      */
     public static final NumberImplementation IMPLEMENTATION_NAIVE = new NumberImplementation(NaiveNumber.class, 0) {
@@ -572,6 +586,8 @@ public class StandardPlugin extends Plugin {
         registerFunction("csc", functionCsc);
         registerFunction("cot", functionCot);
 
+        registerFunction("random_int", FUNCTION_RAND_INT);
+
         registerDocumentation(new Documentation("abs", "Absolute Value", "Finds the distance " +
                 "from zero of a number.", "Given a number, this function finds the distance form " +
                 "zero of a number, effectively turning negative numbers into positive ones.\n\n" +
@@ -600,6 +616,12 @@ public class StandardPlugin extends Plugin {
                 "in radians.", "", DocumentationType.FUNCTION));
         registerDocumentation(new Documentation("cot", "Cotangent", "Computes the cotangent of the given angle, " +
                 "in radians.", "", DocumentationType.FUNCTION));
+        registerDocumentation(new Documentation("random_int", "Random Integer", "Generates a random integer [0, n].",
+                "Generates a pseudorandom number using the standard JVM random mechanism, keeping it less than or " +
+                        "equal to the given number.\n\n" +
+                        "Example: random_int(5) -> 4\n" +
+                        "random_int(5) -> 3\n" +
+                        "random_int(5) -> 3\n", DocumentationType.FUNCTION));
     }
 
     @Override
