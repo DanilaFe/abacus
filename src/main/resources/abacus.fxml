@@ -60,6 +60,62 @@
                     </FlowPane>
                 </GridPane>
             </Tab>
+            <Tab fx:id="macroTab" text="Macros" closable="false">
+                <BorderPane>
+                    <padding>
+                        <Insets top="10" bottom="10" left="10" right="10"/>
+                    </padding>
+                    <center>
+                        <BorderPane>
+                            <center>
+                                <ScrollPane hbarPolicy="NEVER" vbarPolicy="NEVER" prefWidth="50" fitToWidth="true">
+                                        <SplitPane prefHeight="Infinity" >
+                                            <BorderPane prefHeight="Infinity">
+                                                <center>
+                                                    <TextArea fx:id="macroField" wrapText="false" prefHeight="Infinity"/>
+                                                </center>
+                                            </BorderPane>
+                                            <BorderPane prefHeight="Infinity">
+                                                <center>
+                                                    <TextArea fx:id="macroOutputField" wrapText="false" text="aaa&#xA;aaaaa" editable="false" prefHeight="Infinity"/>
+                                                </center>
+                                            </BorderPane>
+                                        </SplitPane>
+                                </ScrollPane>
+
+                            </center>
+                        </BorderPane>
+                    </center>
+                    <bottom>
+                        <VBox>
+
+                            <Button fx:id="inputButtonMacro" text="Calculate"
+                                    onAction="#macroCalculation" maxWidth="Infinity"/>
+                            <Button fx:id="stopButtonMacro" text="Stop" onAction="#performStop" maxWidth="Infinity"/>
+                        </VBox>
+                    </bottom>
+                </BorderPane>
+                <!--
+                <GridPane>
+                    <padding>
+                        <Insets top="10" bottom="10" left="10" right="10"/>
+                    </padding>
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="100.0"/>
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints percentHeight="85.0"/>
+                        <RowConstraints/>
+                        <RowConstraints/>
+                    </rowConstraints>
+                    <TextArea fx:id="macroField" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                    <Button fx:id="inputButtonMacro" text="Calculate" maxWidth="Infinity"
+                            onAction="#macroCalculation" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                    <Button fx:id="stopButtonMacro" text="Stop" onAction="#performStop" maxWidth="Infinity"
+                            disable="true" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                </GridPane>
+                -->
+            </Tab>
         </TabPane>
     </center>
 

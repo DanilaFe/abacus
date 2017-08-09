@@ -20,6 +20,7 @@ import org.nwapw.abacus.tree.TreeNode;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.Set;
 
 
@@ -63,6 +64,16 @@ public class AbacusController implements PluginListener {
      */
     private static final String ERR_EXCEPTION = "Exception Thrown";
     @FXML
+    private TextArea macroOutputField;
+    @FXML
+    private Tab macroTab;
+    @FXML
+    private TextArea macroField;
+    @FXML
+    private Button inputButtonMacro;
+    @FXML
+    private Button stopButtonMacro;
+    @FXML
     private TabPane coreTabPane;
     @FXML
     private Tab calculateTab;
@@ -90,7 +101,7 @@ public class AbacusController implements PluginListener {
     private ListView<ToggleablePlugin> enabledPluginView;
     @FXML
     private TextField computationLimitField;
-
+    private String macroOutputText;
     /**
      * The list of history entries, created by the users.
      */
@@ -112,7 +123,7 @@ public class AbacusController implements PluginListener {
      * The abacus instance used for changing the plugin configuration.
      */
     private Abacus abacus;
-
+    private boolean stop;
     /**
      * Boolean which represents whether changes were made to the configuration.
      */
@@ -276,6 +287,7 @@ public class AbacusController implements PluginListener {
 
     @FXML
     public void performCalculation() {
+        stop=false;
         inputButton.setDisable(true);
         stopButton.setDisable(false);
         calculationThread = new Thread(CALCULATION_RUNNABLE);
@@ -283,17 +295,51 @@ public class AbacusController implements PluginListener {
         computationLimitThread = new Thread(TIMER_RUNNABLE);
         computationLimitThread.start();
     }
+    Runnable macroCalculate = new Runnable(){
+        @Override
+        public void run() {
+            stop=false;
+            inputButtonMacro.setDisable(true);
+            stopButtonMacro.setDisable(false);
+            Scanner macroScanner = new Scanner(macroField.getText());
+            String next = "!";
+            macroOutputText="";
+            while(!stop&&macroScanner.hasNextLine()) {
+                next = macroScanner.nextLine().trim();
+                if(next.equals(""))
+                    break;
+                inputField.setText(next);
+                calculationThread = new Thread(CALCULATION_RUNNABLE);
+                calculationThread.start();
+                computationLimitThread = new Thread(TIMER_RUNNABLE);
+                computationLimitThread.start();
+                while(calculationThread.isAlive()){}
+                //long b = System.currentTimeMillis();
+                //while(System.currentTimeMillis()-b<10000){}
+                macroOutputText +=outputText.getText()+"\n";
+                //next = macroScanner.nextLine().trim();
 
+            }
+            Platform.runLater(() -> {
+                macroOutputField.setText(macroOutputText);
+                inputButtonMacro.setDisable(false);
+                stopButtonMacro.setDisable(true);
+            });
+        }
+    };
+    @FXML
+    public void macroCalculation(){
+        Thread macroThread = new Thread(macroCalculate);
+        macroThread.start();
+    }
     @FXML
     public void performStop(){
         if(calculationThread != null) {
             calculationThread.interrupt();
             calculationThread = null;
+            stop = true;
         }
-        if(computationLimitThread != null){
-            computationLimitThread.interrupt();
-            computationLimitThread = null;
-        }
+
     }
 
     @FXML

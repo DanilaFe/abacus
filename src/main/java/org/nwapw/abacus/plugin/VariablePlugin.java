@@ -38,7 +38,7 @@ public class VariablePlugin extends Plugin {
         variableMap=new HashMap<>();
     }
 
-    
+
     @Override
     public void onEnable(){
         //variables = new ArrayList<>();
