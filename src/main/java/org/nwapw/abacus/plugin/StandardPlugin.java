@@ -453,7 +453,6 @@ public class StandardPlugin extends Plugin {
 
     /**
      * The arcsin function (return type in radians).
-     * @param manager
      */
     public final Function functionArcsin = new Function() {
         @Override
@@ -482,6 +481,22 @@ public class StandardPlugin extends Plugin {
                 sum = sum.add(currentTerm);
             }
             return sum;
+        }
+    };
+
+    /**
+     * The arccos function.
+     */
+    public final Function functionArccos = new Function() {
+        @Override
+        protected boolean matchesParams(NumberInterface[] params) {
+            return params.length == 1 && FUNCTION_ABS.apply(params[0]).compareTo(fromInt(params[0].getClass(), 1)) <= 0;
+        }
+
+        @Override
+        protected NumberInterface applyInternal(NumberInterface[] params) {
+            return piFor(params[0].getClass()).divide(fromInt(params[0].getClass(), 2))
+                    .subtract(functionArcsin.apply(params));
         }
     };
 
@@ -603,6 +618,7 @@ public class StandardPlugin extends Plugin {
         registerFunction("csc", functionCsc);
         registerFunction("cot", functionCot);
         registerFunction("arcsin", functionArcsin);
+        registerFunction("arccos", functionArccos);
     }
 
     @Override
