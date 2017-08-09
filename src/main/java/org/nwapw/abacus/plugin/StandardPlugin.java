@@ -154,6 +154,10 @@ public class StandardPlugin extends Plugin {
             NumberInterface total = fromInt(params[0].getClass(), 1);
             NumberInterface multiplyBy = params[0];
             NumberInterface remainingMultiplications = params[1];
+            NumberInterface halfway = params[0].divide(fromInt(params[0].getClass(), 2));
+            if(remainingMultiplications.compareTo(halfway) > 0){
+                remainingMultiplications = params[0].subtract(remainingMultiplications);
+            }
             while(remainingMultiplications.signum() > 0){
                 total = total.multiply(multiplyBy);
                 remainingMultiplications = remainingMultiplications.subtract(fromInt(params[0].getClass(), 1));
