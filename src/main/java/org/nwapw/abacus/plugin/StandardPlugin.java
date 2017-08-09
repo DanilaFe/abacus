@@ -452,7 +452,7 @@ public class StandardPlugin extends Plugin {
     };
 
     /**
-     * The arcsin function (return type in radians).
+     * The arcsine function (return type in radians).
      */
     public final Function functionArcsin = new Function() {
         @Override
@@ -485,7 +485,7 @@ public class StandardPlugin extends Plugin {
     };
 
     /**
-     * The arccos function.
+     * The arccosine function.
      */
     public final Function functionArccos = new Function() {
         @Override
@@ -501,7 +501,7 @@ public class StandardPlugin extends Plugin {
     };
 
     /**
-     * The arccsc function.
+     * The arccosecant function.
      */
     public final Function functionArccsc = new Function() {
         @Override
@@ -513,6 +513,22 @@ public class StandardPlugin extends Plugin {
         protected NumberInterface applyInternal(NumberInterface[] params) {
             NumberInterface[] reciprocalParamArr = {fromInt(params[0].getClass(), 1).divide(params[0])};
             return functionArcsin.apply(reciprocalParamArr);
+        }
+    };
+
+    /**
+     * The arcsecant function.
+     */
+    public final Function functionArcsec = new Function() {
+        @Override
+        protected boolean matchesParams(NumberInterface[] params) {
+            return params.length == 1 && FUNCTION_ABS.apply(params[0]).compareTo(fromInt(params[0].getClass(), 1)) >= 0;
+        }
+
+        @Override
+        protected NumberInterface applyInternal(NumberInterface[] params) {
+            NumberInterface[] reciprocalParamArr = {fromInt(params[0].getClass(), 1).divide(params[0])};
+            return functionArccos.apply(reciprocalParamArr);
         }
     };
 
@@ -636,6 +652,7 @@ public class StandardPlugin extends Plugin {
         registerFunction("arcsin", functionArcsin);
         registerFunction("arccos", functionArccos);
         registerFunction("arccsc", functionArccsc);
+        registerFunction("arcsec", functionArcsec);
     }
 
     @Override
