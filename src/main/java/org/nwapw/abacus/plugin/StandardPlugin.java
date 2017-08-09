@@ -620,8 +620,8 @@ public class StandardPlugin extends Plugin {
         registerOperator("^", OP_CARET);
         registerOperator("!", OP_FACTORIAL);
 
-        registerOperator("npr", OP_NPR);
-        registerOperator("ncr", OP_NCR);
+        registerOperator("nPr", OP_NPR);
+        registerOperator("nCr", OP_NCR);
 
         registerFunction("abs", FUNCTION_ABS);
         registerFunction("exp", FUNCTION_EXP);
