@@ -500,6 +500,22 @@ public class StandardPlugin extends Plugin {
         }
     };
 
+    /**
+     * The arccsc function.
+     */
+    public final Function functionArccsc = new Function() {
+        @Override
+        protected boolean matchesParams(NumberInterface[] params) {
+            return params.length == 1 && FUNCTION_ABS.apply(params[0]).compareTo(fromInt(params[0].getClass(), 1)) >= 0;
+        }
+
+        @Override
+        protected NumberInterface applyInternal(NumberInterface[] params) {
+            NumberInterface[] reciprocalParamArr = {fromInt(params[0].getClass(), 1).divide(params[0])};
+            return functionArcsin.apply(reciprocalParamArr);
+        }
+    };
+
     public StandardPlugin(PluginManager manager) {
         super(manager);
     }
@@ -619,6 +635,7 @@ public class StandardPlugin extends Plugin {
         registerFunction("cot", functionCot);
         registerFunction("arcsin", functionArcsin);
         registerFunction("arccos", functionArccos);
+        registerFunction("arccsc", functionArccsc);
     }
 
     @Override
