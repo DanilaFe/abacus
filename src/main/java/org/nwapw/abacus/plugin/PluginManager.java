@@ -188,6 +188,24 @@ public class PluginManager {
     }
 
     /**
+     * Removes the plugin with the given class from the manager.
+     * @param toRemove the plugin to remove.
+     */
+    public void removeClass(Class<? extends Plugin> toRemove){
+        if(!loadedPluginClasses.contains(toRemove)) return;
+        plugins.removeIf(plugin -> plugin.getClass() == toRemove);
+        loadedPluginClasses.remove(toRemove);
+    }
+
+    /**
+     * Removes all plugins from this plugin manager.
+     */
+    public void removeAll(){
+        loadedPluginClasses.clear();
+        plugins.clear();
+    }
+
+    /**
      * Loads all the plugins in the PluginManager.
      */
     public void load() {
