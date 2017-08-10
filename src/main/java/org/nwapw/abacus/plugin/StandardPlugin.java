@@ -375,7 +375,7 @@ public class StandardPlugin extends Plugin {
             } else {
                 //We need n such that x^(n+1) * 3^ceil(x) <= maxError * (n+1)!.
                 //right and left refer to lhs and rhs in the above inequality.
-                NumberInterface sum = fromInt(params[0].getClass(), 0);
+                NumberInterface sum = fromInt(params[0].getClass(), 1);
                 NumberInterface nextNumerator = params[0];
                 NumberInterface left = params[0].multiply(fromInt(params[0].getClass(), 3).intPow(params[0].ceiling().intValue())), right = maxError;
                 do {
@@ -412,7 +412,7 @@ public class StandardPlugin extends Plugin {
             if (params[0].compareTo(zero) == 0)
                 return zero;
             else if (params[1].compareTo(zero) == 0)
-                return zero;
+                return fromInt(params[0].getClass(), 1);
             //Detect integer bases:
             if(params[0].fractionalPart().compareTo(fromInt(params[0].getClass(), 0)) == 0
                     && FUNCTION_ABS.apply(params[1]).compareTo(fromInt(params[0].getClass(), Integer.MAX_VALUE)) < 0
