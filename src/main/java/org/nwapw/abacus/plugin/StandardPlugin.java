@@ -655,7 +655,7 @@ public class StandardPlugin extends Plugin {
                 "the power that e has to be brought to to be equal to the number.\n\n" +
                 "Example: ln(2.718) -> 1", DocumentationType.FUNCTION));
         registerDocumentation(new Documentation("sqrt", "Square Root", "Finds the square root " +
-                "of the number.", "A square root a of a number is defined such that a times a is equal " +
+                "of the number.", "A square root a of a number is defined as the non-negative a such that a times a is equal " +
                 "to that number.\n\n" +
                 "Example: sqrt(4) -> 2", DocumentationType.FUNCTION));
         registerDocumentation(new Documentation("sin", "Sine", "Computes the sine of the given angle, " +
