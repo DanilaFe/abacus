@@ -519,6 +519,87 @@ public class StandardPlugin extends Plugin {
         }
     };
 
+    /**
+     * The arcsine function (return type in radians).
+     */
+    public final Function functionArcsin = new Function() {
+        @Override
+        protected boolean matchesParams(NumberInterface[] params) {
+            return params.length == 1
+                    && FUNCTION_ABS.apply(params[0]).compareTo(fromInt(params[0].getClass(), 1)) <= 0;
+        }
+
+        @Override
+        protected NumberInterface applyInternal(NumberInterface[] params) {
+            if(FUNCTION_ABS.apply(params[0]).compareTo(new NaiveNumber(0.8).promoteTo(params[0].getClass())) >= 0){
+                NumberInterface[] newParams = {FUNCTION_SQRT.apply(fromInt(params[0].getClass(), 1).subtract(params[0].multiply(params[0])))};
+                return piFor(params[0].getClass()).divide(fromInt(params[0].getClass(), 2))
+                        .subtract(applyInternal(newParams)).multiply(fromInt(params[0].getClass(), params[0].signum()));
+            }
+            NumberInterface currentTerm = params[0], sum = currentTerm,
+                    multiplier = currentTerm.multiply(currentTerm), summandBound = sum.getMaxError().multiply(fromInt(sum.getClass(), 1).subtract(multiplier)),
+                    power = currentTerm, coefficient = fromInt(params[0].getClass(), 1);
+            int exponent = 1;
+            while(FUNCTION_ABS.apply(currentTerm).compareTo(summandBound) > 0){
+                exponent += 2;
+                power = power.multiply(multiplier);
+                coefficient = coefficient.multiply(fromInt(params[0].getClass(), exponent-2))
+                        .divide(fromInt(params[0].getClass(), exponent - 1));
+                currentTerm = power.multiply(coefficient).divide(fromInt(power.getClass(), exponent));
+                sum = sum.add(currentTerm);
+            }
+            return sum;
+        }
+    };
+
+    /**
+     * The arccosine function.
+     */
+    public final Function functionArccos = new Function() {
+        @Override
+        protected boolean matchesParams(NumberInterface[] params) {
+            return params.length == 1 && FUNCTION_ABS.apply(params[0]).compareTo(fromInt(params[0].getClass(), 1)) <= 0;
+        }
+
+        @Override
+        protected NumberInterface applyInternal(NumberInterface[] params) {
+            return piFor(params[0].getClass()).divide(fromInt(params[0].getClass(), 2))
+                    .subtract(functionArcsin.apply(params));
+        }
+    };
+
+    /**
+     * The arccosecant function.
+     */
+    public final Function functionArccsc = new Function() {
+        @Override
+        protected boolean matchesParams(NumberInterface[] params) {
+            return params.length == 1 && FUNCTION_ABS.apply(params[0]).compareTo(fromInt(params[0].getClass(), 1)) >= 0;
+        }
+
+        @Override
+        protected NumberInterface applyInternal(NumberInterface[] params) {
+            NumberInterface[] reciprocalParamArr = {fromInt(params[0].getClass(), 1).divide(params[0])};
+            return functionArcsin.apply(reciprocalParamArr);
+        }
+    };
+
+    /**
+     * The arcsecant function.
+     */
+    public final Function functionArcsec = new Function() {
+        @Override
+        protected boolean matchesParams(NumberInterface[] params) {
+            return params.length == 1 && FUNCTION_ABS.apply(params[0]).compareTo(fromInt(params[0].getClass(), 1)) >= 0;
+        }
+
+        @Override
+        protected NumberInterface applyInternal(NumberInterface[] params) {
+            NumberInterface[] reciprocalParamArr = {fromInt(params[0].getClass(), 1).divide(params[0])};
+            return functionArccos.apply(reciprocalParamArr);
+        }
+    };
+
     public StandardPlugin(PluginManager manager) {
         super(manager);
     }
@@ -639,6 +720,10 @@ public class StandardPlugin extends Plugin {
         registerFunction("sec", functionSec);
         registerFunction("csc", functionCsc);
         registerFunction("cot", functionCot);
+        registerFunction("arcsin", functionArcsin);
+        registerFunction("arccos", functionArccos);
+        registerFunction("arccsc", functionArccsc);
+        registerFunction("arcsec", functionArcsec);
 
         registerFunction("random_int", FUNCTION_RAND_INT);
 
