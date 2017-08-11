@@ -532,6 +532,63 @@ public class StandardPlugin extends Plugin {
         }
     };
 
+    /**
+     * The arctangent function.
+     */
+    public final Function functionArctan = new Function() {
+        @Override
+        protected boolean matchesParams(NumberInterface[] params) {
+            return params.length == 1;
+        }
+
+        @Override
+        protected NumberInterface applyInternal(NumberInterface[] params) {
+            if(params[0].signum() == -1){
+                NumberInterface[] negatedParams = {params[0].negate()};
+                return applyInternal(negatedParams).negate();
+            }
+            if(params[0].compareTo(fromInt(params[0].getClass(), 1)) > 0){
+                NumberInterface[] reciprocalParams = {fromInt(params[0].getClass(), 1).divide(params[0])};
+                return piFor(params[0].getClass()).divide(fromInt(params[0].getClass(), 2))
+                        .subtract(applyInternal(reciprocalParams));
+            }
+            if(params[0].compareTo(fromInt(params[0].getClass(), 1)) == 0){
+                return piFor(params[0].getClass()).divide(fromInt(params[0].getClass(), 4));
+            }
+            if(params[0].compareTo(new NaiveNumber(0.9).promoteTo(params[0].getClass())) >= 0){
+                NumberInterface[] newParams = {params[0].multiply(fromInt(params[0].getClass(),2 ))
+                .divide(fromInt(params[0].getClass(), 1).subtract(params[0].multiply(params[0])))};
+                return applyInternal(newParams).divide(fromInt(params[0].getClass(), 2));
+            }
+            NumberInterface currentPower = params[0], currentTerm = currentPower, sum = currentTerm,
+                    maxError = params[0].getMaxError(), multiplier = currentPower.multiply(currentPower).negate();
+            int n = 1;
+            while(FUNCTION_ABS.apply(currentTerm).compareTo(maxError) > 0){
+                n += 2;
+                currentPower = currentPower.multiply(multiplier);
+                currentTerm = currentPower.divide(fromInt(currentPower.getClass(), n));
+                sum = sum.add(currentTerm);
+            }
+            return sum;
+        }
+    };
+
+    /**
+     * The arccotangent function. Range: (0, pi).
+     */
+    public final Function functionArccot = new Function() {
+        @Override
+        protected boolean matchesParams(NumberInterface[] params) {
+            return params.length == 1;
+        }
+
+        @Override
+        protected NumberInterface applyInternal(NumberInterface[] params) {
+            return piFor(params[0].getClass()).divide(fromInt(params[0].getClass(), 2))
+                    .subtract(functionArctan.apply(params));
+        }
+    };
+
     public StandardPlugin(PluginManager manager) {
         super(manager);
     }
@@ -653,6 +710,8 @@ public class StandardPlugin extends Plugin {
         registerFunction("arccos", functionArccos);
         registerFunction("arccsc", functionArccsc);
         registerFunction("arcsec", functionArcsec);
+        registerFunction("arctan", functionArctan);
+        registerFunction("arccot", functionArccot);
     }
 
     @Override
