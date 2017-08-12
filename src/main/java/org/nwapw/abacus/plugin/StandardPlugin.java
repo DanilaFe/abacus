@@ -744,17 +744,17 @@ public class StandardPlugin extends Plugin {
                 "to that number.\n\n" +
                 "Example: sqrt(4) -> 2", DocumentationType.FUNCTION));
         registerDocumentation(new Documentation("sin", "Sine", "Computes the sine of the given angle, " +
-                "in radians.", "", DocumentationType.FUNCTION));
+                "in radians.", "Example: sin(pi/6) -> 0.5", DocumentationType.FUNCTION));
         registerDocumentation(new Documentation("cos", "Cosine", "Computes the cosine of the given angle, " +
-                "in radians.", "", DocumentationType.FUNCTION));
+                "in radians.", "Example: cos(pi/6) -> 0.866... (the exact result is sqrt(3)/2)", DocumentationType.FUNCTION));
         registerDocumentation(new Documentation("tan", "Tangent", "Computes the tangent of the given angle, " +
-                "in radians.", "", DocumentationType.FUNCTION));
+                "in radians.", "Example: tan(pi/6) -> 0.577... (the exact result is 1/sqrt(3))", DocumentationType.FUNCTION));
         registerDocumentation(new Documentation("sec", "Secant", "Computes the secant of the given angle, " +
-                "in radians.", "", DocumentationType.FUNCTION));
+                "in radians.", "Example: sec(pi/6) -> 1.154... (the exact result is 2/sqrt(3))", DocumentationType.FUNCTION));
         registerDocumentation(new Documentation("csc", "Cosecant", "Computes the cosecant of the given angle, " +
-                "in radians.", "", DocumentationType.FUNCTION));
+                "in radians.", "Example: csc(pi/6) -> 2", DocumentationType.FUNCTION));
         registerDocumentation(new Documentation("cot", "Cotangent", "Computes the cotangent of the given angle, " +
-                "in radians.", "", DocumentationType.FUNCTION));
+                "in radians.", "Example: cot(pi/6) -> 1.732... (the exact result is sqrt(3))", DocumentationType.FUNCTION));
         registerDocumentation(new Documentation("random_int", "Random Integer", "Generates a random integer [0, n].",
                 "Generates a pseudorandom number using the standard JVM random mechanism, keeping it less than or " +
                         "equal to the given number.\n\n" +
