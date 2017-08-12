@@ -822,6 +822,19 @@ public class StandardPlugin extends Plugin {
                         "Example: random_int(5) -> 4\n" +
                         "random_int(5) -> 3\n" +
                         "random_int(5) -> 3\n", DocumentationType.FUNCTION));
+        registerDocumentation(new Documentation("arcsin", "Arcsine", "Computes the arcsine of x. (The result is in radians.)",
+                "Example: arcsin(0.5) -> 0.523... (the exact result is pi/6)", DocumentationType.FUNCTION));
+        registerDocumentation(new Documentation("arccos", "Arccosine", "Computes the arccosine of x. (The result is in radians.)",
+                "Example: arccos(0.5) -> 1.047... (the exact result is pi/3)", DocumentationType.FUNCTION));
+        registerDocumentation(new Documentation("arctan", "Arctangent", "Computes the arctangent of x. (The result is in radians.)",
+                "Example: arctan(1) -> 0.785... (the exact result is pi/4)", DocumentationType.FUNCTION));
+        registerDocumentation(new Documentation("arcsec", "Arcsecant", "Computes the arcsecant of x. (The result is in radians.)",
+                "Example: arcsec(2) -> 1.047... (the exact result is pi/3)", DocumentationType.FUNCTION));
+        registerDocumentation(new Documentation("arccsc", "Arccosecant", "Computes the arcscosecant of x. (The result is in radians.)",
+                "Example: arccsc(2) -> 0.523... (the exact result is pi/6)", DocumentationType.FUNCTION));
+        registerDocumentation(new Documentation("arccot", "Arccotangent", "Computes the arccotangent of x. (The result is in radians," +
+                " in the range (0, pi).)",
+                "Example: arccot(0) -> 1.570... (the exact result is pi/2)", DocumentationType.FUNCTION));
     }
 
     @Override
