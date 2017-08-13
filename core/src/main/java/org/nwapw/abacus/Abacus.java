@@ -1,7 +1,6 @@
 package org.nwapw.abacus;
 
 import org.nwapw.abacus.config.Configuration;
-import org.nwapw.abacus.fx.AbacusApplication;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.parsing.LexerTokenizer;
 import org.nwapw.abacus.parsing.ShuntingYardParser;
@@ -59,10 +58,6 @@ public class Abacus {
 
         pluginManager.addListener(shuntingYardParser);
         pluginManager.addListener(lexerTokenizer);
-    }
-
-    public static void main(String[] args) {
-        AbacusApplication.launch(AbacusApplication.class, args);
     }
 
     /**
