@@ -33,4 +33,9 @@ public class AbacusApplication extends Application {
         super.stop();
         controller.performStop();
     }
+
+    public static void main(String[] args){
+        launch(args);
+    }
+
 }
