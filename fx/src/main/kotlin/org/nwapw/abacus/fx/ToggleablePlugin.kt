@@ -12,7 +12,7 @@ import javafx.beans.property.SimpleBooleanProperty
  * @param className the name of the class that this model concerns.
  * @param enabled whether or not the model should start enabled.
  */
-class ToggleablePlugin (val className: String, enabled: Boolean) {
+class ToggleablePlugin(val className: String, enabled: Boolean) {
 
     /**
      * The property used to interact with JavaFX components.

@@ -9,10 +9,11 @@ public abstract class NumberInterface {
      * Check if the thread was interrupted and
      * throw an exception to end the computation.
      */
-    private static void checkInterrupted(){
-        if(Thread.currentThread().isInterrupted())
+    private static void checkInterrupted() {
+        if (Thread.currentThread().isInterrupted())
             throw new ComputationInterruptedException();
     }
+
     /**
      * The maximum precision to which this number operates.
      *
@@ -38,7 +39,7 @@ public abstract class NumberInterface {
      * @param multiplier the multiplier
      * @return the result of the multiplication.
      */
-    public final NumberInterface multiply(NumberInterface multiplier){
+    public final NumberInterface multiply(NumberInterface multiplier) {
         checkInterrupted();
         return multiplyInternal(multiplier);
     }
@@ -61,7 +62,7 @@ public abstract class NumberInterface {
      * @param divisor the divisor
      * @return the result of the division.
      */
-    public final NumberInterface divide(NumberInterface divisor){
+    public final NumberInterface divide(NumberInterface divisor) {
         checkInterrupted();
         return divideInternal(divisor);
     }
@@ -84,7 +85,7 @@ public abstract class NumberInterface {
      * @param summand the summand
      * @return the result of the summation.
      */
-    public final NumberInterface add(NumberInterface summand){
+    public final NumberInterface add(NumberInterface summand) {
         checkInterrupted();
         return addInternal(summand);
     }
@@ -107,7 +108,7 @@ public abstract class NumberInterface {
      * @param subtrahend the subtrahend.
      * @return the result of the subtraction.
      */
-    public final NumberInterface subtract(NumberInterface subtrahend){
+    public final NumberInterface subtract(NumberInterface subtrahend) {
         checkInterrupted();
         return subtractInternal(subtrahend);
     }
@@ -129,7 +130,7 @@ public abstract class NumberInterface {
      *
      * @return the new instance.
      */
-    public final NumberInterface negate(){
+    public final NumberInterface negate() {
         checkInterrupted();
         return negateInternal();
     }
@@ -150,7 +151,7 @@ public abstract class NumberInterface {
      * @param exponent the exponent to which to take the number.
      * @return the resulting value.
      */
-    public final NumberInterface intPow(int exponent){
+    public final NumberInterface intPow(int exponent) {
         checkInterrupted();
         return intPowInternal(exponent);
     }
@@ -184,7 +185,7 @@ public abstract class NumberInterface {
      *
      * @return the least integer bigger or equal to the number.
      */
-    public final NumberInterface ceiling(){
+    public final NumberInterface ceiling() {
         checkInterrupted();
         return ceilingInternal();
     }
@@ -203,7 +204,7 @@ public abstract class NumberInterface {
      *
      * @return the greatest int smaller than or equal to the number.
      */
-    public final NumberInterface floor(){
+    public final NumberInterface floor() {
         checkInterrupted();
         return floorInternal();
     }
@@ -219,9 +220,10 @@ public abstract class NumberInterface {
      * Returns the fractional part of the number, specifically x - floor(x).
      * Also, checks if the thread has been interrupted,
      * and if so, throws an exception.
+     *
      * @return the fractional part of the number.
      */
-    public final NumberInterface fractionalPart(){
+    public final NumberInterface fractionalPart() {
         checkInterrupted();
         return fractionalPartInternal();
     }
@@ -260,6 +262,7 @@ public abstract class NumberInterface {
     /**
      * Returns the smallest error this instance can tolerate depending
      * on its precision and value.
+     *
      * @return the smallest error that should be permitted in calculations.
      */
     public abstract NumberInterface getMaxError();

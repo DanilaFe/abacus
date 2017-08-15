@@ -129,7 +129,7 @@ public class NaiveNumber extends NumberInterface {
     }
 
     @Override
-    public NumberInterface getMaxError(){
+    public NumberInterface getMaxError() {
         return new NaiveNumber(Math.pow(10, -18));
     }
 }

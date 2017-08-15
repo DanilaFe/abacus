@@ -9,7 +9,7 @@ public class ComputationInterruptedException extends RuntimeException {
     /**
      * Creates a new exception of this type.
      */
-    public ComputationInterruptedException(){
+    public ComputationInterruptedException() {
         super("Computation interrupted by user.");
     }
 

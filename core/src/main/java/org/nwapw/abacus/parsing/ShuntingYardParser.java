@@ -162,7 +162,7 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
     @Override
     public TreeNode constructTree(List<Match<TokenType>> tokens) {
         tokens = intoPostfix(new ArrayList<>(tokens));
-        if(tokens == null) return null;
+        if (tokens == null) return null;
         Collections.reverse(tokens);
         TreeNode constructedTree = constructRecursive(tokens);
         return tokens.size() == 0 ? constructedTree : null;

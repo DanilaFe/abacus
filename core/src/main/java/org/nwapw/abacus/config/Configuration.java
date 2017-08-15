@@ -48,7 +48,7 @@ public class Configuration {
      *
      * @param copyFrom the configuration to copy.
      */
-    public Configuration(Configuration copyFrom){
+    public Configuration(Configuration copyFrom) {
         copyFrom(copyFrom);
     }
 
@@ -106,7 +106,7 @@ public class Configuration {
      *
      * @return the string that represents this configuration.
      */
-    public String asTomlString(){
+    public String asTomlString() {
         return TOML_WRITER.write(this);
     }
 

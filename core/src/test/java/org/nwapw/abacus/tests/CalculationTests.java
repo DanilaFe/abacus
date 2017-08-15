@@ -14,12 +14,12 @@ public class CalculationTests {
     private static Abacus abacus = new Abacus(new Configuration(0, "precise", new String[]{}));
 
     @BeforeClass
-    public static void prepareTests(){
+    public static void prepareTests() {
         abacus.getPluginManager().addInstantiated(new StandardPlugin(abacus.getPluginManager()));
         abacus.getPluginManager().load();
     }
 
-    private void testOutput(String input, String parseOutput, String output){
+    private void testOutput(String input, String parseOutput, String output) {
         TreeNode parsedTree = abacus.parseString(input);
         Assert.assertNotNull(parsedTree);
         Assert.assertEquals(parsedTree.toString(), parseOutput);
@@ -28,7 +28,7 @@ public class CalculationTests {
         Assert.assertTrue(result.toString().startsWith(output));
     }
 
-    private void testEvalError(String input, String parseOutput){
+    private void testEvalError(String input, String parseOutput) {
         TreeNode parsedTree = abacus.parseString(input);
         Assert.assertNotNull(parsedTree);
         Assert.assertEquals(parsedTree.toString(), parseOutput);
@@ -36,56 +36,56 @@ public class CalculationTests {
     }
 
     @Test
-    public void testAddition(){
+    public void testAddition() {
         testOutput("9.5+10", "(9.5+10)", "19.5");
     }
 
     @Test
-    public void testSubtraction(){
+    public void testSubtraction() {
         testOutput("9.5-10", "(9.5-10)", "-0.5");
     }
 
     @Test
-    public void testMultiplication(){
+    public void testMultiplication() {
         testOutput("9.5*10", "(9.5*10)", "95");
     }
 
     @Test
-    public void testDivision(){
+    public void testDivision() {
         testOutput("9.5/2", "(9.5/2)", "4.75");
     }
 
     @Test
-    public void testNegation(){
+    public void testNegation() {
         testOutput("-9.5", "(9.5)`", "-9.5");
     }
 
     @Test
-    public void testFactorial(){
+    public void testFactorial() {
         testOutput("7!", "(7)!", "5040");
     }
 
     @Test
-    public void testAbs(){
+    public void testAbs() {
         testOutput("abs(-1)", "abs((1)`)", "1");
         testOutput("abs(1)", "abs(1)", "1");
     }
 
     @Test
-    public void testLn(){
+    public void testLn() {
         testEvalError("ln(-1)", "ln((1)`)");
         testOutput("ln2", "ln(2)", "0.6931471805599453094172321214581765680755");
     }
 
     @Test
-    public void testSqrt(){
+    public void testSqrt() {
         testOutput("sqrt0", "sqrt(0)", "0");
         testOutput("sqrt4", "sqrt(4)", "2");
         testOutput("sqrt2", "sqrt(2)", "1.4142135623730950488016887242096980785696");
     }
 
     @Test
-    public void testExp(){
+    public void testExp() {
         testOutput("exp0", "exp(0)", "1");
         testOutput("exp1", "exp(1)", "2.718281828459045235360287471352662497757247");
         testOutput("exp300", "exp(300)", "1.9424263952412559365842088360176992193662086");
@@ -93,7 +93,7 @@ public class CalculationTests {
     }
 
     @Test
-    public void testPow(){
+    public void testPow() {
         testOutput("0^2", "(0^2)", "0");
         testOutput("2^0", "(2^0)", "1");
         testOutput("2^1", "(2^1)", "2");

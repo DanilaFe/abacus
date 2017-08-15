@@ -6,10 +6,6 @@ import org.nwapw.abacus.function.Function;
 import org.nwapw.abacus.function.Operator;
 import org.nwapw.abacus.number.NumberInterface;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 /**
  * A plugin class that can be externally implemented and loaded via the
  * plugin manager. Plugins provide functionality to the calculator
@@ -99,9 +95,10 @@ public abstract class Plugin {
     /**
      * To be used in load(). Registers a documentation instance
      * used to explain some element of the plugin to the user.
+     *
      * @param documentation the documentation instance.
      */
-    protected final void registerDocumentation(Documentation documentation){
+    protected final void registerDocumentation(Documentation documentation) {
         manager.registerDocumentation(documentation);
     }
 
@@ -148,7 +145,7 @@ public abstract class Plugin {
      * @param type the type of documentation to search for.
      * @return the found documentation, or null if none was found.
      */
-    protected final Documentation documentationFor(String name, DocumentationType type){
+    protected final Documentation documentationFor(String name, DocumentationType type) {
         return manager.documentationFor(name, type);
     }
 

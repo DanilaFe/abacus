@@ -8,7 +8,10 @@ import org.nwapw.abacus.function.Operator;
 import org.nwapw.abacus.number.NumberInterface;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A class that controls instances of plugins, allowing for them
@@ -79,82 +82,90 @@ public class PluginManager {
 
     /**
      * Registers a function under the given name.
-     * @param name the name of the function.
+     *
+     * @param name     the name of the function.
      * @param function the function to register.
      */
-    public void registerFunction(String name, Function function){
+    public void registerFunction(String name, Function function) {
         registeredFunctions.put(name, function);
     }
 
     /**
      * Registers an operator under the given name.
-     * @param name the name of the operator.
+     *
+     * @param name     the name of the operator.
      * @param operator the operator to register.
      */
-    public void registerOperator(String name, Operator operator){
+    public void registerOperator(String name, Operator operator) {
         registeredOperators.put(name, operator);
     }
 
     /**
      * Registers a number implementation under the given name.
-     * @param name the name of the number implementation.
+     *
+     * @param name           the name of the number implementation.
      * @param implementation the number implementation to register.
      */
-    public void registerNumberImplementation(String name, NumberImplementation implementation){
+    public void registerNumberImplementation(String name, NumberImplementation implementation) {
         registeredNumberImplementations.put(name, implementation);
     }
 
     /**
      * Registers the given documentation with the plugin manager,
      * making it accessible to the plugin manager etc.
+     *
      * @param documentation the documentation to register.
      */
-    public void registerDocumentation(Documentation documentation){
+    public void registerDocumentation(Documentation documentation) {
         registeredDocumentation.add(documentation);
     }
 
     /**
      * Gets the function registered under the given name.
+     *
      * @param name the name of the function.
      * @return the function, or null if it was not found.
      */
-    public Function functionFor(String name){
+    public Function functionFor(String name) {
         return registeredFunctions.get(name);
     }
 
     /**
      * Gets the operator registered under the given name.
+     *
      * @param name the name of the operator.
      * @return the operator, or null if it was not found.
      */
-    public Operator operatorFor(String name){
+    public Operator operatorFor(String name) {
         return registeredOperators.get(name);
     }
 
     /**
      * Gets the number implementation registered under the given name.
+     *
      * @param name the name of the number implementation.
      * @return the number implementation, or null if it was not found.
      */
-    public NumberImplementation numberImplementationFor(String name){
+    public NumberImplementation numberImplementationFor(String name) {
         return registeredNumberImplementations.get(name);
     }
 
     /**
      * Gets the documentation for the given entity of the given type.
+     *
      * @param name the name of the entity to search for.
      * @param type the type that this entity is, to filter out similarly named documentation.
      * @return the documentation object.
      */
-    public Documentation documentationFor(String name, DocumentationType type){
+    public Documentation documentationFor(String name, DocumentationType type) {
         Documentation toReturn = null;
-        for(Documentation entry : registeredDocumentation){
-            if(entry.getCodeName().equals(name) && entry.getType() == type) {
+        for (Documentation entry : registeredDocumentation) {
+            if (entry.getCodeName().equals(name) && entry.getType() == type) {
                 toReturn = entry;
                 break;
             }
         }
-        if(toReturn == null){
+        if (toReturn == null) {
             toReturn = new Documentation(name, "", "", "", type);
             registerDocumentation(toReturn);
         }
@@ -170,9 +181,9 @@ public class PluginManager {
     public NumberImplementation interfaceImplementationFor(Class<? extends NumberInterface> name) {
         if (cachedInterfaceImplementations.containsKey(name)) return cachedInterfaceImplementations.get(name);
         NumberImplementation toReturn = null;
-        for(String key : registeredNumberImplementations.keySet()){
+        for (String key : registeredNumberImplementations.keySet()) {
             NumberImplementation implementation = registeredNumberImplementations.get(key);
-            if(implementation.getImplementation() == name) {
+            if (implementation.getImplementation() == name) {
                 toReturn = implementation;
                 break;
             }
@@ -226,10 +237,11 @@ public class PluginManager {
 
     /**
      * Removes the plugin with the given class from the manager.
+     *
      * @param toRemove the plugin to remove.
      */
-    public void removeClass(Class<? extends Plugin> toRemove){
-        if(!loadedPluginClasses.contains(toRemove)) return;
+    public void removeClass(Class<? extends Plugin> toRemove) {
+        if (!loadedPluginClasses.contains(toRemove)) return;
         plugins.removeIf(plugin -> plugin.getClass() == toRemove);
         loadedPluginClasses.remove(toRemove);
     }
@@ -237,7 +249,7 @@ public class PluginManager {
     /**
      * Removes all plugins from this plugin manager.
      */
-    public void removeAll(){
+    public void removeAll() {
         loadedPluginClasses.clear();
         plugins.clear();
     }

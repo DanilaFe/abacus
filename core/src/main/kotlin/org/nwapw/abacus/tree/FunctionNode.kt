@@ -36,7 +36,7 @@ data class FunctionNode(val function: String) : TreeNode() {
      *
      * @node the node to append.
      */
-    fun appendChild(node: TreeNode){
+    fun appendChild(node: TreeNode) {
         children.add(node)
     }
 
@@ -45,7 +45,7 @@ data class FunctionNode(val function: String) : TreeNode() {
      *
      * @node the node to prepend.
      */
-    fun prependChild(node: TreeNode){
+    fun prependChild(node: TreeNode) {
         children.add(0, node)
     }
 
