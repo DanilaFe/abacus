@@ -1,5 +1,10 @@
 <nav>
   <div class="center">
-    <a href="{{ "/" | relative_url }}">{{ site.title }}</a>
+    <a href="{{ "/" | relative_url }}" class="primary-link">{{ site.title }}</a>
+    {% for page in site.pages %}
+    {% if page.in_header %}
+    <a href="{{ page.url | relative_url }}">{{ page.title }}</a>
+    {% endif %}
+    {% endfor %}
   </div>
 </nav>
