@@ -1,6 +1,6 @@
 ---
 ---
-@import url('https://fonts.googleapis.com/css?family=Open+Sans|Raleway');
+@import url('https://fonts.googleapis.com/css?family=Source+Code+Pro|Open+Sans|Raleway');
 
 $background-color: #06e8a4;
 $code-color: #efefef;
@@ -8,6 +8,7 @@ $accent-color: #00AFE8;
 $clear-color: white;
 $title-font: "Open Sans";
 $text-font: Raleway;
+$code-font: "Source Code Pro";
 $max-width: 850px;
 
 h1, h2, h3, h4, h5, h6 {
@@ -77,6 +78,7 @@ code {
   background-color: $code-color;
   display: inline-block;
   padding: 5px;
+  font-family: $code-font;
 
   pre & {
     padding: 10px;
