@@ -16,6 +16,7 @@ a {
   color: $background-color;
 
   &.button {
+    display: inline-block;
     background-color: $background-color;
     color: $clear-color;
     padding: 10px;
