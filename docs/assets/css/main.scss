@@ -3,6 +3,7 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans|Raleway');
 
 $background-color: #06e8a4;
+$code-color: #efefef;
 $accent-color: #00AFE8;
 $clear-color: white;
 $title-font: "Open Sans";
@@ -70,4 +71,16 @@ body {
   padding: 30px;
   border-radius: 2px;
   background-color: $clear-color;
+}
+
+code {
+  background-color: $code-color;
+  display: inline-block;
+  padding: 5px;
+
+  pre & {
+    padding: 10px;
+    display: block;
+    width: 100%;
+  }
 }
