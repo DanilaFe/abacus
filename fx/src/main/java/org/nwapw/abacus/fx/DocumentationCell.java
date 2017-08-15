@@ -14,7 +14,7 @@ public class DocumentationCell extends ListCell<Documentation> {
     private Label longDescription;
     private TitledPane titledPane;
 
-    public DocumentationCell(){
+    public DocumentationCell() {
         VBox vbox = new VBox();
         vbox.setSpacing(10);
         titledPane = new TitledPane();
@@ -41,7 +41,7 @@ public class DocumentationCell extends ListCell<Documentation> {
     @Override
     protected void updateItem(Documentation item, boolean empty) {
         super.updateItem(item, empty);
-        if(empty){
+        if (empty) {
             codeNameLabel.setText("");
             nameLabel.setText("");
             description.setText("");

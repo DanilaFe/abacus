@@ -35,7 +35,7 @@ public class PreciseNumber extends NumberInterface {
     /**
      * MathContext that is actually used in calculations.
      */
-    private static MathContext internalContext = new MathContext(outputContext.getPrecision()+numExtraInternalSigFigs);
+    private static MathContext internalContext = new MathContext(outputContext.getPrecision() + numExtraInternalSigFigs);
 
     /**
      * The value of the PreciseNumber.
@@ -129,7 +129,7 @@ public class PreciseNumber extends NumberInterface {
         int decimalIndex = str.indexOf('.');
         if (decimalIndex != -1) {
             NumberInterface floor = new PreciseNumber(str.substring(0, decimalIndex));
-            if(signum() == -1){
+            if (signum() == -1) {
                 floor = floor.subtract(ONE);
             }
             return floor;
@@ -166,7 +166,7 @@ public class PreciseNumber extends NumberInterface {
     }
 
     @Override
-    public NumberInterface getMaxError(){
-        return new PreciseNumber(value.ulp()).multiplyInternal(TEN.intPowInternal(value.precision()-internalContext.getPrecision()));
+    public NumberInterface getMaxError() {
+        return new PreciseNumber(value.ulp()).multiplyInternal(TEN.intPowInternal(value.precision() - internalContext.getPrecision()));
     }
 }

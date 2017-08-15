@@ -14,7 +14,7 @@ import javafx.beans.property.SimpleStringProperty
  * @param parsed the parsed version of the input.
  * @param output the output string.
  */
-class HistoryModel(input: String, parsed: String, output: String){
+class HistoryModel(input: String, parsed: String, output: String) {
 
     /**
      * The property that holds the input.

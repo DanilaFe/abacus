@@ -17,6 +17,10 @@ public class AbacusApplication extends Application {
      */
     private AbacusController controller;
 
+    public static void main(String[] args) {
+        launch(args);
+    }
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/abacus.fxml"));
@@ -32,10 +36,6 @@ public class AbacusApplication extends Application {
     public void stop() throws Exception {
         super.stop();
         controller.performStop();
-    }
-
-    public static void main(String[] args){
-        launch(args);
     }
 
 }

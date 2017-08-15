@@ -1,13 +1,10 @@
 package org.nwapw.abacus.fx;
 
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.text.Text;
@@ -136,36 +133,12 @@ public class AbacusController implements PluginListener {
      * The abacus instance used for changing the plugin configuration.
      */
     private Abacus abacus;
-
-    /**
-     * Boolean which represents whether changes were made to the configuration.
-     */
-    private boolean changesMade;
-    /**
-     * Whether an alert about changes to the configuration was already shown.
-     */
-    private boolean reloadAlertShown;
-    /**
-     * The alert shown when a press to "apply" is needed.
-     */
-    private Alert reloadAlert;
-    /**
-     * The runnable that takes care of killing computations that take too long.
-     */
-    private final Runnable TIMER_RUNNABLE = () -> {
-        try {
-            Configuration abacusConfig = abacus.getConfiguration();
-            if(abacusConfig.getComputationDelay() == 0) return;
-            Thread.sleep((long) (abacusConfig.getComputationDelay() * 1000));
-            performStop();
-        } catch (InterruptedException e) { }
-    };
     /**
      * The runnable used to perform the calculation.
      */
     private final Runnable CALCULATION_RUNNABLE = new Runnable() {
 
-        private String attemptCalculation(){
+        private String attemptCalculation() {
             try {
                 TreeNode constructedTree = abacus.parseString(inputField.getText());
                 if (constructedTree == null) {
@@ -180,7 +153,7 @@ public class AbacusController implements PluginListener {
                 return resultingString;
             } catch (ComputationInterruptedException exception) {
                 return ERR_STOP;
-            } catch (RuntimeException exception){
+            } catch (RuntimeException exception) {
                 exception.printStackTrace();
                 return ERR_EXCEPTION;
             }
@@ -198,6 +171,18 @@ public class AbacusController implements PluginListener {
         }
     };
     /**
+     * Boolean which represents whether changes were made to the configuration.
+     */
+    private boolean changesMade;
+    /**
+     * Whether an alert about changes to the configuration was already shown.
+     */
+    private boolean reloadAlertShown;
+    /**
+     * The alert shown when a press to "apply" is needed.
+     */
+    private Alert reloadAlert;
+    /**
      * The thread that is waiting to pause the calculation.
      */
     private Thread computationLimitThread;
@@ -205,6 +190,18 @@ public class AbacusController implements PluginListener {
      * The thread in which the computation runs.
      */
     private Thread calculationThread;
+    /**
+     * The runnable that takes care of killing computations that take too long.
+     */
+    private final Runnable TIMER_RUNNABLE = () -> {
+        try {
+            Configuration abacusConfig = abacus.getConfiguration();
+            if (abacusConfig.getComputationDelay() == 0) return;
+            Thread.sleep((long) (abacusConfig.getComputationDelay() * 1000));
+            performStop();
+        } catch (InterruptedException e) {
+        }
+    };
 
     /**
      * Alerts the user if the changes they made
@@ -265,7 +262,7 @@ public class AbacusController implements PluginListener {
 
         computationLimitField.setText(Double.toString(abacus.getConfiguration().getComputationDelay()));
         computationLimitField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(!newValue.matches("(\\d+(\\.\\d*)?)?")) {
+            if (!newValue.matches("(\\d+(\\.\\d*)?)?")) {
                 computationLimitField.setText(oldValue);
             } else {
                 changesMade = true;
@@ -292,12 +289,12 @@ public class AbacusController implements PluginListener {
     }
 
     @FXML
-    public void performStop(){
-        if(calculationThread != null) {
+    public void performStop() {
+        if (calculationThread != null) {
             calculationThread.interrupt();
             calculationThread = null;
         }
-        if(computationLimitThread != null){
+        if (computationLimitThread != null) {
             computationLimitThread.interrupt();
             computationLimitThread = null;
         }
@@ -312,7 +309,7 @@ public class AbacusController implements PluginListener {
     }
 
     @FXML
-    public void performScan(){
+    public void performScan() {
         PluginManager abacusPluginManager = abacus.getPluginManager();
         abacusPluginManager.removeAll();
         abacusPluginManager.addInstantiated(new StandardPlugin(abacus.getPluginManager()));
@@ -339,7 +336,7 @@ public class AbacusController implements PluginListener {
         for (ToggleablePlugin pluginEntry : enabledPlugins) {
             if (!pluginEntry.isEnabled()) disabledPlugins.add(pluginEntry.getClassName());
         }
-        if(computationLimitField.getText().matches("\\d*(\\.\\d+)?") && computationLimitField.getText().length() != 0)
+        if (computationLimitField.getText().matches("\\d*(\\.\\d+)?") && computationLimitField.getText().length() != 0)
             configuration.setComputationDelay(Double.parseDouble(computationLimitField.getText()));
         configuration.saveTo(CONFIG_FILE);
         changesMade = false;
