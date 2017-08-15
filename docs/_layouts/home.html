@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  {% include head.html %}
+  <style>
+  body {
+    margin-top: 100px;
+    color: white;
+    text-align: center;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "Source Code Pro"
+  }
+
+  img {
+    margin: auto;
+  }
+
+  div#buttons {
+    margin-top: 40px;
+    margin-bottom: 40px;
+  }
+
+  a {
+    background-color: white;
+    color: #06e8a4;
+    padding: 10px;
+    text-decoration: none;
+    border-radius: 2px;
+
+    margin: 10px;
+    transition: background-color .25s;
+  }
+
+  a:hover {
+    background-color: #06e8a4;
+    color: white;
+  }
+  </style>
+  <body>
+  <h1>Abacus</h1>
+  <h2>The programmer's calculator</h2>
+  <div id="buttons">
+    <a href="https://github.com/DanilaFe/abacus/releases">Download</a>
+    <a href="{{ "/about" | relative_url }}">Learn More</a>
+    <a href="https://github.com/DanilaFe/abacus">Contribute</a>
+    <a href="https://github.com/DanilaFe/abacus/wiki">Wiki</a>
+  </div>
+  <img src="http://i.imgur.com/Min70QY.png" title="source: imgur.com" />
+  </body>
+</html>
