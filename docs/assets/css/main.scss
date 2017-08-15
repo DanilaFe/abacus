@@ -1,2 +1,69 @@
 ---
 ---
+@import url('https://fonts.googleapis.com/css?family=Open+Sans|Raleway');
+
+$background-color: #06e8a4;
+$accent-color: #00AFE8;
+$clear-color: white;
+$title-font: "Open Sans";
+$text-font: Raleway;
+$max-width: 850px;
+
+h1, h2, h3, h4, h5, h6 {
+  font: {
+    family: $title-font;
+  }
+}
+
+h1 {
+  font-size: 50px;
+}
+
+nav {
+  box-sizing: border-box;
+  background-color: $clear-color;
+  width: 100%;
+  padding: 20px;
+
+  a {
+    text-decoration: none;
+    color: $background-color;
+    font: {
+      size: 25px;
+    }
+
+    &:hover {
+      color: $accent-color;
+    }
+
+    transition: color .25s;
+  }
+}
+
+body {
+  background-color: $background-color;
+  font: {
+    family: $text-font;
+  }
+  margin: 0px;
+}
+
+.center {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: $max-width;
+
+  @media (min-width: $max-width) {
+    margin: {
+      left: auto;
+      right: auto;
+    }
+  }
+}
+
+.content {
+  margin-top: 20px;
+  padding: 30px;
+  border-radius: 2px;
+  background-color: $clear-color;
+}
