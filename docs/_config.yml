@@ -23,6 +23,7 @@ description: > # this means to ignore newlines until "baseurl:"
 baseurl: "/abacus" # the subpath of your site, e.g. /blog
 url: "htts://danilafe.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 github_username: DanilaFe 
+include: ['_pages']
 
 # Build settings
 markdown: kramdown
