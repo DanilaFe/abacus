@@ -1,6 +1,5 @@
 package org.nwapw.abacus.parsing;
 
-import org.nwapw.abacus.Abacus;
 import org.nwapw.abacus.function.Operator;
 import org.nwapw.abacus.function.OperatorAssociativity;
 import org.nwapw.abacus.function.OperatorType;
@@ -18,10 +17,6 @@ import java.util.*;
 public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListener {
 
     /**
-     * The Abacus instance used to create number instances.
-     */
-    private Abacus abacus;
-    /**
      * Map of operator precedences, loaded from the plugin operators.
      */
     private Map<String, Integer> precedenceMap;
@@ -35,12 +30,9 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
     private Map<String, OperatorType> typeMap;
 
     /**
-     * Creates a new Shunting Yard parser with the given Abacus instance.
-     *
-     * @param abacus the abacus instance.
+     * Creates a new Shunting Yard parser.
      */
-    public ShuntingYardParser(Abacus abacus) {
-        this.abacus = abacus;
+    public ShuntingYardParser() {
         precedenceMap = new HashMap<>();
         associativityMap = new HashMap<>();
         typeMap = new HashMap<>();
