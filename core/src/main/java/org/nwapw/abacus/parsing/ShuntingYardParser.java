@@ -143,7 +143,7 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
                 else return new UnaryNode(operator, applyTo);
             }
         } else if (matchType == TokenType.NUM) {
-            return new NumberNode(abacus.numberFromString(match.getContent()));
+            return new NumberNode(match.getContent());
         } else if (matchType == TokenType.VARIABLE) {
             return new VariableNode(match.getContent());
         } else if (matchType == TokenType.FUNCTION) {
