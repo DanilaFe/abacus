@@ -27,7 +27,7 @@ public class NumberReducer implements Reducer<NumberInterface> {
     @Override
     public NumberInterface reduceNode(TreeNode node, Object... children) {
         if (node instanceof NumberNode) {
-            return ((NumberNode) node).getNumber();
+            return abacus.numberFromString(((NumberNode) node).getNumber());
         } else if(node instanceof VariableNode) {
             return abacus.numberFromString("0");
         } else if (node instanceof BinaryNode) {
