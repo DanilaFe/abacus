@@ -20,12 +20,12 @@ public class StandardPlugin extends Plugin {
      */
     public static final NumberOperator OP_ADD = new NumberOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 0) {
         @Override
-        protected boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberInterface[] params) {
             return params.length >= 1;
         }
 
         @Override
-        protected NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberInterface[] params) {
             NumberInterface sum = params[0];
             for (int i = 1; i < params.length; i++) {
                 sum = sum.add(params[i]);
@@ -38,12 +38,12 @@ public class StandardPlugin extends Plugin {
      */
     public static final NumberOperator OP_SUBTRACT = new NumberOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 0) {
         @Override
-        protected boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberInterface[] params) {
             return params.length == 2;
         }
 
         @Override
-        protected NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberInterface[] params) {
             return params[0].subtract(params[1]);
 
         }
@@ -53,12 +53,12 @@ public class StandardPlugin extends Plugin {
      */
     public static final NumberOperator OP_NEGATE = new NumberOperator(OperatorAssociativity.LEFT, OperatorType.UNARY_PREFIX, 0) {
         @Override
-        protected boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        protected NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberInterface[] params) {
             return params[0].negate();
         }
     };
@@ -67,12 +67,12 @@ public class StandardPlugin extends Plugin {
      */
     public static final NumberOperator OP_MULTIPLY = new NumberOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 1) {
         @Override
-        protected boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberInterface[] params) {
             return params.length >= 1;
         }
 
         @Override
-        protected NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberInterface[] params) {
             NumberInterface product = params[0];
             for (int i = 1; i < params.length; i++) {
                 product = product.multiply(params[i]);
@@ -85,13 +85,13 @@ public class StandardPlugin extends Plugin {
      */
     public static final NumberOperator OP_NCR = new NumberOperator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 0) {
         @Override
-        protected boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberInterface[] params) {
             return params.length == 2 && params[0].fractionalPart().signum() == 0
                     && params[1].fractionalPart().signum() == 0;
         }
 
         @Override
-        protected NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberInterface[] params) {
             return OP_NPR.apply(params).divide(OP_FACTORIAL.apply(params[1]));
         }
     };
@@ -154,12 +154,12 @@ public class StandardPlugin extends Plugin {
      */
     public static final NumberOperator OP_DIVIDE = new NumberOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 1) {
         @Override
-        protected boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberInterface[] params) {
             return params.length == 2 && params[1].compareTo(fromInt(params[0].getClass(), 0)) != 0;
         }
 
         @Override
-        protected NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberInterface[] params) {
             return params[0].divide(params[1]);
         }
     };
@@ -169,14 +169,14 @@ public class StandardPlugin extends Plugin {
     public static final NumberOperator OP_FACTORIAL = new NumberOperator(OperatorAssociativity.RIGHT, OperatorType.UNARY_POSTFIX, 0) {
         //private HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>> storedList = new HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>>();
         @Override
-        protected boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberInterface[] params) {
             return params.length == 1
                     && params[0].fractionalPart().compareTo(fromInt(params[0].getClass(), 0)) == 0
                     && params[0].signum() >= 0;
         }
 
         @Override
-        protected NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberInterface[] params) {
             if (params[0].signum() == 0) {
                 return fromInt(params[0].getClass(), 1);
             }
@@ -200,13 +200,13 @@ public class StandardPlugin extends Plugin {
      */
     public static final NumberOperator OP_NPR = new NumberOperator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 0) {
         @Override
-        protected boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberInterface[] params) {
             return params.length == 2 && params[0].fractionalPart().signum() == 0
                     && params[1].fractionalPart().signum() == 0;
         }
 
         @Override
-        protected NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberInterface[] params) {
             if (params[0].compareTo(params[1]) < 0 ||
                     params[0].signum() < 0 ||
                     (params[0].signum() == 0 && params[1].signum() != 0)) return fromInt(params[0].getClass(), 0);
@@ -230,12 +230,12 @@ public class StandardPlugin extends Plugin {
      */
     public static final NumberFunction FUNCTION_ABS = new NumberFunction() {
         @Override
-        protected boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        protected NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberInterface[] params) {
             return params[0].multiply(fromInt(params[0].getClass(), params[0].signum()));
         }
     };
@@ -244,12 +244,12 @@ public class StandardPlugin extends Plugin {
      */
     public static final NumberFunction FUNCTION_LN = new NumberFunction() {
         @Override
-        protected boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberInterface[] params) {
             return params.length == 1 && params[0].compareTo(fromInt(params[0].getClass(), 0)) > 0;
         }
 
         @Override
-        protected NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberInterface[] params) {
             NumberInterface param = params[0];
             NumberInterface one = fromInt(param.getClass(), 1);
             int powersOf2 = 0;
@@ -324,12 +324,12 @@ public class StandardPlugin extends Plugin {
      */
     public static final NumberFunction FUNCTION_RAND_INT = new NumberFunction() {
         @Override
-        protected boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        protected NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberInterface[] params) {
             return fromInt(params[0].getClass(), (int) Math.round(Math.random() * params[0].floor().intValue()));
         }
     };
@@ -338,7 +338,7 @@ public class StandardPlugin extends Plugin {
      */
     public static final NumberOperator OP_CARET = new NumberOperator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 2) {
         @Override
-        protected boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberInterface[] params) {
             NumberInterface zero = fromInt(params[0].getClass(), 0);
             return params.length == 2
                     && !(params[0].compareTo(zero) == 0
@@ -347,7 +347,7 @@ public class StandardPlugin extends Plugin {
         }
 
         @Override
-        protected NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberInterface[] params) {
             NumberInterface zero = fromInt(params[0].getClass(), 0);
             if (params[0].compareTo(zero) == 0)
                 return zero;
@@ -368,12 +368,12 @@ public class StandardPlugin extends Plugin {
      */
     public static final NumberFunction FUNCTION_SQRT = new NumberFunction() {
         @Override
-        protected boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        protected NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberInterface[] params) {
             return OP_CARET.apply(params[0], ((new NaiveNumber(0.5)).promoteTo(params[0].getClass())));
         }
     };
@@ -383,12 +383,12 @@ public class StandardPlugin extends Plugin {
      */
     public static final NumberFunction FUNCTION_EXP = new NumberFunction() {
         @Override
-        protected boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        protected NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberInterface[] params) {
             NumberInterface maxError = params[0].getMaxError();
             int n = 0;
             if (params[0].signum() < 0) {
@@ -420,12 +420,12 @@ public class StandardPlugin extends Plugin {
      */
     public final NumberFunction functionSin = new NumberFunction() {
         @Override
-        protected boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        protected NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberInterface[] params) {
             NumberInterface pi = piFor(params[0].getClass());
             NumberInterface twoPi = pi.multiply(fromInt(pi.getClass(), 2));
             NumberInterface theta = getSmallAngle(params[0], pi);
@@ -444,12 +444,12 @@ public class StandardPlugin extends Plugin {
      */
     public final NumberFunction functionCos = new NumberFunction() {
         @Override
-        protected boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        protected NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberInterface[] params) {
             return functionSin.apply(piFor(params[0].getClass()).divide(fromInt(params[0].getClass(), 2))
                     .subtract(params[0]));
         }
@@ -459,12 +459,12 @@ public class StandardPlugin extends Plugin {
      */
     public final NumberFunction functionTan = new NumberFunction() {
         @Override
-        protected boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        protected NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberInterface[] params) {
             return functionSin.apply(params[0]).divide(functionCos.apply(params[0]));
         }
     };
@@ -473,12 +473,12 @@ public class StandardPlugin extends Plugin {
      */
     public final NumberFunction functionSec = new NumberFunction() {
         @Override
-        protected boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        protected NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberInterface[] params) {
             return fromInt(params[0].getClass(), 1).divide(functionCos.apply(params[0]));
         }
     };
@@ -487,12 +487,12 @@ public class StandardPlugin extends Plugin {
      */
     public final NumberFunction functionCsc = new NumberFunction() {
         @Override
-        protected boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        protected NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberInterface[] params) {
             return fromInt(params[0].getClass(), 1).divide(functionSin.apply(params[0]));
         }
     };
@@ -501,12 +501,12 @@ public class StandardPlugin extends Plugin {
      */
     public final NumberFunction functionCot = new NumberFunction() {
         @Override
-        protected boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        protected NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberInterface[] params) {
             return functionCos.apply(params[0]).divide(functionSin.apply(params[0]));
         }
     };
@@ -516,13 +516,13 @@ public class StandardPlugin extends Plugin {
      */
     public final NumberFunction functionArcsin = new NumberFunction() {
         @Override
-        protected boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberInterface[] params) {
             return params.length == 1
                     && FUNCTION_ABS.apply(params[0]).compareTo(fromInt(params[0].getClass(), 1)) <= 0;
         }
 
         @Override
-        protected NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberInterface[] params) {
             if (FUNCTION_ABS.apply(params[0]).compareTo(new NaiveNumber(0.8).promoteTo(params[0].getClass())) >= 0) {
                 NumberInterface[] newParams = {FUNCTION_SQRT.apply(fromInt(params[0].getClass(), 1).subtract(params[0].multiply(params[0])))};
                 return piFor(params[0].getClass()).divide(fromInt(params[0].getClass(), 2))
@@ -549,12 +549,12 @@ public class StandardPlugin extends Plugin {
      */
     public final NumberFunction functionArccos = new NumberFunction() {
         @Override
-        protected boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberInterface[] params) {
             return params.length == 1 && FUNCTION_ABS.apply(params[0]).compareTo(fromInt(params[0].getClass(), 1)) <= 0;
         }
 
         @Override
-        protected NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberInterface[] params) {
             return piFor(params[0].getClass()).divide(fromInt(params[0].getClass(), 2))
                     .subtract(functionArcsin.apply(params));
         }
@@ -565,12 +565,12 @@ public class StandardPlugin extends Plugin {
      */
     public final NumberFunction functionArccsc = new NumberFunction() {
         @Override
-        protected boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberInterface[] params) {
             return params.length == 1 && FUNCTION_ABS.apply(params[0]).compareTo(fromInt(params[0].getClass(), 1)) >= 0;
         }
 
         @Override
-        protected NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberInterface[] params) {
             NumberInterface[] reciprocalParamArr = {fromInt(params[0].getClass(), 1).divide(params[0])};
             return functionArcsin.apply(reciprocalParamArr);
         }
@@ -581,12 +581,12 @@ public class StandardPlugin extends Plugin {
      */
     public final NumberFunction functionArcsec = new NumberFunction() {
         @Override
-        protected boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberInterface[] params) {
             return params.length == 1 && FUNCTION_ABS.apply(params[0]).compareTo(fromInt(params[0].getClass(), 1)) >= 0;
         }
 
         @Override
-        protected NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberInterface[] params) {
             NumberInterface[] reciprocalParamArr = {fromInt(params[0].getClass(), 1).divide(params[0])};
             return functionArccos.apply(reciprocalParamArr);
         }
@@ -597,12 +597,12 @@ public class StandardPlugin extends Plugin {
      */
     public final NumberFunction functionArctan = new NumberFunction() {
         @Override
-        protected boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        protected NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberInterface[] params) {
             if (params[0].signum() == -1) {
                 NumberInterface[] negatedParams = {params[0].negate()};
                 return applyInternal(negatedParams).negate();
@@ -638,12 +638,12 @@ public class StandardPlugin extends Plugin {
      */
     public final NumberFunction functionArccot = new NumberFunction() {
         @Override
-        protected boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        protected NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberInterface[] params) {
             return piFor(params[0].getClass()).divide(fromInt(params[0].getClass(), 2))
                     .subtract(functionArctan.apply(params));
         }

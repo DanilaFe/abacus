@@ -9,4 +9,4 @@ import org.nwapw.abacus.tree.TreeNode
  * A function that operates on parse tree nodes instead of on already simplified numbers.
  * Despite this, it returns a number, not a tree.
  */
-abstract class TreeValueFunction : ReducerApplicable<TreeNode, NumberInterface, NumberInterface>()
+abstract class TreeValueFunction : ReducerApplicable<TreeNode, NumberInterface, NumberInterface>
