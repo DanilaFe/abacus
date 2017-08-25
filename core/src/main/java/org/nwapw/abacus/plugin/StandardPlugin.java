@@ -4,6 +4,9 @@ import org.nwapw.abacus.function.*;
 import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.number.PreciseNumber;
+import org.nwapw.abacus.tree.BinaryNode;
+import org.nwapw.abacus.tree.Reducer;
+import org.nwapw.abacus.tree.TreeNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,7 +21,7 @@ public class StandardPlugin extends Plugin {
     /**
      * The addition operator, +
      */
-    public static final Operator OP_ADD = new Operator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 0, new Function() {
+    public static final NumberOperator OP_ADD = new NumberOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 0) {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
             return params.length >= 1;
@@ -32,11 +35,11 @@ public class StandardPlugin extends Plugin {
             }
             return sum;
         }
-    });
+    };
     /**
      * The subtraction operator, -
      */
-    public static final Operator OP_SUBTRACT = new Operator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 0, new Function() {
+    public static final NumberOperator OP_SUBTRACT = new NumberOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 0) {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
             return params.length == 2;
@@ -47,11 +50,11 @@ public class StandardPlugin extends Plugin {
             return params[0].subtract(params[1]);
 
         }
-    });
+    };
     /**
      * The negation operator, -
      */
-    public static final Operator OP_NEGATE = new Operator(OperatorAssociativity.LEFT, OperatorType.UNARY_PREFIX, 0, new Function() {
+    public static final NumberOperator OP_NEGATE = new NumberOperator(OperatorAssociativity.LEFT, OperatorType.UNARY_PREFIX, 0) {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
             return params.length == 1;
@@ -61,11 +64,11 @@ public class StandardPlugin extends Plugin {
         protected NumberInterface applyInternal(NumberInterface[] params) {
             return params[0].negate();
         }
-    });
+    };
     /**
      * The multiplication operator, *
      */
-    public static final Operator OP_MULTIPLY = new Operator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 1, new Function() {
+    public static final NumberOperator OP_MULTIPLY = new NumberOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 1) {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
             return params.length >= 1;
@@ -79,11 +82,11 @@ public class StandardPlugin extends Plugin {
             }
             return product;
         }
-    });
+    };
     /**
      * The combination operator.
      */
-    public static final Operator OP_NCR = new Operator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 0, new Function() {
+    public static final NumberOperator OP_NCR = new NumberOperator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 0) {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
             return params.length == 2 && params[0].fractionalPart().signum() == 0
@@ -92,9 +95,9 @@ public class StandardPlugin extends Plugin {
 
         @Override
         protected NumberInterface applyInternal(NumberInterface[] params) {
-            return OP_NPR.getFunction().apply(params).divide(OP_FACTORIAL.getFunction().apply(params[1]));
+            return OP_NPR.apply(params).divide(OP_FACTORIAL.apply(params[1]));
         }
-    });
+    };
     /**
      * The implementation for double-based naive numbers.
      */
@@ -152,7 +155,7 @@ public class StandardPlugin extends Plugin {
     /**
      * The division operator, /
      */
-    public static final Operator OP_DIVIDE = new Operator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 1, new Function() {
+    public static final NumberOperator OP_DIVIDE = new NumberOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 1) {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
             return params.length == 2 && params[1].compareTo(fromInt(params[0].getClass(), 0)) != 0;
@@ -162,11 +165,11 @@ public class StandardPlugin extends Plugin {
         protected NumberInterface applyInternal(NumberInterface[] params) {
             return params[0].divide(params[1]);
         }
-    });
+    };
     /**
      * The factorial operator, !
      */
-    public static final Operator OP_FACTORIAL = new Operator(OperatorAssociativity.RIGHT, OperatorType.UNARY_POSTFIX, 0, new Function() {
+    public static final NumberOperator OP_FACTORIAL = new NumberOperator(OperatorAssociativity.RIGHT, OperatorType.UNARY_POSTFIX, 0) {
         //private HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>> storedList = new HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>>();
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
@@ -194,11 +197,11 @@ public class StandardPlugin extends Plugin {
                     storedList.get(params[0].getClass()).add(NaiveNumber.ONE.promoteTo(params[0].getClass()));
                 }*/
         }
-    });
+    };
     /**
      * The permutation operator.
      */
-    public static final Operator OP_NPR = new Operator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 0, new Function() {
+    public static final NumberOperator OP_NPR = new NumberOperator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 0) {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
             return params.length == 2 && params[0].fractionalPart().signum() == 0
@@ -224,7 +227,7 @@ public class StandardPlugin extends Plugin {
             }
             return total;
         }
-    });
+    };
     /**
      * The absolute value function, abs(-3) = 3
      */
@@ -336,7 +339,7 @@ public class StandardPlugin extends Plugin {
     /**
      * The caret / pow operator, ^
      */
-    public static final Operator OP_CARET = new Operator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 2, new Function() {
+    public static final NumberOperator OP_CARET = new NumberOperator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 2) {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
             NumberInterface zero = fromInt(params[0].getClass(), 0);
@@ -362,7 +365,7 @@ public class StandardPlugin extends Plugin {
             }
             return FUNCTION_EXP.apply(FUNCTION_LN.apply(FUNCTION_ABS.apply(params[0])).multiply(params[1]));
         }
-    });
+    };
     /**
      * The square root function.
      */
@@ -374,7 +377,7 @@ public class StandardPlugin extends Plugin {
 
         @Override
         protected NumberInterface applyInternal(NumberInterface[] params) {
-            return OP_CARET.getFunction().apply(params[0], ((new NaiveNumber(0.5)).promoteTo(params[0].getClass())));
+            return OP_CARET.apply(params[0], ((new NaiveNumber(0.5)).promoteTo(params[0].getClass())));
         }
     };
     private static final HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>> FACTORIAL_LISTS = new HashMap<>();

@@ -1,6 +1,7 @@
 package org.nwapw.abacus.plugin;
 
 import org.nwapw.abacus.function.*;
+import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
 
 /**
@@ -85,7 +86,7 @@ public abstract class Plugin {
      * @param name     the name of the operator.
      * @param operator the operator to register.
      */
-    protected final void registerOperator(String name, Operator operator) {
+    protected final void registerOperator(String name, NumberOperator operator) {
         manager.registerOperator(name, operator);
     }
 
@@ -142,7 +143,7 @@ public abstract class Plugin {
      * @param name the name for which to search
      * @return the resulting operator, or null if none was found for that name.
      */
-    protected final Operator operatorFor(String name) {
+    protected final NumberOperator operatorFor(String name) {
         return manager.operatorFor(name);
     }
 
