@@ -1,10 +1,7 @@
 package org.nwapw.abacus.plugin;
 
 import org.nwapw.abacus.Abacus;
-import org.nwapw.abacus.function.Documentation;
-import org.nwapw.abacus.function.DocumentationType;
-import org.nwapw.abacus.function.Function;
-import org.nwapw.abacus.function.Operator;
+import org.nwapw.abacus.function.*;
 import org.nwapw.abacus.number.NumberInterface;
 
 import java.lang.reflect.InvocationTargetException;
@@ -31,6 +28,10 @@ public class PluginManager {
      * The map of functions registered by the plugins.
      */
     private Map<String, Function> registeredFunctions;
+    /**
+     * The map of tree value functions regstered by the plugins.
+     */
+    private Map<String, TreeValueFunction> registeredTreeValueFunctions;
     /**
      * The map of operators registered by the plugins
      */
@@ -72,6 +73,7 @@ public class PluginManager {
         loadedPluginClasses = new HashSet<>();
         plugins = new HashSet<>();
         registeredFunctions = new HashMap<>();
+        registeredTreeValueFunctions = new HashMap<>();
         registeredOperators = new HashMap<>();
         registeredNumberImplementations = new HashMap<>();
         registeredDocumentation = new HashSet<>();
@@ -88,6 +90,16 @@ public class PluginManager {
      */
     public void registerFunction(String name, Function function) {
         registeredFunctions.put(name, function);
+    }
+
+    /**
+     * Registers a tree value function under the given name.
+     *
+     * @param name the name of the function.
+     * @param function the function to register.
+     */
+    public void registerTreeValueFunction(String name, TreeValueFunction function) {
+        registeredTreeValueFunctions.put(name, function);
     }
 
     /**
@@ -128,6 +140,16 @@ public class PluginManager {
      */
     public Function functionFor(String name) {
         return registeredFunctions.get(name);
+    }
+
+    /**
+     * Gets the tree value function registered under the given name.
+     *
+     * @param name the name of the function.
+     * @return the function, or null if it was not found.
+     */
+    public TreeValueFunction treeValueFunctionFor(String name){
+        return registeredTreeValueFunctions.get(name);
     }
 
     /**
@@ -300,6 +322,15 @@ public class PluginManager {
      */
     public Set<String> getAllFunctions() {
         return registeredFunctions.keySet();
+    }
+
+    /**
+     * Gets all the tree vlaue functions loaded by the PluginManager.
+     *
+     * @return the set of all the tree value functions that were loaded.
+     */
+    public Set<String> getAllTreeValueFunctions() {
+        return registeredTreeValueFunctions.keySet();
     }
 
     /**
