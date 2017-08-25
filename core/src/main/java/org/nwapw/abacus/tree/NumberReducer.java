@@ -46,7 +46,7 @@ public class NumberReducer implements Reducer<NumberInterface> {
             for (int i = 0; i < convertedChildren.length; i++) {
                 convertedChildren[i] = (NumberInterface) children[i];
             }
-            Function function = abacus.getPluginManager().functionFor(((FunctionNode) node).getFunction());
+            Function function = abacus.getPluginManager().functionFor(((FunctionNode) node).getCallTo());
             if (function == null) return null;
             return function.apply(convertedChildren);
         }

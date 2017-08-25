@@ -144,7 +144,7 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
             while (!matches.isEmpty() && matches.get(0).getType() != TokenType.INTERNAL_FUNCTION_END) {
                 TreeNode argument = constructRecursive(matches);
                 if (argument == null) return null;
-                node.prependChild(argument);
+                node.getChildren().add(0, argument);
             }
             if (matches.isEmpty()) return null;
             matches.remove(0);
