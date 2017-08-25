@@ -5,10 +5,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.nwapw.abacus.Abacus;
 import org.nwapw.abacus.config.Configuration;
-import org.nwapw.abacus.function.Function;
-import org.nwapw.abacus.function.Operator;
-import org.nwapw.abacus.function.OperatorAssociativity;
-import org.nwapw.abacus.function.OperatorType;
+import org.nwapw.abacus.function.*;
 import org.nwapw.abacus.lexing.pattern.Match;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.parsing.LexerTokenizer;
@@ -35,10 +32,32 @@ public class TokenizerTests {
     private static Plugin testPlugin = new Plugin(abacus.getPluginManager()) {
         @Override
         public void onEnable() {
-            registerOperator("+", new Operator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX,
-                    0, subtractFunction));
-            registerOperator("-", new Operator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX,
-                    0, subtractFunction));
+            registerOperator("+", new NumberOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX,
+                    0) {
+
+                @Override
+                protected boolean matchesParams(NumberInterface[] params) {
+                    return true;
+                }
+
+                @Override
+                protected NumberInterface applyInternal(NumberInterface[] params) {
+                    return subtractFunction.apply(params);
+                }
+            });
+            registerOperator("-", new NumberOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX,
+                    0) {
+
+                @Override
+                protected boolean matchesParams(NumberInterface[] params) {
+                    return true;
+                }
+
+                @Override
+                protected NumberInterface applyInternal(NumberInterface[] params) {
+                    return subtractFunction.apply(params);
+                }
+            });
             registerFunction("subtract", subtractFunction);
         }
 

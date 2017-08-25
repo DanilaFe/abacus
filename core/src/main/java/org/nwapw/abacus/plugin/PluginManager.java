@@ -35,7 +35,7 @@ public class PluginManager {
     /**
      * The map of operators registered by the plugins
      */
-    private Map<String, Operator> registeredOperators;
+    private Map<String, NumberOperator> registeredOperators;
     /**
      * The map of number implementations registered by the plugins.
      */
@@ -108,7 +108,7 @@ public class PluginManager {
      * @param name     the name of the operator.
      * @param operator the operator to register.
      */
-    public void registerOperator(String name, Operator operator) {
+    public void registerOperator(String name, NumberOperator operator) {
         registeredOperators.put(name, operator);
     }
 
@@ -158,7 +158,7 @@ public class PluginManager {
      * @param name the name of the operator.
      * @return the operator, or null if it was not found.
      */
-    public Operator operatorFor(String name) {
+    public NumberOperator operatorFor(String name) {
         return registeredOperators.get(name);
     }
 

@@ -2,8 +2,10 @@ package org.nwapw.abacus.tree;
 
 import org.nwapw.abacus.Abacus;
 import org.nwapw.abacus.function.Function;
+import org.nwapw.abacus.function.Operator;
 import org.nwapw.abacus.function.TreeValueFunction;
 import org.nwapw.abacus.number.NumberInterface;
+import org.nwapw.abacus.plugin.NumberImplementation;
 
 /**
  * A reducer implementation that turns a tree into a single number.
@@ -34,14 +36,12 @@ public class NumberReducer implements Reducer<NumberInterface> {
         } else if (node instanceof BinaryNode) {
             NumberInterface left = (NumberInterface) children[0];
             NumberInterface right = (NumberInterface) children[1];
-            Function function = abacus.getPluginManager().operatorFor(((BinaryNode) node).getOperation()).getFunction();
-            if (function == null) return null;
-            return function.apply(left, right);
+            Operator<NumberInterface, NumberInterface> operator = abacus.getPluginManager().operatorFor(((BinaryNode) node).getOperation());
+            return operator.apply(left, right);
         } else if (node instanceof UnaryNode) {
             NumberInterface child = (NumberInterface) children[0];
-            Function functionn = abacus.getPluginManager().operatorFor(((UnaryNode) node).getOperation()).getFunction();
-            if (functionn == null) return null;
-            return functionn.apply(child);
+            Operator<NumberInterface, NumberInterface> operator = abacus.getPluginManager().operatorFor(((UnaryNode) node).getOperation());
+            return operator.apply(child);
         } else if (node instanceof FunctionNode) {
             NumberInterface[] convertedChildren = new NumberInterface[children.length];
             for (int i = 0; i < convertedChildren.length; i++) {
