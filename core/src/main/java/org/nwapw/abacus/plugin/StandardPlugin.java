@@ -4,9 +4,6 @@ import org.nwapw.abacus.function.*;
 import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.number.PreciseNumber;
-import org.nwapw.abacus.tree.BinaryNode;
-import org.nwapw.abacus.tree.Reducer;
-import org.nwapw.abacus.tree.TreeNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -231,7 +228,7 @@ public class StandardPlugin extends Plugin {
     /**
      * The absolute value function, abs(-3) = 3
      */
-    public static final Function FUNCTION_ABS = new Function() {
+    public static final NumberFunction FUNCTION_ABS = new NumberFunction() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
             return params.length == 1;
@@ -245,7 +242,7 @@ public class StandardPlugin extends Plugin {
     /**
      * The natural log function.
      */
-    public static final Function FUNCTION_LN = new Function() {
+    public static final NumberFunction FUNCTION_LN = new NumberFunction() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
             return params.length == 1 && params[0].compareTo(fromInt(params[0].getClass(), 0)) > 0;
@@ -325,7 +322,7 @@ public class StandardPlugin extends Plugin {
     /**
      * Gets a random number smaller or equal to the given number's integer value.
      */
-    public static final Function FUNCTION_RAND_INT = new Function() {
+    public static final NumberFunction FUNCTION_RAND_INT = new NumberFunction() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
             return params.length == 1;
@@ -369,7 +366,7 @@ public class StandardPlugin extends Plugin {
     /**
      * The square root function.
      */
-    public static final Function FUNCTION_SQRT = new Function() {
+    public static final NumberFunction FUNCTION_SQRT = new NumberFunction() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
             return params.length == 1;
@@ -384,7 +381,7 @@ public class StandardPlugin extends Plugin {
     /**
      * The exponential function, exp(1) = e^1 = 2.71...
      */
-    public static final Function FUNCTION_EXP = new Function() {
+    public static final NumberFunction FUNCTION_EXP = new NumberFunction() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
             return params.length == 1;
@@ -421,7 +418,7 @@ public class StandardPlugin extends Plugin {
     /**
      * The sine function (the argument is interpreted in radians).
      */
-    public final Function functionSin = new Function() {
+    public final NumberFunction functionSin = new NumberFunction() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
             return params.length == 1;
@@ -445,7 +442,7 @@ public class StandardPlugin extends Plugin {
     /**
      * The cosine function (the argument is in radians).
      */
-    public final Function functionCos = new Function() {
+    public final NumberFunction functionCos = new NumberFunction() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
             return params.length == 1;
@@ -460,7 +457,7 @@ public class StandardPlugin extends Plugin {
     /**
      * The tangent function (the argument is in radians).
      */
-    public final Function functionTan = new Function() {
+    public final NumberFunction functionTan = new NumberFunction() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
             return params.length == 1;
@@ -474,7 +471,7 @@ public class StandardPlugin extends Plugin {
     /**
      * The secant function (the argument is in radians).
      */
-    public final Function functionSec = new Function() {
+    public final NumberFunction functionSec = new NumberFunction() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
             return params.length == 1;
@@ -488,7 +485,7 @@ public class StandardPlugin extends Plugin {
     /**
      * The cosecant function (the argument is in radians).
      */
-    public final Function functionCsc = new Function() {
+    public final NumberFunction functionCsc = new NumberFunction() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
             return params.length == 1;
@@ -502,7 +499,7 @@ public class StandardPlugin extends Plugin {
     /**
      * The cotangent function (the argument is in radians).
      */
-    public final Function functionCot = new Function() {
+    public final NumberFunction functionCot = new NumberFunction() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
             return params.length == 1;
@@ -517,7 +514,7 @@ public class StandardPlugin extends Plugin {
     /**
      * The arcsine function (return type in radians).
      */
-    public final Function functionArcsin = new Function() {
+    public final NumberFunction functionArcsin = new NumberFunction() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
             return params.length == 1
@@ -550,7 +547,7 @@ public class StandardPlugin extends Plugin {
     /**
      * The arccosine function.
      */
-    public final Function functionArccos = new Function() {
+    public final NumberFunction functionArccos = new NumberFunction() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
             return params.length == 1 && FUNCTION_ABS.apply(params[0]).compareTo(fromInt(params[0].getClass(), 1)) <= 0;
@@ -566,7 +563,7 @@ public class StandardPlugin extends Plugin {
     /**
      * The arccosecant function.
      */
-    public final Function functionArccsc = new Function() {
+    public final NumberFunction functionArccsc = new NumberFunction() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
             return params.length == 1 && FUNCTION_ABS.apply(params[0]).compareTo(fromInt(params[0].getClass(), 1)) >= 0;
@@ -582,7 +579,7 @@ public class StandardPlugin extends Plugin {
     /**
      * The arcsecant function.
      */
-    public final Function functionArcsec = new Function() {
+    public final NumberFunction functionArcsec = new NumberFunction() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
             return params.length == 1 && FUNCTION_ABS.apply(params[0]).compareTo(fromInt(params[0].getClass(), 1)) >= 0;
@@ -598,7 +595,7 @@ public class StandardPlugin extends Plugin {
     /**
      * The arctangent function.
      */
-    public final Function functionArctan = new Function() {
+    public final NumberFunction functionArctan = new NumberFunction() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
             return params.length == 1;
@@ -639,7 +636,7 @@ public class StandardPlugin extends Plugin {
     /**
      * The arccotangent function. Range: (0, pi).
      */
-    public final Function functionArccot = new Function() {
+    public final NumberFunction functionArccot = new NumberFunction() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
             return params.length == 1;

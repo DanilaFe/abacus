@@ -18,7 +18,7 @@ public class TokenizerTests {
 
     private static Abacus abacus = new Abacus(new Configuration(0, "precise", new String[]{}));
     private static LexerTokenizer lexerTokenizer = new LexerTokenizer();
-    private static Function subtractFunction = new Function() {
+    private static NumberFunction subtractFunction = new NumberFunction() {
         @Override
         protected boolean matchesParams(NumberInterface[] params) {
             return params.length == 2;

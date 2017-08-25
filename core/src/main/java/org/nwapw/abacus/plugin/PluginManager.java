@@ -27,7 +27,7 @@ public class PluginManager {
     /**
      * The map of functions registered by the plugins.
      */
-    private Map<String, Function> registeredFunctions;
+    private Map<String, NumberFunction> registeredFunctions;
     /**
      * The map of tree value functions regstered by the plugins.
      */
@@ -88,7 +88,7 @@ public class PluginManager {
      * @param name     the name of the function.
      * @param function the function to register.
      */
-    public void registerFunction(String name, Function function) {
+    public void registerFunction(String name, NumberFunction function) {
         registeredFunctions.put(name, function);
     }
 
@@ -138,7 +138,7 @@ public class PluginManager {
      * @param name the name of the function.
      * @return the function, or null if it was not found.
      */
-    public Function functionFor(String name) {
+    public NumberFunction functionFor(String name) {
         return registeredFunctions.get(name);
     }
 
