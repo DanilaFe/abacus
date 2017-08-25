@@ -1,5 +1,6 @@
 package org.nwapw.abacus.function
 
+import org.nwapw.abacus.function.applicable.ReducerApplicable
 import org.nwapw.abacus.number.NumberInterface
 import org.nwapw.abacus.tree.TreeNode
 
