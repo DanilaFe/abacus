@@ -9,5 +9,5 @@ package org.nwapw.abacus.function
  * @param type the type of this operator, used for parsing (infix / prefix / postfix and binary / unary)
  * @param precedence the precedence of this operator, used for order of operations.
  */
-abstract class Operator<T: Any, O: Any>(val associativity: OperatorAssociativity, val type: OperatorType,
-                                               val precedence: Int) : Applicable<T, O>()
+open class Operator(val associativity: OperatorAssociativity, val type: OperatorType,
+                                               val precedence: Int)

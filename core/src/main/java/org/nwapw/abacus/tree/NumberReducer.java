@@ -2,6 +2,7 @@ package org.nwapw.abacus.tree;
 
 import org.nwapw.abacus.Abacus;
 import org.nwapw.abacus.function.NumberFunction;
+import org.nwapw.abacus.function.NumberOperator;
 import org.nwapw.abacus.function.Operator;
 import org.nwapw.abacus.function.TreeValueFunction;
 import org.nwapw.abacus.number.NumberInterface;
@@ -35,11 +36,11 @@ public class NumberReducer implements Reducer<NumberInterface> {
         } else if (node instanceof BinaryNode) {
             NumberInterface left = (NumberInterface) children[0];
             NumberInterface right = (NumberInterface) children[1];
-            Operator<NumberInterface, NumberInterface> operator = abacus.getPluginManager().operatorFor(((BinaryNode) node).getOperation());
+            NumberOperator operator = abacus.getPluginManager().operatorFor(((BinaryNode) node).getOperation());
             return operator.apply(left, right);
         } else if (node instanceof UnaryNode) {
             NumberInterface child = (NumberInterface) children[0];
-            Operator<NumberInterface, NumberInterface> operator = abacus.getPluginManager().operatorFor(((UnaryNode) node).getOperation());
+            NumberOperator operator = abacus.getPluginManager().operatorFor(((UnaryNode) node).getOperation());
             return operator.apply(child);
         } else if (node instanceof FunctionNode) {
             NumberInterface[] convertedChildren = new NumberInterface[children.length];

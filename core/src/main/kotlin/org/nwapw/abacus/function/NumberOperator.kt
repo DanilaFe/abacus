@@ -12,4 +12,5 @@ import org.nwapw.abacus.number.NumberInterface
  */
 abstract class NumberOperator(associativity: OperatorAssociativity, type: OperatorType,
                               precedence: Int) :
-        Operator<NumberInterface, NumberInterface>(associativity, type, precedence)
+        Operator(associativity, type, precedence),
+        Applicable<NumberInterface, NumberInterface>
