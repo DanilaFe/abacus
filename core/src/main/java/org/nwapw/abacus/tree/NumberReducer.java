@@ -2,6 +2,7 @@ package org.nwapw.abacus.tree;
 
 import org.nwapw.abacus.Abacus;
 import org.nwapw.abacus.function.Function;
+import org.nwapw.abacus.function.TreeValueFunction;
 import org.nwapw.abacus.number.NumberInterface;
 
 /**
@@ -49,6 +50,16 @@ public class NumberReducer implements Reducer<NumberInterface> {
             Function function = abacus.getPluginManager().functionFor(((FunctionNode) node).getCallTo());
             if (function == null) return null;
             return function.apply(convertedChildren);
+        } else if (node instanceof TreeValueFunctionNode){
+            CallNode callNode = (CallNode) node;
+            TreeNode[] realChildren = new TreeNode[callNode.getChildren().size()];
+            for(int i = 0; i < realChildren.length; i++){
+                realChildren[i] = callNode.getChildren().get(i);
+            }
+            TreeValueFunction function =
+                    abacus.getPluginManager().treeValueFunctionFor(callNode.getCallTo());
+            if(function == null) return null;
+            return function.applyWithReducer(this, realChildren);
         }
         return null;
     }
