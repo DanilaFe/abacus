@@ -55,7 +55,7 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
             matchType = match.getType();
             if (matchType == TokenType.NUM || matchType == TokenType.VARIABLE) {
                 output.add(match);
-            } else if (matchType == TokenType.FUNCTION) {
+            } else if (matchType == TokenType.FUNCTION || matchType == TokenType.TREE_VALUE_FUNCTION) {
                 output.add(new Match<>("", TokenType.INTERNAL_FUNCTION_END));
                 tokenStack.push(match);
             } else if (matchType == TokenType.OP) {
@@ -78,7 +78,8 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
                 while (!tokenStack.empty() && type == OperatorType.BINARY_INFIX) {
                     Match<TokenType> otherMatch = tokenStack.peek();
                     TokenType otherMatchType = otherMatch.getType();
-                    if (!(otherMatchType == TokenType.OP || otherMatchType == TokenType.FUNCTION)) break;
+                    if (!(otherMatchType == TokenType.OP || otherMatchType == TokenType.FUNCTION ||
+                        otherMatchType == TokenType.TREE_VALUE_FUNCTION)) break;
 
                     if (otherMatchType == TokenType.OP) {
                         int otherPrecedence = precedenceMap.get(otherMatch.getContent());
@@ -105,7 +106,8 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
         while (!tokenStack.empty()) {
             Match<TokenType> match = tokenStack.peek();
             TokenType newMatchType = match.getType();
-            if (!(newMatchType == TokenType.OP || newMatchType == TokenType.FUNCTION)) return null;
+            if (!(newMatchType == TokenType.OP || newMatchType == TokenType.FUNCTION ||
+                    newMatchType == TokenType.TREE_VALUE_FUNCTION)) return null;
             output.add(tokenStack.pop());
         }
         return output;
@@ -138,9 +140,14 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
             return new NumberNode(match.getContent());
         } else if (matchType == TokenType.VARIABLE) {
             return new VariableNode(match.getContent());
-        } else if (matchType == TokenType.FUNCTION) {
+        } else if (matchType == TokenType.FUNCTION || matchType == TokenType.TREE_VALUE_FUNCTION) {
             String functionName = match.getContent();
-            FunctionNode node = new FunctionNode(functionName);
+            CallNode node;
+            if(matchType == TokenType.FUNCTION){
+                node = new FunctionNode(functionName);
+            } else {
+                node = new TreeValueFunctionNode(functionName);
+            }
             while (!matches.isEmpty() && matches.get(0).getType() != TokenType.INTERNAL_FUNCTION_END) {
                 TreeNode argument = constructRecursive(matches);
                 if (argument == null) return null;
