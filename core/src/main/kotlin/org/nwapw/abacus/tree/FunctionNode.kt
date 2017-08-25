@@ -8,7 +8,7 @@ package org.nwapw.abacus.tree
  *
  * @param function the function string.
  */
-data class FunctionNode(val function: String) : TreeNode() {
+class FunctionNode(val function: String) : TreeNode() {
 
     /**
      * List of function parameters added to this node.
