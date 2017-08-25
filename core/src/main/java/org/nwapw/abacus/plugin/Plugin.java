@@ -1,7 +1,6 @@
 package org.nwapw.abacus.plugin;
 
 import org.nwapw.abacus.function.*;
-import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
 
 /**
@@ -63,7 +62,7 @@ public abstract class Plugin {
      * @param name       the name to register by.
      * @param toRegister the function implementation.
      */
-    protected final void registerFunction(String name, Function toRegister) {
+    protected final void registerFunction(String name, NumberFunction toRegister) {
         manager.registerFunction(name, toRegister);
     }
 
@@ -119,7 +118,7 @@ public abstract class Plugin {
      * @param name the name for which to search
      * @return the resulting function, or null if none was found for that name.
      */
-    protected final Function functionFor(String name) {
+    protected final NumberFunction functionFor(String name) {
         return manager.functionFor(name);
     }
 

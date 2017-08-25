@@ -1,11 +1,10 @@
 package org.nwapw.abacus.tree;
 
 import org.nwapw.abacus.Abacus;
-import org.nwapw.abacus.function.Function;
+import org.nwapw.abacus.function.NumberFunction;
 import org.nwapw.abacus.function.Operator;
 import org.nwapw.abacus.function.TreeValueFunction;
 import org.nwapw.abacus.number.NumberInterface;
-import org.nwapw.abacus.plugin.NumberImplementation;
 
 /**
  * A reducer implementation that turns a tree into a single number.
@@ -47,7 +46,7 @@ public class NumberReducer implements Reducer<NumberInterface> {
             for (int i = 0; i < convertedChildren.length; i++) {
                 convertedChildren[i] = (NumberInterface) children[i];
             }
-            Function function = abacus.getPluginManager().functionFor(((FunctionNode) node).getCallTo());
+            NumberFunction function = abacus.getPluginManager().functionFor(((FunctionNode) node).getCallTo());
             if (function == null) return null;
             return function.apply(convertedChildren);
         } else if (node instanceof TreeValueFunctionNode){
