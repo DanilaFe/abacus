@@ -1,24 +1,24 @@
-package org.nwapw.abacus.function;
+package org.nwapw.abacus.function.applicable
 
-import org.nwapw.abacus.tree.Reducer;
+import org.nwapw.abacus.tree.Reducer
 
 /**
- * A slightly more specific Applicable that requires a reducer
+ * Applicable that requires a reducer.
+ *
+ * ReducerApplicable slightly more specific Applicable that requires a reducer
  * to be passed to it along with the parameters.
  * @param <T> the type of the input arguments.
  * @param <O> the return type of the application.
  * @param <R> the required type of the reducer.
  */
-public interface ReducerApplicable<T, O, R> extends Applicable<T, O> {
+interface ReducerApplicable<in T: Any, out O: Any, in R: Any> : Applicable<T, O> {
 
-    @Override
-    default O applyInternal(T[] params) {
-        return null;
+    override fun applyInternal(params: Array<out T>): O? {
+        return null
     }
 
-    @Override
-    default O apply(T... params) {
-        return null;
+    override fun apply(vararg params: T): O? {
+        return null
     }
 
     /**
@@ -27,8 +27,7 @@ public interface ReducerApplicable<T, O, R> extends Applicable<T, O> {
      * @param args the arguments to apply to.
      * @return the result of the application.
      */
-    O applyWithReducerInternal(Reducer<R> reducer, T[] args);
-
+    fun applyWithReducerInternal(reducer: Reducer<R>, params: Array<out T>): O?
     /**
      * Applies this applicable to the given arguments, and reducer,
      * if the arguments and reducer are compatible with this applicable.
@@ -36,9 +35,9 @@ public interface ReducerApplicable<T, O, R> extends Applicable<T, O> {
      * @param args the arguments to apply to.
      * @return the result of the application, or null if the arguments are incompatible.
      */
-    default O applyWithReducer(Reducer<R> reducer, T...args) {
-        if(!matchesParams(args) || reducer == null) return null;
-        return applyWithReducerInternal(reducer, args);
+    fun applyWithReducer(reducer: Reducer<R>, vararg params: T): O? {
+        if(!matchesParams(params)) return null
+        return applyWithReducerInternal(reducer, params)
     }
 
 }

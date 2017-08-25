@@ -1,5 +1,6 @@
 package org.nwapw.abacus.function
 
+import org.nwapw.abacus.function.applicable.Applicable
 import org.nwapw.abacus.number.NumberInterface
 
 /**
