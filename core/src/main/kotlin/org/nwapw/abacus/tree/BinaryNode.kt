@@ -11,7 +11,7 @@ package org.nwapw.abacus.tree
  * @param left the left node.
  * @param right the right node.
  */
-data class BinaryNode(val operation: String, val left: TreeNode? = null, val right: TreeNode?) : TreeNode() {
+class BinaryNode(val operation: String, val left: TreeNode? = null, val right: TreeNode?) : TreeNode() {
 
     override fun <T : Any> reduce(reducer: Reducer<T>): T? {
         val leftReduce = left?.reduce(reducer) ?: return null

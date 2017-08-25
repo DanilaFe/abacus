@@ -10,7 +10,7 @@ import org.nwapw.abacus.number.NumberInterface
  *
  * @number the number value of this node.
  */
-data class NumberNode(val number: String) : TreeNode() {
+class NumberNode(val number: String) : TreeNode() {
 
     override fun <T : Any> reduce(reducer: Reducer<T>): T? {
         return reducer.reduceNode(this)
