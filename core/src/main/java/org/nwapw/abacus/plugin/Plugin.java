@@ -1,9 +1,6 @@
 package org.nwapw.abacus.plugin;
 
-import org.nwapw.abacus.function.Documentation;
-import org.nwapw.abacus.function.DocumentationType;
-import org.nwapw.abacus.function.Function;
-import org.nwapw.abacus.function.Operator;
+import org.nwapw.abacus.function.*;
 import org.nwapw.abacus.number.NumberInterface;
 
 /**
@@ -70,6 +67,17 @@ public abstract class Plugin {
     }
 
     /**
+     * To be used in load(). Registers a tree value function abstract class
+     * with the plugin internally, which makes it accessible to the plugin manager.
+     *
+     * @param name the name to register by.
+     * @param toRegister the tree value function implementation.
+     */
+    protected final void registerTreeValueFunction(String name, TreeValueFunction toRegister) {
+        manager.registerTreeValueFunction(name, toRegister);
+    }
+
+    /**
      * To be used in load(). Registers an operator abstract class
      * with the plugin internally, which makes it accessible to
      * the plugin manager.
@@ -112,6 +120,18 @@ public abstract class Plugin {
      */
     protected final Function functionFor(String name) {
         return manager.functionFor(name);
+    }
+
+    /**
+     * Searches the PluginManager for the given function name.
+     * This can be used by the plugins internally in order to call functions
+     * they do not provide.
+     *
+     * @param name the name for which to search.
+     * @return the resulting tree value function, or null if none was found for that name.
+     */
+    protected final TreeValueFunction treeValueFunctionFor(String name){
+        return manager.treeValueFunctionFor(name);
     }
 
     /**
