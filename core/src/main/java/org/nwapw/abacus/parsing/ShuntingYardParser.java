@@ -58,7 +58,7 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
             } else if (matchType == TokenType.FUNCTION || matchType == TokenType.TREE_VALUE_FUNCTION) {
                 output.add(new Match<>("", TokenType.INTERNAL_FUNCTION_END));
                 tokenStack.push(match);
-            } else if (matchType == TokenType.OP) {
+            } else if (matchType == TokenType.OP || matchType == TokenType.TREE_VALUE_OP) {
                 String tokenString = match.getContent();
                 OperatorType type = typeMap.get(tokenString);
                 int precedence = precedenceMap.get(tokenString);
@@ -70,7 +70,7 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
                 }
 
                 if (tokenString.equals("-") && (previousType == null || previousType == TokenType.OP ||
-                        previousType == TokenType.OPEN_PARENTH)) {
+                        previousType == TokenType.TREE_VALUE_OP || previousType == TokenType.OPEN_PARENTH)) {
                     from.add(0, new Match<>("`", TokenType.OP));
                     continue;
                 }
@@ -78,10 +78,12 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
                 while (!tokenStack.empty() && type == OperatorType.BINARY_INFIX) {
                     Match<TokenType> otherMatch = tokenStack.peek();
                     TokenType otherMatchType = otherMatch.getType();
-                    if (!(otherMatchType == TokenType.OP || otherMatchType == TokenType.FUNCTION ||
-                        otherMatchType == TokenType.TREE_VALUE_FUNCTION)) break;
+                    if (!(otherMatchType == TokenType.OP ||
+                            otherMatchType == TokenType.TREE_VALUE_OP ||
+                            otherMatchType == TokenType.FUNCTION ||
+                            otherMatchType == TokenType.TREE_VALUE_FUNCTION)) break;
 
-                    if (otherMatchType == TokenType.OP) {
+                    if (otherMatchType == TokenType.OP || otherMatchType == TokenType.TREE_VALUE_OP) {
                         int otherPrecedence = precedenceMap.get(otherMatch.getContent());
                         if (otherPrecedence < precedence ||
                                 (associativity == OperatorAssociativity.RIGHT && otherPrecedence == precedence)) {
@@ -106,7 +108,9 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
         while (!tokenStack.empty()) {
             Match<TokenType> match = tokenStack.peek();
             TokenType newMatchType = match.getType();
-            if (!(newMatchType == TokenType.OP || newMatchType == TokenType.FUNCTION ||
+            if (!(newMatchType == TokenType.OP ||
+                    newMatchType == TokenType.TREE_VALUE_OP ||
+                    newMatchType == TokenType.FUNCTION ||
                     newMatchType == TokenType.TREE_VALUE_FUNCTION)) return null;
             output.add(tokenStack.pop());
         }
@@ -123,18 +127,26 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
         if (matches.size() == 0) return null;
         Match<TokenType> match = matches.remove(0);
         TokenType matchType = match.getType();
-        if (matchType == TokenType.OP) {
+        if (matchType == TokenType.OP || matchType == TokenType.TREE_VALUE_OP) {
             String operator = match.getContent();
             OperatorType type = typeMap.get(operator);
             if (type == OperatorType.BINARY_INFIX) {
                 TreeNode right = constructRecursive(matches);
                 TreeNode left = constructRecursive(matches);
                 if (left == null || right == null) return null;
-                else return new NumberBinaryNode(operator, left, right);
+                if(matchType == TokenType.OP) {
+                    return new NumberBinaryNode(operator, left, right);
+                } else {
+                    return new TreeValueBinaryNode(operator, left, right);
+                }
             } else {
                 TreeNode applyTo = constructRecursive(matches);
                 if (applyTo == null) return null;
-                else return new NumberUnaryNode(operator, applyTo);
+                if(matchType == TokenType.OP){
+                    return new NumberUnaryNode(operator, applyTo);
+                } else {
+                    return new TreeValueUnaryNode(operator, applyTo);
+                }
             }
         } else if (matchType == TokenType.NUM) {
             return new NumberNode(match.getContent());
