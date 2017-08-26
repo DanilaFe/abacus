@@ -37,6 +37,10 @@ public class PluginManager {
      */
     private Map<String, NumberOperator> registeredOperators;
     /**
+     * The map of tree value operators registered by the plugins.
+     */
+    private Map<String, TreeValueOperator> registeredTreeValueOperators;
+    /**
      * The map of number implementations registered by the plugins.
      */
     private Map<String, NumberImplementation> registeredNumberImplementations;
@@ -75,6 +79,7 @@ public class PluginManager {
         registeredFunctions = new HashMap<>();
         registeredTreeValueFunctions = new HashMap<>();
         registeredOperators = new HashMap<>();
+        registeredTreeValueOperators = new HashMap<>();
         registeredNumberImplementations = new HashMap<>();
         registeredDocumentation = new HashSet<>();
         cachedInterfaceImplementations = new HashMap<>();
@@ -110,6 +115,16 @@ public class PluginManager {
      */
     public void registerOperator(String name, NumberOperator operator) {
         registeredOperators.put(name, operator);
+    }
+
+    /**
+     * Registers a tree value operator under the given name.
+     *
+     * @param name the name of the tree value operator.
+     * @param operator the tree value operator to register.
+     */
+    public void registerTreeValueOperator(String name, TreeValueOperator operator){
+        registeredTreeValueOperators.put(name, operator);
     }
 
     /**
@@ -160,6 +175,16 @@ public class PluginManager {
      */
     public NumberOperator operatorFor(String name) {
         return registeredOperators.get(name);
+    }
+
+    /**
+     * Gets the tree value operator registered under the given name.
+     *
+     * @param name the name of the tree value operator.
+     * @return the operator, or null if it was not found.
+     */
+    public TreeValueOperator treeValueOperatorFor(String name) {
+        return registeredTreeValueOperators.get(name);
     }
 
     /**
@@ -299,7 +324,9 @@ public class PluginManager {
             plugin.disable();
         }
         registeredFunctions.clear();
+        registeredTreeValueFunctions.clear();
         registeredOperators.clear();
+        registeredTreeValueOperators.clear();
         registeredNumberImplementations.clear();
         registeredDocumentation.clear();
         cachedInterfaceImplementations.clear();
@@ -340,6 +367,15 @@ public class PluginManager {
      */
     public Set<String> getAllOperators() {
         return registeredOperators.keySet();
+    }
+
+    /**
+     * Gets all the tree value operators loaded by the PluginManager.
+     *
+     * @return the set of all tree value operators that were loaded.
+     */
+    public Set<String> getAllTreeValueOperators(){
+        return registeredTreeValueOperators.keySet();
     }
 
     /**
