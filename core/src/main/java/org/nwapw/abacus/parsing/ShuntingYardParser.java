@@ -189,6 +189,12 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
             associativityMap.put(operator, operatorInstance.getAssociativity());
             typeMap.put(operator, operatorInstance.getType());
         }
+        for (String operator : manager.getAllTreeValueOperators()) {
+            Operator operatorInstance = manager.treeValueOperatorFor(operator);
+            precedenceMap.put(operator, operatorInstance.getPrecedence());
+            associativityMap.put(operator, operatorInstance.getAssociativity());
+            typeMap.put(operator, operatorInstance.getType());
+        }
     }
 
     @Override
