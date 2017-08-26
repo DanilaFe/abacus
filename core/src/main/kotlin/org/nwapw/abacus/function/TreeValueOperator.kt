@@ -13,4 +13,6 @@ import org.nwapw.abacus.tree.TreeNode
  * @param precedence the precedence of the operator.
  */
 abstract class TreeValueOperator(associativity: OperatorAssociativity, type: OperatorType,
-                                 precedence: Int) : ReducerApplicable<TreeNode, NumberInterface, NumberInterface>
+                                 precedence: Int) :
+        Operator(associativity, type, precedence),
+        ReducerApplicable<TreeNode, NumberInterface, NumberInterface>
