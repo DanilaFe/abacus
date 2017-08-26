@@ -1,10 +1,7 @@
 package org.nwapw.abacus.tree;
 
 import org.nwapw.abacus.Abacus;
-import org.nwapw.abacus.function.NumberFunction;
-import org.nwapw.abacus.function.NumberOperator;
-import org.nwapw.abacus.function.Operator;
-import org.nwapw.abacus.function.TreeValueFunction;
+import org.nwapw.abacus.function.*;
 import org.nwapw.abacus.number.NumberInterface;
 
 /**
@@ -60,6 +57,18 @@ public class NumberReducer implements Reducer<NumberInterface> {
                     abacus.getPluginManager().treeValueFunctionFor(callNode.getCallTo());
             if(function == null) return null;
             return function.applyWithReducer(this, realChildren);
+        } else if (node instanceof TreeValueBinaryNode) {
+            BinaryNode binaryNode = (BinaryNode) node;
+            TreeValueOperator operator = abacus.getPluginManager()
+                    .treeValueOperatorFor(binaryNode.getOperation());
+            if(operator == null) return null;
+            return operator.applyWithReducer(this, binaryNode.getLeft(), binaryNode.getRight());
+        } else if(node instanceof TreeValueUnaryNode) {
+            UnaryNode unaryNode = (UnaryNode) node;
+            TreeValueOperator operator = abacus.getPluginManager()
+                    .treeValueOperatorFor(unaryNode.getOperation());
+            if(operator == null) return null;
+            return operator.applyWithReducer(this, unaryNode.getApplyTo());
         }
         return null;
     }
