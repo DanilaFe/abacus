@@ -11,20 +11,18 @@ import org.nwapw.abacus.tree.Reducer
  * @param <O> the return type of the application.
  * @param <R> the required type of the reducer.
  */
-interface ReducerApplicable<in T: Any, out O: Any, in R: Any> : Applicable<T, O> {
+interface ReducerApplicable<in T: Any, out O: Any, in R: Any> {
 
-    override fun applyInternal(params: Array<out T>): O? {
-        return null
-    }
-
-    override fun apply(vararg params: T): O? {
-        return null
-    }
-
+    /**
+     * Checks if this applicable can be applied to the
+     * given parameters.
+     * @param params the parameters to check.
+     */
+    fun matchesParams(params: Array<out T>): Boolean
     /**
      * Applies this applicable to the given arguments, and reducer.
      * @param reducer the reducer to use in the application.
-     * @param args the arguments to apply to.
+     * @param params the arguments to apply to.
      * @return the result of the application.
      */
     fun applyWithReducerInternal(reducer: Reducer<R>, params: Array<out T>): O?
@@ -32,7 +30,7 @@ interface ReducerApplicable<in T: Any, out O: Any, in R: Any> : Applicable<T, O>
      * Applies this applicable to the given arguments, and reducer,
      * if the arguments and reducer are compatible with this applicable.
      * @param reducer the reducer to use in the application.
-     * @param args the arguments to apply to.
+     * @param params the arguments to apply to.
      * @return the result of the application, or null if the arguments are incompatible.
      */
     fun applyWithReducer(reducer: Reducer<R>, vararg params: T): O? {
