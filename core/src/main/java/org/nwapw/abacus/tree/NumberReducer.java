@@ -33,12 +33,12 @@ public class NumberReducer implements Reducer<NumberInterface> {
             return abacus.numberFromString(((NumberNode) node).getNumber());
         } else if(node instanceof VariableNode) {
             return abacus.numberFromString("0");
-        } else if (node instanceof BinaryNode) {
+        } else if (node instanceof NumberBinaryNode) {
             NumberInterface left = (NumberInterface) children[0];
             NumberInterface right = (NumberInterface) children[1];
             NumberOperator operator = abacus.getPluginManager().operatorFor(((BinaryNode) node).getOperation());
             return operator.apply(left, right);
-        } else if (node instanceof UnaryNode) {
+        } else if (node instanceof NumberUnaryNode) {
             NumberInterface child = (NumberInterface) children[0];
             NumberOperator operator = abacus.getPluginManager().operatorFor(((UnaryNode) node).getOperation());
             return operator.apply(child);
