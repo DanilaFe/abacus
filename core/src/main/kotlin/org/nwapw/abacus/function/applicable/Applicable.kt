@@ -8,7 +8,7 @@ package org.nwapw.abacus.function.applicable
  * @param <T> the type of the parameters passed to this applicable.
  * @param <O> the return type of the applicable.
  */
-interface Applicable<in T: Any, out O: Any> {
+interface Applicable<in T : Any, out O : Any> {
 
     /**
      * Checks if the given applicable can be used with the given parameters.
@@ -16,6 +16,7 @@ interface Applicable<in T: Any, out O: Any> {
      * @return whether the array can be used with applyInternal.
      */
     fun matchesParams(params: Array<out T>): Boolean
+
     /**
      * Applies the applicable object to the given parameters,
      * without checking for compatibility.
@@ -32,7 +33,7 @@ interface Applicable<in T: Any, out O: Any> {
      * @return the result of the operation, or null if parameters do not match.
      */
     fun apply(vararg params: T): O? {
-        if(!matchesParams(params)) return null
+        if (!matchesParams(params)) return null
         return applyInternal(params)
     }
 

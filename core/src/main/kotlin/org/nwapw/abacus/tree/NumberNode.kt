@@ -1,7 +1,5 @@
 package org.nwapw.abacus.tree
 
-import org.nwapw.abacus.number.NumberInterface
-
 /**
  * A tree node that holds a single number value.
  *

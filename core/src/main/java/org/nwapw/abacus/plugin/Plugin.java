@@ -70,7 +70,7 @@ public abstract class Plugin {
      * To be used in load(). Registers a tree value function abstract class
      * with the plugin internally, which makes it accessible to the plugin manager.
      *
-     * @param name the name to register by.
+     * @param name       the name to register by.
      * @param toRegister the tree value function implementation.
      */
     protected final void registerTreeValueFunction(String name, TreeValueFunction toRegister) {
@@ -94,10 +94,10 @@ public abstract class Plugin {
      * with the plugin internally, which makes it accessible
      * to the plugin manager.
      *
-     * @param name the name of the tree value operator.
+     * @param name     the name of the tree value operator.
      * @param operator the tree value operator to register.
      */
-    protected final void registerTreeValueOperator(String name, TreeValueOperator operator){
+    protected final void registerTreeValueOperator(String name, TreeValueOperator operator) {
         manager.registerTreeValueOperator(name, operator);
     }
 
@@ -142,7 +142,7 @@ public abstract class Plugin {
      * @param name the name for which to search.
      * @return the resulting tree value function, or null if none was found for that name.
      */
-    protected final TreeValueFunction treeValueFunctionFor(String name){
+    protected final TreeValueFunction treeValueFunctionFor(String name) {
         return manager.treeValueFunctionFor(name);
     }
 
