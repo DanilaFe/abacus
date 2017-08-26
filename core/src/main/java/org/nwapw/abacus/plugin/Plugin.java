@@ -90,6 +90,18 @@ public abstract class Plugin {
     }
 
     /**
+     * To be used in load(). Registers an operator
+     * with the plugin internally, which makes it accessible
+     * to the plugin manager.
+     *
+     * @param name the name of the tree value operator.
+     * @param operator the tree value operator to register.
+     */
+    protected final void registerTreeValueOperator(String name, TreeValueOperator operator){
+        manager.registerTreeValueOperator(name, operator);
+    }
+
+    /**
      * To be used in load(). Registers a new number implementation with the plugin.
      * This makes it accessible to the plugin manager.
      *
@@ -144,6 +156,18 @@ public abstract class Plugin {
      */
     protected final NumberOperator operatorFor(String name) {
         return manager.operatorFor(name);
+    }
+
+    /**
+     * Searches the PluginManager for the given tree value operator name.
+     * This can be used by the plugins internally in order to call
+     * operations they do not provide.
+     *
+     * @param name the name for which to search.
+     * @return the resulting tree value operator, or null if none was found for that name.
+     */
+    protected final TreeValueOperator treeValueOperatorFor(String name) {
+        return manager.treeValueOperatorFor(name);
     }
 
     /**
