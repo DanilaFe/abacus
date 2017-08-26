@@ -10,4 +10,4 @@ package org.nwapw.abacus.function
  * @param precedence the precedence of this operator, used for order of operations.
  */
 open class Operator(val associativity: OperatorAssociativity, val type: OperatorType,
-                                               val precedence: Int)
+                    val precedence: Int)

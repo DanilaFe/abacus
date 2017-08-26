@@ -81,21 +81,6 @@ public class StandardPlugin extends Plugin {
         }
     };
     /**
-     * The combination operator.
-     */
-    public static final NumberOperator OP_NCR = new NumberOperator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 0) {
-        @Override
-        public boolean matchesParams(NumberInterface[] params) {
-            return params.length == 2 && params[0].fractionalPart().signum() == 0
-                    && params[1].fractionalPart().signum() == 0;
-        }
-
-        @Override
-        public NumberInterface applyInternal(NumberInterface[] params) {
-            return OP_NPR.apply(params).divide(OP_FACTORIAL.apply(params[1]));
-        }
-    };
-    /**
      * The implementation for double-based naive numbers.
      */
     public static final NumberImplementation IMPLEMENTATION_NAIVE = new NumberImplementation(NaiveNumber.class, 0) {
@@ -107,6 +92,20 @@ public class StandardPlugin extends Plugin {
         @Override
         public NumberInterface instanceForPi() {
             return new NaiveNumber(Math.PI);
+        }
+    };
+    /**
+     * The square root function.
+     */
+    public static final NumberFunction FUNCTION_SQRT = new NumberFunction() {
+        @Override
+        public boolean matchesParams(NumberInterface[] params) {
+            return params.length == 1;
+        }
+
+        @Override
+        public NumberInterface applyInternal(NumberInterface[] params) {
+            return OP_CARET.apply(params[0], ((new NaiveNumber(0.5)).promoteTo(params[0].getClass())));
         }
     };
     /**
@@ -226,6 +225,21 @@ public class StandardPlugin extends Plugin {
         }
     };
     /**
+     * The combination operator.
+     */
+    public static final NumberOperator OP_NCR = new NumberOperator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 0) {
+        @Override
+        public boolean matchesParams(NumberInterface[] params) {
+            return params.length == 2 && params[0].fractionalPart().signum() == 0
+                    && params[1].fractionalPart().signum() == 0;
+        }
+
+        @Override
+        public NumberInterface applyInternal(NumberInterface[] params) {
+            return OP_NPR.apply(params).divide(OP_FACTORIAL.apply(params[1]));
+        }
+    };
+    /**
      * The absolute value function, abs(-3) = 3
      */
     public static final NumberFunction FUNCTION_ABS = new NumberFunction() {
@@ -333,50 +347,6 @@ public class StandardPlugin extends Plugin {
             return fromInt(params[0].getClass(), (int) Math.round(Math.random() * params[0].floor().intValue()));
         }
     };
-    /**
-     * The caret / pow operator, ^
-     */
-    public static final NumberOperator OP_CARET = new NumberOperator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 2) {
-        @Override
-        public boolean matchesParams(NumberInterface[] params) {
-            NumberInterface zero = fromInt(params[0].getClass(), 0);
-            return params.length == 2
-                    && !(params[0].compareTo(zero) == 0
-                    && params[1].compareTo(zero) == 0)
-                    && !(params[0].signum() == -1 && params[1].fractionalPart().compareTo(zero) != 0);
-        }
-
-        @Override
-        public NumberInterface applyInternal(NumberInterface[] params) {
-            NumberInterface zero = fromInt(params[0].getClass(), 0);
-            if (params[0].compareTo(zero) == 0)
-                return zero;
-            else if (params[1].compareTo(zero) == 0)
-                return fromInt(params[0].getClass(), 1);
-            //Detect integer bases:
-            if (params[0].fractionalPart().compareTo(fromInt(params[0].getClass(), 0)) == 0
-                    && FUNCTION_ABS.apply(params[1]).compareTo(fromInt(params[0].getClass(), Integer.MAX_VALUE)) < 0
-                    && FUNCTION_ABS.apply(params[1]).compareTo(fromInt(params[1].getClass(), 1)) >= 0) {
-                NumberInterface[] newParams = {params[0], params[1].fractionalPart()};
-                return params[0].intPow(params[1].floor().intValue()).multiply(applyInternal(newParams));
-            }
-            return FUNCTION_EXP.apply(FUNCTION_LN.apply(FUNCTION_ABS.apply(params[0])).multiply(params[1]));
-        }
-    };
-    /**
-     * The square root function.
-     */
-    public static final NumberFunction FUNCTION_SQRT = new NumberFunction() {
-        @Override
-        public boolean matchesParams(NumberInterface[] params) {
-            return params.length == 1;
-        }
-
-        @Override
-        public NumberInterface applyInternal(NumberInterface[] params) {
-            return OP_CARET.apply(params[0], ((new NaiveNumber(0.5)).promoteTo(params[0].getClass())));
-        }
-    };
     private static final HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>> FACTORIAL_LISTS = new HashMap<>();
     /**
      * The exponential function, exp(1) = e^1 = 2.71...
@@ -413,6 +383,36 @@ public class StandardPlugin extends Plugin {
                 //System.out.println(n+1);
                 return sum;
             }
+        }
+    };
+    /**
+     * The caret / pow operator, ^
+     */
+    public static final NumberOperator OP_CARET = new NumberOperator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 2) {
+        @Override
+        public boolean matchesParams(NumberInterface[] params) {
+            NumberInterface zero = fromInt(params[0].getClass(), 0);
+            return params.length == 2
+                    && !(params[0].compareTo(zero) == 0
+                    && params[1].compareTo(zero) == 0)
+                    && !(params[0].signum() == -1 && params[1].fractionalPart().compareTo(zero) != 0);
+        }
+
+        @Override
+        public NumberInterface applyInternal(NumberInterface[] params) {
+            NumberInterface zero = fromInt(params[0].getClass(), 0);
+            if (params[0].compareTo(zero) == 0)
+                return zero;
+            else if (params[1].compareTo(zero) == 0)
+                return fromInt(params[0].getClass(), 1);
+            //Detect integer bases:
+            if (params[0].fractionalPart().compareTo(fromInt(params[0].getClass(), 0)) == 0
+                    && FUNCTION_ABS.apply(params[1]).compareTo(fromInt(params[0].getClass(), Integer.MAX_VALUE)) < 0
+                    && FUNCTION_ABS.apply(params[1]).compareTo(fromInt(params[1].getClass(), 1)) >= 0) {
+                NumberInterface[] newParams = {params[0], params[1].fractionalPart()};
+                return params[0].intPow(params[1].floor().intValue()).multiply(applyInternal(newParams));
+            }
+            return FUNCTION_EXP.apply(FUNCTION_LN.apply(FUNCTION_ABS.apply(params[0])).multiply(params[1]));
         }
     };
     /**

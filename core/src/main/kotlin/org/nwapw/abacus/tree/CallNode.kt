@@ -19,9 +19,9 @@ abstract class CallNode(val callTo: String) : TreeNode() {
         val buffer = StringBuffer()
         buffer.append(callTo)
         buffer.append("(")
-        for(i in 0 until children.size){
+        for (i in 0 until children.size) {
             buffer.append(children[i].toString())
-            buffer.append(if(i != children.size - 1) ", " else ")")
+            buffer.append(if (i != children.size - 1) ", " else ")")
         }
         return buffer.toString()
     }

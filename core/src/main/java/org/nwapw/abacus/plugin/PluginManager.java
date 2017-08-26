@@ -100,7 +100,7 @@ public class PluginManager {
     /**
      * Registers a tree value function under the given name.
      *
-     * @param name the name of the function.
+     * @param name     the name of the function.
      * @param function the function to register.
      */
     public void registerTreeValueFunction(String name, TreeValueFunction function) {
@@ -120,10 +120,10 @@ public class PluginManager {
     /**
      * Registers a tree value operator under the given name.
      *
-     * @param name the name of the tree value operator.
+     * @param name     the name of the tree value operator.
      * @param operator the tree value operator to register.
      */
-    public void registerTreeValueOperator(String name, TreeValueOperator operator){
+    public void registerTreeValueOperator(String name, TreeValueOperator operator) {
         registeredTreeValueOperators.put(name, operator);
     }
 
@@ -163,7 +163,7 @@ public class PluginManager {
      * @param name the name of the function.
      * @return the function, or null if it was not found.
      */
-    public TreeValueFunction treeValueFunctionFor(String name){
+    public TreeValueFunction treeValueFunctionFor(String name) {
         return registeredTreeValueFunctions.get(name);
     }
 
@@ -374,7 +374,7 @@ public class PluginManager {
      *
      * @return the set of all tree value operators that were loaded.
      */
-    public Set<String> getAllTreeValueOperators(){
+    public Set<String> getAllTreeValueOperators() {
         return registeredTreeValueOperators.keySet();
     }
 
