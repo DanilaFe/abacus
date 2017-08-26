@@ -2,7 +2,7 @@ package org.nwapw.abacus.function
 
 import org.nwapw.abacus.function.applicable.ReducerApplicable
 import org.nwapw.abacus.number.NumberInterface
-import javax.swing.tree.TreeNode
+import org.nwapw.abacus.tree.TreeNode
 
 /**
  * An operator that operates on trees.
