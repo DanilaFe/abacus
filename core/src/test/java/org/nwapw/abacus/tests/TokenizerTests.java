@@ -20,12 +20,12 @@ public class TokenizerTests {
     private static LexerTokenizer lexerTokenizer = new LexerTokenizer();
     private static NumberFunction subtractFunction = new NumberFunction() {
         @Override
-        protected boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberInterface[] params) {
             return params.length == 2;
         }
 
         @Override
-        protected NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberInterface[] params) {
             return params[0].subtract(params[1]);
         }
     };
@@ -36,12 +36,12 @@ public class TokenizerTests {
                     0) {
 
                 @Override
-                protected boolean matchesParams(NumberInterface[] params) {
+                public boolean matchesParams(NumberInterface[] params) {
                     return true;
                 }
 
                 @Override
-                protected NumberInterface applyInternal(NumberInterface[] params) {
+                public NumberInterface applyInternal(NumberInterface[] params) {
                     return subtractFunction.apply(params);
                 }
             });
@@ -49,12 +49,12 @@ public class TokenizerTests {
                     0) {
 
                 @Override
-                protected boolean matchesParams(NumberInterface[] params) {
+                public boolean matchesParams(NumberInterface[] params) {
                     return true;
                 }
 
                 @Override
-                protected NumberInterface applyInternal(NumberInterface[] params) {
+                public NumberInterface applyInternal(NumberInterface[] params) {
                     return subtractFunction.apply(params);
                 }
             });
