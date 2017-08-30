@@ -1,10 +1,7 @@
 package org.nwapw.abacus.plugin;
 
 import org.nwapw.abacus.Abacus;
-import org.nwapw.abacus.function.Documentation;
-import org.nwapw.abacus.function.DocumentationType;
-import org.nwapw.abacus.function.Function;
-import org.nwapw.abacus.function.Operator;
+import org.nwapw.abacus.function.*;
 import org.nwapw.abacus.number.NumberInterface;
 
 import java.lang.reflect.InvocationTargetException;
@@ -30,11 +27,19 @@ public class PluginManager {
     /**
      * The map of functions registered by the plugins.
      */
-    private Map<String, Function> registeredFunctions;
+    private Map<String, NumberFunction> registeredFunctions;
+    /**
+     * The map of tree value functions regstered by the plugins.
+     */
+    private Map<String, TreeValueFunction> registeredTreeValueFunctions;
     /**
      * The map of operators registered by the plugins
      */
-    private Map<String, Operator> registeredOperators;
+    private Map<String, NumberOperator> registeredOperators;
+    /**
+     * The map of tree value operators registered by the plugins.
+     */
+    private Map<String, TreeValueOperator> registeredTreeValueOperators;
     /**
      * The map of number implementations registered by the plugins.
      */
@@ -72,7 +77,9 @@ public class PluginManager {
         loadedPluginClasses = new HashSet<>();
         plugins = new HashSet<>();
         registeredFunctions = new HashMap<>();
+        registeredTreeValueFunctions = new HashMap<>();
         registeredOperators = new HashMap<>();
+        registeredTreeValueOperators = new HashMap<>();
         registeredNumberImplementations = new HashMap<>();
         registeredDocumentation = new HashSet<>();
         cachedInterfaceImplementations = new HashMap<>();
@@ -86,8 +93,18 @@ public class PluginManager {
      * @param name     the name of the function.
      * @param function the function to register.
      */
-    public void registerFunction(String name, Function function) {
+    public void registerFunction(String name, NumberFunction function) {
         registeredFunctions.put(name, function);
+    }
+
+    /**
+     * Registers a tree value function under the given name.
+     *
+     * @param name     the name of the function.
+     * @param function the function to register.
+     */
+    public void registerTreeValueFunction(String name, TreeValueFunction function) {
+        registeredTreeValueFunctions.put(name, function);
     }
 
     /**
@@ -96,8 +113,18 @@ public class PluginManager {
      * @param name     the name of the operator.
      * @param operator the operator to register.
      */
-    public void registerOperator(String name, Operator operator) {
+    public void registerOperator(String name, NumberOperator operator) {
         registeredOperators.put(name, operator);
+    }
+
+    /**
+     * Registers a tree value operator under the given name.
+     *
+     * @param name     the name of the tree value operator.
+     * @param operator the tree value operator to register.
+     */
+    public void registerTreeValueOperator(String name, TreeValueOperator operator) {
+        registeredTreeValueOperators.put(name, operator);
     }
 
     /**
@@ -126,8 +153,18 @@ public class PluginManager {
      * @param name the name of the function.
      * @return the function, or null if it was not found.
      */
-    public Function functionFor(String name) {
+    public NumberFunction functionFor(String name) {
         return registeredFunctions.get(name);
+    }
+
+    /**
+     * Gets the tree value function registered under the given name.
+     *
+     * @param name the name of the function.
+     * @return the function, or null if it was not found.
+     */
+    public TreeValueFunction treeValueFunctionFor(String name) {
+        return registeredTreeValueFunctions.get(name);
     }
 
     /**
@@ -136,8 +173,18 @@ public class PluginManager {
      * @param name the name of the operator.
      * @return the operator, or null if it was not found.
      */
-    public Operator operatorFor(String name) {
+    public NumberOperator operatorFor(String name) {
         return registeredOperators.get(name);
+    }
+
+    /**
+     * Gets the tree value operator registered under the given name.
+     *
+     * @param name the name of the tree value operator.
+     * @return the operator, or null if it was not found.
+     */
+    public TreeValueOperator treeValueOperatorFor(String name) {
+        return registeredTreeValueOperators.get(name);
     }
 
     /**
@@ -277,7 +324,9 @@ public class PluginManager {
             plugin.disable();
         }
         registeredFunctions.clear();
+        registeredTreeValueFunctions.clear();
         registeredOperators.clear();
+        registeredTreeValueOperators.clear();
         registeredNumberImplementations.clear();
         registeredDocumentation.clear();
         cachedInterfaceImplementations.clear();
@@ -303,12 +352,30 @@ public class PluginManager {
     }
 
     /**
+     * Gets all the tree vlaue functions loaded by the PluginManager.
+     *
+     * @return the set of all the tree value functions that were loaded.
+     */
+    public Set<String> getAllTreeValueFunctions() {
+        return registeredTreeValueFunctions.keySet();
+    }
+
+    /**
      * Gets all the operators loaded by the Plugin Manager.
      *
      * @return the set of all operators that were loaded.
      */
     public Set<String> getAllOperators() {
         return registeredOperators.keySet();
+    }
+
+    /**
+     * Gets all the tree value operators loaded by the PluginManager.
+     *
+     * @return the set of all tree value operators that were loaded.
+     */
+    public Set<String> getAllTreeValueOperators() {
+        return registeredTreeValueOperators.keySet();
     }
 
     /**

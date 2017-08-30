@@ -8,7 +8,7 @@ package org.nwapw.abacus.tree
  *
  * @param variable the actual variable name that this node represents.
  */
-data class VariableNode(val variable: String) : TreeNode() {
+class VariableNode(val variable: String) : TreeNode() {
 
     override fun <T : Any> reduce(reducer: Reducer<T>): T? {
         return reducer.reduceNode(this)
