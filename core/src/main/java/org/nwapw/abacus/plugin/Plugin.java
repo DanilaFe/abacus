@@ -1,9 +1,6 @@
 package org.nwapw.abacus.plugin;
 
-import org.nwapw.abacus.function.Documentation;
-import org.nwapw.abacus.function.DocumentationType;
-import org.nwapw.abacus.function.Function;
-import org.nwapw.abacus.function.Operator;
+import org.nwapw.abacus.function.*;
 import org.nwapw.abacus.number.NumberInterface;
 
 /**
@@ -65,8 +62,19 @@ public abstract class Plugin {
      * @param name       the name to register by.
      * @param toRegister the function implementation.
      */
-    protected final void registerFunction(String name, Function toRegister) {
+    protected final void registerFunction(String name, NumberFunction toRegister) {
         manager.registerFunction(name, toRegister);
+    }
+
+    /**
+     * To be used in load(). Registers a tree value function abstract class
+     * with the plugin internally, which makes it accessible to the plugin manager.
+     *
+     * @param name       the name to register by.
+     * @param toRegister the tree value function implementation.
+     */
+    protected final void registerTreeValueFunction(String name, TreeValueFunction toRegister) {
+        manager.registerTreeValueFunction(name, toRegister);
     }
 
     /**
@@ -77,8 +85,20 @@ public abstract class Plugin {
      * @param name     the name of the operator.
      * @param operator the operator to register.
      */
-    protected final void registerOperator(String name, Operator operator) {
+    protected final void registerOperator(String name, NumberOperator operator) {
         manager.registerOperator(name, operator);
+    }
+
+    /**
+     * To be used in load(). Registers an operator
+     * with the plugin internally, which makes it accessible
+     * to the plugin manager.
+     *
+     * @param name     the name of the tree value operator.
+     * @param operator the tree value operator to register.
+     */
+    protected final void registerTreeValueOperator(String name, TreeValueOperator operator) {
+        manager.registerTreeValueOperator(name, operator);
     }
 
     /**
@@ -110,8 +130,20 @@ public abstract class Plugin {
      * @param name the name for which to search
      * @return the resulting function, or null if none was found for that name.
      */
-    protected final Function functionFor(String name) {
+    protected final NumberFunction functionFor(String name) {
         return manager.functionFor(name);
+    }
+
+    /**
+     * Searches the PluginManager for the given function name.
+     * This can be used by the plugins internally in order to call functions
+     * they do not provide.
+     *
+     * @param name the name for which to search.
+     * @return the resulting tree value function, or null if none was found for that name.
+     */
+    protected final TreeValueFunction treeValueFunctionFor(String name) {
+        return manager.treeValueFunctionFor(name);
     }
 
     /**
@@ -122,8 +154,20 @@ public abstract class Plugin {
      * @param name the name for which to search
      * @return the resulting operator, or null if none was found for that name.
      */
-    protected final Operator operatorFor(String name) {
+    protected final NumberOperator operatorFor(String name) {
         return manager.operatorFor(name);
+    }
+
+    /**
+     * Searches the PluginManager for the given tree value operator name.
+     * This can be used by the plugins internally in order to call
+     * operations they do not provide.
+     *
+     * @param name the name for which to search.
+     * @return the resulting tree value operator, or null if none was found for that name.
+     */
+    protected final TreeValueOperator treeValueOperatorFor(String name) {
+        return manager.treeValueOperatorFor(name);
     }
 
     /**
