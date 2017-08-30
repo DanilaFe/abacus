@@ -3,7 +3,7 @@
   {% include head.html %}
   <style>
   body {
-    margin-top: 100px;
+    margin-top: 50px;
     color: white;
     text-align: center;
   }
@@ -11,7 +11,13 @@
     font-family: "Source Code Pro"
   }
 
-  img {
+  img#logo {
+    margin: auto;
+    width: 100%;
+    max-width: 100px;
+  }
+
+  img#image_preview {
     margin: auto;
     width: 100%;
     max-width: 432px;
@@ -33,6 +39,7 @@
   }
   </style>
   <body>
+  <img src="https://raw.githubusercontent.com/DanilaFe/abacus/master/image/logo.png" id="logo">
   <h1>Abacus</h1>
   <h2>The programmer's calculator</h2>
   <div id="buttons">
@@ -41,6 +48,6 @@
     <a class="button inverted" href="https://github.com/DanilaFe/abacus">Contribute</a>
     <a class="button inverted" href="https://github.com/DanilaFe/abacus/wiki">Wiki</a>
   </div>
-  <img src="http://i.imgur.com/Min70QY.png" title="source: imgur.com" />
+  <img src="http://i.imgur.com/Min70QY.png" title="source: imgur.com" id="image_preview"/>
   </body>
 </html>
