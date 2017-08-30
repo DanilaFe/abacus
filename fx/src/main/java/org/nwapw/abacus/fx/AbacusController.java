@@ -360,6 +360,8 @@ public class AbacusController implements PluginListener {
         PluginManager pluginManager = abacus.getPluginManager();
         functionList.addAll(manager.getAllFunctions().stream().map(name -> pluginManager.documentationFor(name, DocumentationType.FUNCTION))
                 .collect(Collectors.toCollection(ArrayList::new)));
+        functionList.addAll(manager.getAllTreeValueFunctions().stream().map(name -> pluginManager.documentationFor(name, DocumentationType.TREE_VALUE_FUNCTION))
+                .collect(Collectors.toCollection(ArrayList::new)));
         functionList.sort(Comparator.comparing(Documentation::getCodeName));
     }
 

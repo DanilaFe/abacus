@@ -1,7 +1,7 @@
 package org.nwapw.abacus.tree;
 
 import org.nwapw.abacus.Abacus;
-import org.nwapw.abacus.function.Function;
+import org.nwapw.abacus.function.*;
 import org.nwapw.abacus.number.NumberInterface;
 
 /**
@@ -30,25 +30,45 @@ public class NumberReducer implements Reducer<NumberInterface> {
             return abacus.numberFromString(((NumberNode) node).getNumber());
         } else if(node instanceof VariableNode) {
             return abacus.numberFromString("0");
-        } else if (node instanceof BinaryNode) {
+        } else if (node instanceof NumberBinaryNode) {
             NumberInterface left = (NumberInterface) children[0];
             NumberInterface right = (NumberInterface) children[1];
-            Function function = abacus.getPluginManager().operatorFor(((BinaryNode) node).getOperation()).getFunction();
-            if (function == null) return null;
-            return function.apply(left, right);
-        } else if (node instanceof UnaryNode) {
+            NumberOperator operator = abacus.getPluginManager().operatorFor(((BinaryNode) node).getOperation());
+            return operator.apply(left, right);
+        } else if (node instanceof NumberUnaryNode) {
             NumberInterface child = (NumberInterface) children[0];
-            Function functionn = abacus.getPluginManager().operatorFor(((UnaryNode) node).getOperation()).getFunction();
-            if (functionn == null) return null;
-            return functionn.apply(child);
+            NumberOperator operator = abacus.getPluginManager().operatorFor(((UnaryNode) node).getOperation());
+            return operator.apply(child);
         } else if (node instanceof FunctionNode) {
             NumberInterface[] convertedChildren = new NumberInterface[children.length];
             for (int i = 0; i < convertedChildren.length; i++) {
                 convertedChildren[i] = (NumberInterface) children[i];
             }
-            Function function = abacus.getPluginManager().functionFor(((FunctionNode) node).getFunction());
+            NumberFunction function = abacus.getPluginManager().functionFor(((FunctionNode) node).getCallTo());
             if (function == null) return null;
             return function.apply(convertedChildren);
+        } else if (node instanceof TreeValueFunctionNode){
+            CallNode callNode = (CallNode) node;
+            TreeNode[] realChildren = new TreeNode[callNode.getChildren().size()];
+            for(int i = 0; i < realChildren.length; i++){
+                realChildren[i] = callNode.getChildren().get(i);
+            }
+            TreeValueFunction function =
+                    abacus.getPluginManager().treeValueFunctionFor(callNode.getCallTo());
+            if(function == null) return null;
+            return function.applyWithReducer(this, realChildren);
+        } else if (node instanceof TreeValueBinaryNode) {
+            BinaryNode binaryNode = (BinaryNode) node;
+            TreeValueOperator operator = abacus.getPluginManager()
+                    .treeValueOperatorFor(binaryNode.getOperation());
+            if(operator == null) return null;
+            return operator.applyWithReducer(this, binaryNode.getLeft(), binaryNode.getRight());
+        } else if(node instanceof TreeValueUnaryNode) {
+            UnaryNode unaryNode = (UnaryNode) node;
+            TreeValueOperator operator = abacus.getPluginManager()
+                    .treeValueOperatorFor(unaryNode.getOperation());
+            if(operator == null) return null;
+            return operator.applyWithReducer(this, unaryNode.getApplyTo());
         }
         return null;
     }

@@ -50,8 +50,14 @@ public class LexerTokenizer implements Tokenizer<Match<TokenType>>, PluginListen
         for (String operator : manager.getAllOperators()) {
             lexer.register(Pattern.sanitize(operator), TokenType.OP);
         }
+        for (String operator : manager.getAllTreeValueOperators()){
+            lexer.register(Pattern.sanitize(operator), TokenType.TREE_VALUE_OP);
+        }
         for (String function : manager.getAllFunctions()) {
             lexer.register(Pattern.sanitize(function), TokenType.FUNCTION);
+        }
+        for (String function : manager.getAllTreeValueFunctions()){
+            lexer.register(Pattern.sanitize(function), TokenType.TREE_VALUE_FUNCTION);
         }
     }
 
@@ -60,8 +66,14 @@ public class LexerTokenizer implements Tokenizer<Match<TokenType>>, PluginListen
         for (String operator : manager.getAllOperators()) {
             lexer.unregister(Pattern.sanitize(operator), TokenType.OP);
         }
+        for (String operator : manager.getAllTreeValueOperators()){
+            lexer.unregister(Pattern.sanitize(operator), TokenType.TREE_VALUE_OP);
+        }
         for (String function : manager.getAllFunctions()) {
             lexer.unregister(Pattern.sanitize(function), TokenType.FUNCTION);
+        }
+        for (String function : manager.getAllTreeValueFunctions()){
+            lexer.unregister(Pattern.sanitize(function), TokenType.TREE_VALUE_FUNCTION);
         }
     }
 
