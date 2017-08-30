@@ -6,6 +6,6 @@ package org.nwapw.abacus.function;
  */
 public enum DocumentationType {
 
-    FUNCTION
+    FUNCTION, TREE_VALUE_FUNCTION
 
 }

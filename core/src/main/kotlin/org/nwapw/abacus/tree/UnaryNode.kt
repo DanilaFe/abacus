@@ -9,12 +9,7 @@ package org.nwapw.abacus.tree
  * @param operation the operation applied to the given node.
  * @param applyTo the node to which the operation will be applied.
  */
-data class UnaryNode(val operation: String, val applyTo: TreeNode? = null) : TreeNode() {
-
-    override fun <T : Any> reduce(reducer: Reducer<T>): T? {
-        val reducedChild = applyTo?.reduce(reducer) ?: return null
-        return reducer.reduceNode(this, reducedChild)
-    }
+abstract class UnaryNode(val operation: String, val applyTo: TreeNode? = null) : TreeNode() {
 
     override fun toString(): String {
         return "(" + (applyTo?.toString() ?: "null") + ")" + operation
