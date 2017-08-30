@@ -21,16 +21,12 @@ public class StandardPlugin extends Plugin {
     public static final NumberOperator OP_ADD = new NumberOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 0) {
         @Override
         public boolean matchesParams(NumberInterface[] params) {
-            return params.length >= 1;
+            return params.length == 2;
         }
 
         @Override
         public NumberInterface applyInternal(NumberInterface[] params) {
-            NumberInterface sum = params[0];
-            for (int i = 1; i < params.length; i++) {
-                sum = sum.add(params[i]);
-            }
-            return sum;
+            return params[0].add(params[1]);
         }
     };
     /**
@@ -68,16 +64,12 @@ public class StandardPlugin extends Plugin {
     public static final NumberOperator OP_MULTIPLY = new NumberOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 1) {
         @Override
         public boolean matchesParams(NumberInterface[] params) {
-            return params.length >= 1;
+            return params.length == 2;
         }
 
         @Override
         public NumberInterface applyInternal(NumberInterface[] params) {
-            NumberInterface product = params[0];
-            for (int i = 1; i < params.length; i++) {
-                product = product.multiply(params[i]);
-            }
-            return product;
+            return params[0].multiply(params[1]);
         }
     };
     /**
