@@ -34,6 +34,7 @@ public class LexerTokenizer implements Tokenizer<Match<TokenType>>, PluginListen
             register(" ", TokenType.WHITESPACE);
             register(",", TokenType.COMMA);
             register("[0-9]*(\\.[0-9]+)?", TokenType.NUM);
+            register("[a-zA-Z]+", TokenType.VARIABLE);
             register("\\(", TokenType.OPEN_PARENTH);
             register("\\)", TokenType.CLOSE_PARENTH);
         }};
