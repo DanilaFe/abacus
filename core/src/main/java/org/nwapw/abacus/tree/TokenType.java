@@ -7,7 +7,7 @@ package org.nwapw.abacus.tree;
 public enum TokenType {
 
     INTERNAL_FUNCTION_END(-1),
-    ANY(0), WHITESPACE(1), COMMA(2), OP(3), NUM(4), FUNCTION(5), OPEN_PARENTH(6), CLOSE_PARENTH(7);
+    ANY(0), WHITESPACE(1), COMMA(2), OP(3), NUM(4), VARIABLE(5), FUNCTION(6), OPEN_PARENTH(7), CLOSE_PARENTH(8);
 
     /**
      * The priority by which this token gets sorted.

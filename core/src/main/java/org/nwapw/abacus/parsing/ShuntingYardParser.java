@@ -1,6 +1,5 @@
 package org.nwapw.abacus.parsing;
 
-import org.nwapw.abacus.Abacus;
 import org.nwapw.abacus.function.Operator;
 import org.nwapw.abacus.function.OperatorAssociativity;
 import org.nwapw.abacus.function.OperatorType;
@@ -18,10 +17,6 @@ import java.util.*;
 public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListener {
 
     /**
-     * The Abacus instance used to create number instances.
-     */
-    private Abacus abacus;
-    /**
      * Map of operator precedences, loaded from the plugin operators.
      */
     private Map<String, Integer> precedenceMap;
@@ -35,12 +30,9 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
     private Map<String, OperatorType> typeMap;
 
     /**
-     * Creates a new Shunting Yard parser with the given Abacus instance.
-     *
-     * @param abacus the abacus instance.
+     * Creates a new Shunting Yard parser.
      */
-    public ShuntingYardParser(Abacus abacus) {
-        this.abacus = abacus;
+    public ShuntingYardParser() {
         precedenceMap = new HashMap<>();
         associativityMap = new HashMap<>();
         typeMap = new HashMap<>();
@@ -61,7 +53,7 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
             Match<TokenType> match = from.remove(0);
             previousType = matchType;
             matchType = match.getType();
-            if (matchType == TokenType.NUM) {
+            if (matchType == TokenType.NUM || matchType == TokenType.VARIABLE) {
                 output.add(match);
             } else if (matchType == TokenType.FUNCTION) {
                 output.add(new Match<>("", TokenType.INTERNAL_FUNCTION_END));
@@ -143,7 +135,9 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
                 else return new UnaryNode(operator, applyTo);
             }
         } else if (matchType == TokenType.NUM) {
-            return new NumberNode(abacus.numberFromString(match.getContent()));
+            return new NumberNode(match.getContent());
+        } else if (matchType == TokenType.VARIABLE) {
+            return new VariableNode(match.getContent());
         } else if (matchType == TokenType.FUNCTION) {
             String functionName = match.getContent();
             FunctionNode node = new FunctionNode(functionName);

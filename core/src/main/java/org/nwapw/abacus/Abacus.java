@@ -53,7 +53,7 @@ public class Abacus {
         numberReducer = new NumberReducer(this);
         this.configuration = new Configuration(configuration);
         LexerTokenizer lexerTokenizer = new LexerTokenizer();
-        ShuntingYardParser shuntingYardParser = new ShuntingYardParser(this);
+        ShuntingYardParser shuntingYardParser = new ShuntingYardParser();
         treeBuilder = new TreeBuilder<>(lexerTokenizer, shuntingYardParser);
 
         pluginManager.addListener(shuntingYardParser);
