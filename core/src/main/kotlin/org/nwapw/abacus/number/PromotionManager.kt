@@ -25,15 +25,15 @@ class PromotionManager(val abacus: Abacus) {
         })
     }
 
-    fun promote(vararg numbers: NumberInterface): Array<NumberInterface>? {
+    fun promote(vararg numbers: NumberInterface): PromotionResult? {
         val pluginManager = abacus.pluginManager
         val implementations = numbers.map { pluginManager.interfaceImplementationFor(it.javaClass) }
         val highestPriority = implementations.sortedBy { it.priority }.last()
-        return numbers.map {
+        return PromotionResult(items = numbers.map {
             if(it.javaClass == highestPriority.implementation) it
             else getPathBetween(pluginManager.interfaceImplementationFor(it.javaClass), highestPriority)
                     ?.promote(it) ?: return null
-        }.toTypedArray()
+        }.toTypedArray(), promotedTo = highestPriority)
     }
 
 }

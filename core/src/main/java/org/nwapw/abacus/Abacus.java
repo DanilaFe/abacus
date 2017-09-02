@@ -138,16 +138,14 @@ public class Abacus {
     }
 
     /**
-     * Creates a number from a string.
-     *
-     * @param numberString the string to create the number from.
-     * @return the resulting number.
+     * Gets the number implementation.
+     * @return the number implementation to use for creating numbers.
      */
-    public NumberInterface numberFromString(String numberString) {
-        NumberImplementation toInstantiate =
+    public NumberImplementation getNumberImplementation(){
+        NumberImplementation selectedImplementation =
                 pluginManager.numberImplementationFor(configuration.getNumberImplementation());
-        if (toInstantiate == null) toInstantiate = DEFAULT_IMPLEMENTATION;
-
-        return toInstantiate.instanceForString(numberString);
+        if(selectedImplementation != null) return selectedImplementation;
+        return DEFAULT_IMPLEMENTATION;
     }
+
 }

@@ -1,5 +1,7 @@
 package org.nwapw.abacus.function.applicable
 
+import org.nwapw.abacus.plugin.NumberImplementation
+
 /**
  * A class that can be applied to arguments.
  *
@@ -15,7 +17,7 @@ interface Applicable<in T : Any, out O : Any> {
      * @param params the parameter array to verify for compatibility.
      * @return whether the array can be used with applyInternal.
      */
-    fun matchesParams(params: Array<out T>): Boolean
+    fun matchesParams(implementation: NumberImplementation, params: Array<out T>): Boolean
 
     /**
      * Applies the applicable object to the given parameters,
@@ -23,7 +25,7 @@ interface Applicable<in T : Any, out O : Any> {
      * @param params the parameters to apply to.
      * @return the result of the application.
      */
-    fun applyInternal(params: Array<out T>): O?
+    fun applyInternal(implementation: NumberImplementation, params: Array<out T>): O?
 
     /**
      * If the parameters can be used with this applicable, returns
@@ -32,9 +34,9 @@ interface Applicable<in T : Any, out O : Any> {
      * @param params the parameters to apply to.
      * @return the result of the operation, or null if parameters do not match.
      */
-    fun apply(vararg params: T): O? {
-        if (!matchesParams(params)) return null
-        return applyInternal(params)
+    fun apply(implementation: NumberImplementation, vararg params: T): O? {
+        if (!matchesParams(implementation, params)) return null
+        return applyInternal(implementation, params)
     }
 
 }
