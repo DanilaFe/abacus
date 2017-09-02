@@ -1,5 +1,6 @@
 package org.nwapw.abacus.function.applicable
 
+import org.nwapw.abacus.number.DomainException
 import org.nwapw.abacus.plugin.NumberImplementation
 import org.nwapw.abacus.tree.Reducer
 
@@ -27,7 +28,7 @@ interface ReducerApplicable<in T : Any, out O : Any, in R : Any> {
      * @param params the arguments to apply to.
      * @return the result of the application.
      */
-    fun applyWithReducerInternal(implementation: NumberImplementation, reducer: Reducer<R>, params: Array<out T>): O?
+    fun applyWithReducerInternal(implementation: NumberImplementation, reducer: Reducer<R>, params: Array<out T>): O
 
     /**
      * Applies this applicable to the given arguments, and reducer,
@@ -36,8 +37,8 @@ interface ReducerApplicable<in T : Any, out O : Any, in R : Any> {
      * @param params the arguments to apply to.
      * @return the result of the application, or null if the arguments are incompatible.
      */
-    fun applyWithReducer(implementation: NumberImplementation, reducer: Reducer<R>, vararg params: T): O? {
-        if (!matchesParams(implementation, params)) return null
+    fun applyWithReducer(implementation: NumberImplementation, reducer: Reducer<R>, vararg params: T): O {
+        if (!matchesParams(implementation, params)) throw DomainException()
         return applyWithReducerInternal(implementation, reducer, params)
     }
 

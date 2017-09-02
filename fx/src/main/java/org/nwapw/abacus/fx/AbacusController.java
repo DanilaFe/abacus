@@ -152,6 +152,8 @@ public class AbacusController implements PluginListener {
                 return resultingString;
             } catch (ComputationInterruptedException exception) {
                 return ERR_STOP;
+            } catch (DomainException exception) {
+                return exception.getMessage();
             } catch (RuntimeException exception) {
                 exception.printStackTrace();
                 return ERR_EXCEPTION;
