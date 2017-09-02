@@ -6,7 +6,6 @@ import org.nwapw.abacus.plugin.PluginListener
 import org.nwapw.abacus.plugin.PluginManager
 import java.util.function.Function
 
-class PromotionManager(val abacus: Abacus) {
 /**
  * A class that handles promotions based on priority and the
  * transition paths each implementation provides.
@@ -71,5 +70,14 @@ class PromotionManager(val abacus: Abacus) : PluginListener {
                     ?.promote(it) ?: return null
         }.toTypedArray(), promotedTo = highestPriority)
     }
+
+    override fun onLoad(manager: PluginManager?) {
+
+    }
+
+    override fun onUnload(manager: PluginManager?) {
+        computePaths.clear()
+    }
+
 
 }

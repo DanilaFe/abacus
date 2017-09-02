@@ -64,6 +64,7 @@ public class Abacus {
 
         pluginManager.addListener(shuntingYardParser);
         pluginManager.addListener(lexerTokenizer);
+        pluginManager.addListener(promotionManager);
     }
 
     /**
