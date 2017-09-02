@@ -23,7 +23,6 @@ public class StandardPlugin extends Plugin {
             return params.length == 2;
         }
 
-
         @Override
         public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
             return params[0].add(params[1]);
@@ -37,7 +36,6 @@ public class StandardPlugin extends Plugin {
         public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
             return params.length == 2;
         }
-
 
         @Override
         public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
@@ -54,7 +52,6 @@ public class StandardPlugin extends Plugin {
             return params.length == 1;
         }
 
-
         @Override
         public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
             return params[0].negate();
@@ -68,7 +65,6 @@ public class StandardPlugin extends Plugin {
         public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
             return params.length == 2;
         }
-
 
         @Override
         public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
@@ -134,7 +130,6 @@ public class StandardPlugin extends Plugin {
             return params.length == 2 && params[1].compareTo(implementation.instanceForString(Integer.toString(0))) != 0;
         }
 
-
         @Override
         public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
             return params[0].divide(params[1]);
@@ -151,7 +146,6 @@ public class StandardPlugin extends Plugin {
                     && params[0].fractionalPart().compareTo(implementation.instanceForString("0")) == 0
                     && params[0].signum() >= 0;
         }
-
 
         @Override
         public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
@@ -183,7 +177,6 @@ public class StandardPlugin extends Plugin {
                     && params[1].fractionalPart().signum() == 0;
         }
 
-
         @Override
         public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
             if (params[0].compareTo(params[1]) < 0 ||
@@ -214,7 +207,6 @@ public class StandardPlugin extends Plugin {
                     && params[1].fractionalPart().signum() == 0;
         }
 
-
         @Override
         public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
             return OP_NPR.apply(implementation, params).divide(OP_FACTORIAL.apply(implementation, params[1]));
@@ -229,7 +221,6 @@ public class StandardPlugin extends Plugin {
             return params.length == 1;
         }
 
-
         @Override
         public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
             return params[0].multiply(implementation.instanceForString(Integer.toString(params[0].signum())));
@@ -243,7 +234,6 @@ public class StandardPlugin extends Plugin {
         public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
             return params.length == 1 && params[0].compareTo(implementation.instanceForString("0")) > 0;
         }
-
 
         @Override
         public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
@@ -325,7 +315,6 @@ public class StandardPlugin extends Plugin {
             return params.length == 1;
         }
 
-
         @Override
         public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
             return implementation.instanceForString(Long.toString(Math.round(Math.random() * params[0].floor().intValue())));
@@ -343,7 +332,6 @@ public class StandardPlugin extends Plugin {
                     && params[1].compareTo(zero) == 0)
                     && !(params[0].signum() == -1 && params[1].fractionalPart().compareTo(zero) != 0);
         }
-
 
         @Override
         public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
@@ -371,7 +359,6 @@ public class StandardPlugin extends Plugin {
             return params.length == 1;
         }
 
-
         @Override
         public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
             return OP_CARET.apply(implementation, params[0], implementation.instanceForString(".5"));
@@ -386,7 +373,6 @@ public class StandardPlugin extends Plugin {
         public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
             return params.length == 1;
         }
-
 
         @Override
         public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
@@ -425,7 +411,6 @@ public class StandardPlugin extends Plugin {
             return params.length == 1;
         }
 
-
         @Override
         public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
             NumberInterface pi = piFor(params[0].getClass());
@@ -450,7 +435,6 @@ public class StandardPlugin extends Plugin {
             return params.length == 1;
         }
 
-
         @Override
         public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
             return functionSin.apply(implementation, piFor(params[0].getClass()).divide(implementation.instanceForString("2"))
@@ -466,7 +450,6 @@ public class StandardPlugin extends Plugin {
             return params.length == 1;
         }
 
-
         @Override
         public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
             return functionSin.apply(implementation, params[0]).divide(functionCos.apply(implementation, params[0]));
@@ -480,7 +463,6 @@ public class StandardPlugin extends Plugin {
         public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
             return params.length == 1;
         }
-
 
         @Override
         public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
@@ -496,7 +478,6 @@ public class StandardPlugin extends Plugin {
             return params.length == 1;
         }
 
-
         @Override
         public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
             return implementation.instanceForString("1").divide(functionSin.apply(implementation, params[0]));
@@ -510,7 +491,6 @@ public class StandardPlugin extends Plugin {
         public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
             return params.length == 1;
         }
-
 
         @Override
         public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
@@ -527,7 +507,6 @@ public class StandardPlugin extends Plugin {
             return params.length == 1
                     && FUNCTION_ABS.apply(implementation, params[0]).compareTo(implementation.instanceForString("1")) <= 0;
         }
-
 
         @Override
         public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
@@ -561,7 +540,6 @@ public class StandardPlugin extends Plugin {
             return params.length == 1 && FUNCTION_ABS.apply(implementation, params[0]).compareTo(implementation.instanceForString("1")) <= 0;
         }
 
-
         @Override
         public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
             return piFor(params[0].getClass()).divide(implementation.instanceForString("2"))
@@ -577,7 +555,6 @@ public class StandardPlugin extends Plugin {
         public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
             return params.length == 1 && FUNCTION_ABS.apply(implementation, params[0]).compareTo(implementation.instanceForString("1")) >= 0;
         }
-
 
         @Override
         public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
@@ -595,7 +572,6 @@ public class StandardPlugin extends Plugin {
             return params.length == 1 && FUNCTION_ABS.apply(implementation, params[0]).compareTo(implementation.instanceForString("1")) >= 0;
         }
 
-
         @Override
         public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
             NumberInterface[] reciprocalParamArr = {implementation.instanceForString("1").divide(params[0])};
@@ -611,7 +587,6 @@ public class StandardPlugin extends Plugin {
         public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
             return params.length == 1;
         }
-
 
         @Override
         public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
