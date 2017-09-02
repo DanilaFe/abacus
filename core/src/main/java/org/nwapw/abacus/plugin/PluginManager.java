@@ -241,7 +241,7 @@ public class PluginManager {
      * @param name the class for which to find the implementation name.
      * @return the implementation name.
      */
-    public String interfaceImplementationNameFor(Class<? extends NumberInterface> name){
+    public String interfaceImplementationNameFor(Class<? extends NumberInterface> name) {
         return interfaceImplementationNames.get(name);
     }
 

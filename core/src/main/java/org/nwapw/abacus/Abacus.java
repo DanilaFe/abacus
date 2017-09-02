@@ -1,9 +1,7 @@
 package org.nwapw.abacus;
 
 import org.nwapw.abacus.config.Configuration;
-import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
-import org.nwapw.abacus.number.PreciseNumber;
 import org.nwapw.abacus.number.PromotionManager;
 import org.nwapw.abacus.parsing.LexerTokenizer;
 import org.nwapw.abacus.parsing.ShuntingYardParser;
@@ -13,8 +11,6 @@ import org.nwapw.abacus.plugin.PluginManager;
 import org.nwapw.abacus.plugin.StandardPlugin;
 import org.nwapw.abacus.tree.NumberReducer;
 import org.nwapw.abacus.tree.TreeNode;
-
-import java.math.BigDecimal;
 
 /**
  * The main calculator class. This is responsible
@@ -72,6 +68,7 @@ public class Abacus {
 
     /**
      * Gets the promotion manager.
+     *
      * @return the promotion manager.
      */
     public PromotionManager getPromotionManager() {
@@ -139,12 +136,13 @@ public class Abacus {
 
     /**
      * Gets the number implementation.
+     *
      * @return the number implementation to use for creating numbers.
      */
-    public NumberImplementation getNumberImplementation(){
+    public NumberImplementation getNumberImplementation() {
         NumberImplementation selectedImplementation =
                 pluginManager.numberImplementationFor(configuration.getNumberImplementation());
-        if(selectedImplementation != null) return selectedImplementation;
+        if (selectedImplementation != null) return selectedImplementation;
         return DEFAULT_IMPLEMENTATION;
     }
 

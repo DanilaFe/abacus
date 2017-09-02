@@ -134,7 +134,7 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
                 TreeNode right = constructRecursive(matches);
                 TreeNode left = constructRecursive(matches);
                 if (left == null || right == null) return null;
-                if(matchType == TokenType.OP) {
+                if (matchType == TokenType.OP) {
                     return new NumberBinaryNode(operator, left, right);
                 } else {
                     return new TreeValueBinaryNode(operator, left, right);
@@ -142,7 +142,7 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
             } else {
                 TreeNode applyTo = constructRecursive(matches);
                 if (applyTo == null) return null;
-                if(matchType == TokenType.OP){
+                if (matchType == TokenType.OP) {
                     return new NumberUnaryNode(operator, applyTo);
                 } else {
                     return new TreeValueUnaryNode(operator, applyTo);
@@ -155,7 +155,7 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
         } else if (matchType == TokenType.FUNCTION || matchType == TokenType.TREE_VALUE_FUNCTION) {
             String functionName = match.getContent();
             CallNode node;
-            if(matchType == TokenType.FUNCTION){
+            if (matchType == TokenType.FUNCTION) {
                 node = new FunctionNode(functionName);
             } else {
                 node = new TreeValueFunctionNode(functionName);
