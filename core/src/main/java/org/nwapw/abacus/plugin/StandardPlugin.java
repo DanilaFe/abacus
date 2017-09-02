@@ -1,9 +1,14 @@
 package org.nwapw.abacus.plugin;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.nwapw.abacus.function.*;
 import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.number.PreciseNumber;
+import org.nwapw.abacus.tree.Reducer;
+import org.nwapw.abacus.tree.TreeNode;
+import org.nwapw.abacus.tree.VariableNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,6 +19,40 @@ import java.util.HashMap;
  */
 public class StandardPlugin extends Plugin {
 
+    /**
+     * The set operator.
+     */
+    public final TreeValueOperator opSet = new TreeValueOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 0) {
+        @Override
+        public boolean matchesParams(NumberImplementation implementation, TreeNode[] params) {
+            return params.length == 2 && params[0] instanceof VariableNode;
+        }
+
+        @Override
+        public NumberInterface applyWithReducerInternal(NumberImplementation implementation, Reducer<? extends NumberInterface> reducer, TreeNode[] params) {
+            String assignTo = ((VariableNode) params[0]).getVariable();
+            NumberInterface value = params[1].reduce(reducer);
+            getVariableDatabase().getVariables().put(assignTo, value);
+            return value;
+        }
+    };
+    /**
+     * The define operator.
+     */
+    public final TreeValueOperator opDefine = new TreeValueOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 0) {
+        @Override
+        public boolean matchesParams(NumberImplementation implementation, TreeNode[] params) {
+            return params.length == 2 && params[0] instanceof VariableNode;
+        }
+
+        @Nullable
+        @Override
+        public NumberInterface applyWithReducerInternal(NumberImplementation implementation, Reducer<? extends NumberInterface> reducer, TreeNode[] params) {
+            String assignTo = ((VariableNode) params[0]).getVariable();
+            getVariableDatabase().getDefinitions().put(assignTo, params[1]);
+            return params[1].reduce(reducer);
+        }
+    };
     /**
      * The addition operator, +
      */
@@ -711,6 +750,9 @@ public class StandardPlugin extends Plugin {
         registerOperator("/", OP_DIVIDE);
         registerOperator("^", OP_CARET);
         registerOperator("!", OP_FACTORIAL);
+
+        registerTreeValueOperator("=", opSet);
+        registerTreeValueOperator(":=", opDefine);
 
         registerOperator("nPr", OP_NPR);
         registerOperator("nCr", OP_NCR);
