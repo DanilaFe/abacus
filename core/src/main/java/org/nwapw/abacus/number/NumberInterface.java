@@ -237,29 +237,6 @@ public abstract class NumberInterface {
     public abstract int intValue();
 
     /**
-     * Promotes this class to another number class.
-     *
-     * @param toClass the class to promote to.
-     * @return the resulting new instance.
-     */
-    @Deprecated
-    protected abstract NumberInterface promoteToInternal(Class<? extends NumberInterface> toClass);
-
-    /**
-     * Promotes this class to another number class. Also, checks if the
-     * thread has been interrupted, and if so, throws
-     * an exception.
-     *
-     * @param toClass the class to promote to.
-     * @return the resulting new instance.
-     */
-    @Deprecated
-    public final NumberInterface promoteTo(Class<? extends NumberInterface> toClass) {
-        checkInterrupted();
-        return promoteToInternal(toClass);
-    }
-
-    /**
      * Returns the smallest error this instance can tolerate depending
      * on its precision and value.
      *

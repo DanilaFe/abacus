@@ -114,15 +114,6 @@ public class NaiveNumber extends NumberInterface {
         return (int) value;
     }
 
-    @Override
-    public NumberInterface promoteToInternal(Class<? extends NumberInterface> toClass) {
-        if (toClass == this.getClass()) return this;
-        else if (toClass == PreciseNumber.class) {
-            return new PreciseNumber(Double.toString(value));
-        }
-        return null;
-    }
-
     public String toString() {
         double shiftBy = Math.pow(10, 10);
         return Double.toString(Math.round(value * shiftBy) / shiftBy);
