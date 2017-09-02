@@ -35,7 +35,7 @@ public class NumberReducer implements Reducer<NumberInterface> {
         if (node instanceof NumberNode) {
             return abacus.getNumberImplementation().instanceForString(((NumberNode) node).getNumber());
         } else if (node instanceof VariableNode) {
-            return abacus.getNumberImplementation().instanceForString("0");
+            return abacus.getVariableDatabase().getVariableValue(((VariableNode) node).getVariable());
         } else if (node instanceof NumberBinaryNode) {
             NumberInterface left = (NumberInterface) children[0];
             NumberInterface right = (NumberInterface) children[1];
