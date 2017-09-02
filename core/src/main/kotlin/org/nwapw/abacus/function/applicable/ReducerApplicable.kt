@@ -1,6 +1,6 @@
 package org.nwapw.abacus.function.applicable
 
-import org.nwapw.abacus.number.DomainException
+import org.nwapw.abacus.function.DomainException
 import org.nwapw.abacus.plugin.NumberImplementation
 import org.nwapw.abacus.tree.Reducer
 

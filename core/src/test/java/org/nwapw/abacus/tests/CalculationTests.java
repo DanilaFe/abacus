@@ -5,7 +5,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.nwapw.abacus.Abacus;
 import org.nwapw.abacus.config.Configuration;
-import org.nwapw.abacus.number.DomainException;
+import org.nwapw.abacus.function.DomainException;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.plugin.StandardPlugin;
 import org.nwapw.abacus.tree.TreeNode;

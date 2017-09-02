@@ -1,4 +1,4 @@
-package org.nwapw.abacus.number;
+package org.nwapw.abacus.function;
 
 /**
  * Exception thrown if the function parameters do not match
