@@ -49,6 +49,10 @@ class Abacus(val configuration: Configuration) {
      */
     val promotionManager = PromotionManager(this)
     /**
+     * The database of variable definitions.
+     */
+    val variableDatabase = VariableDatabase(this)
+    /**
      * The number implementation used by default.
      */
     val numberImplementation: NumberImplementation
@@ -63,6 +67,7 @@ class Abacus(val configuration: Configuration) {
         pluginManager.addListener(tokenizer)
         pluginManager.addListener(parser)
         pluginManager.addListener(promotionManager)
+        pluginManager.addListener(variableDatabase)
     }
 
     /**
