@@ -41,7 +41,7 @@ public class TokenizerTests {
                     return true;
                 }
 
-                                @Override
+                @Override
                 public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
                     return subtractFunction.apply(implementation, params);
                 }
@@ -54,7 +54,7 @@ public class TokenizerTests {
                     return true;
                 }
 
-                                @Override
+                @Override
                 public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
                     return subtractFunction.apply(implementation, params);
                 }
