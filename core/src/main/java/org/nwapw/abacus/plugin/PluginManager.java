@@ -335,6 +335,7 @@ public class PluginManager {
         registeredTreeValueOperators.clear();
         registeredNumberImplementations.clear();
         registeredDocumentation.clear();
+        interfaceImplementationNames.clear();
         interfaceImplementations.clear();
         cachedPi.clear();
         listeners.forEach(e -> e.onUnload(this));
