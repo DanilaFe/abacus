@@ -8,6 +8,7 @@ import org.nwapw.abacus.function.TreeValueOperator;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.number.PromotionManager;
 import org.nwapw.abacus.number.PromotionResult;
+import org.nwapw.abacus.variables.VariableDatabase;
 
 /**
  * A reducer implementation that turns a tree into a single number.
@@ -35,6 +36,12 @@ public class NumberReducer implements Reducer<NumberInterface> {
         if (node instanceof NumberNode) {
             return abacus.getNumberImplementation().instanceForString(((NumberNode) node).getNumber());
         } else if (node instanceof VariableNode) {
+            VariableDatabase database = abacus.getVariableDatabase();
+            String name = ((VariableNode) node).getVariable();
+            NumberInterface variable = database.getVariables().get(name);
+            if(variable != null) return variable;
+            TreeNode definition = database.getDefinitions().get(name);
+            if(definition != null) return definition.reduce(this);
             return abacus.getNumberImplementation().instanceForString("0");
         } else if (node instanceof NumberBinaryNode) {
             NumberInterface left = (NumberInterface) children[0];
