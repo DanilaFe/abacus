@@ -153,14 +153,6 @@ public class PreciseNumber extends NumberInterface {
     }
 
     @Override
-    public NumberInterface promoteToInternal(Class<? extends NumberInterface> toClass) {
-        if (toClass == this.getClass()) {
-            return this;
-        }
-        return null;
-    }
-
-    @Override
     public String toString() {
         return value.round(outputContext).toString();
     }

@@ -49,10 +49,13 @@ public class PluginManager {
      */
     private Set<Documentation> registeredDocumentation;
     /**
-     * The list of number implementations that have been
-     * found by their implementation class.
+     * The list of number implementation names.
      */
-    private Map<Class<? extends NumberInterface>, NumberImplementation> cachedInterfaceImplementations;
+    private Map<Class<? extends NumberInterface>, String> interfaceImplementationNames;
+    /**
+     * The list of number implementations.
+     */
+    private Map<Class<? extends NumberInterface>, NumberImplementation> interfaceImplementations;
     /**
      * The pi values for each implementation class that have already been computer.
      */
@@ -82,7 +85,8 @@ public class PluginManager {
         registeredTreeValueOperators = new HashMap<>();
         registeredNumberImplementations = new HashMap<>();
         registeredDocumentation = new HashSet<>();
-        cachedInterfaceImplementations = new HashMap<>();
+        interfaceImplementations = new HashMap<>();
+        interfaceImplementationNames = new HashMap<>();
         cachedPi = new HashMap<>();
         listeners = new HashSet<>();
     }
@@ -135,6 +139,8 @@ public class PluginManager {
      */
     public void registerNumberImplementation(String name, NumberImplementation implementation) {
         registeredNumberImplementations.put(name, implementation);
+        interfaceImplementationNames.put(implementation.getImplementation(), name);
+        interfaceImplementations.put(implementation.getImplementation(), implementation);
     }
 
     /**
@@ -226,17 +232,17 @@ public class PluginManager {
      * @return the implementation.
      */
     public NumberImplementation interfaceImplementationFor(Class<? extends NumberInterface> name) {
-        if (cachedInterfaceImplementations.containsKey(name)) return cachedInterfaceImplementations.get(name);
-        NumberImplementation toReturn = null;
-        for (String key : registeredNumberImplementations.keySet()) {
-            NumberImplementation implementation = registeredNumberImplementations.get(key);
-            if (implementation.getImplementation() == name) {
-                toReturn = implementation;
-                break;
-            }
-        }
-        cachedInterfaceImplementations.put(name, toReturn);
-        return toReturn;
+        return interfaceImplementations.get(name);
+    }
+
+    /**
+     * Gets the number implementation name for the given implementation class.
+     *
+     * @param name the class for which to find the implementation name.
+     * @return the implementation name.
+     */
+    public String interfaceImplementationNameFor(Class<? extends NumberInterface> name) {
+        return interfaceImplementationNames.get(name);
     }
 
     /**
@@ -329,7 +335,8 @@ public class PluginManager {
         registeredTreeValueOperators.clear();
         registeredNumberImplementations.clear();
         registeredDocumentation.clear();
-        cachedInterfaceImplementations.clear();
+        interfaceImplementationNames.clear();
+        interfaceImplementations.clear();
         cachedPi.clear();
         listeners.forEach(e -> e.onUnload(this));
     }

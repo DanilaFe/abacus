@@ -9,6 +9,7 @@ import org.nwapw.abacus.function.*;
 import org.nwapw.abacus.lexing.pattern.Match;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.parsing.LexerTokenizer;
+import org.nwapw.abacus.plugin.NumberImplementation;
 import org.nwapw.abacus.plugin.Plugin;
 import org.nwapw.abacus.tree.TokenType;
 
@@ -20,12 +21,12 @@ public class TokenizerTests {
     private static LexerTokenizer lexerTokenizer = new LexerTokenizer();
     private static NumberFunction subtractFunction = new NumberFunction() {
         @Override
-        public boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
             return params.length == 2;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
             return params[0].subtract(params[1]);
         }
     };
@@ -36,26 +37,26 @@ public class TokenizerTests {
                     0) {
 
                 @Override
-                public boolean matchesParams(NumberInterface[] params) {
+                public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
                     return true;
                 }
 
                 @Override
-                public NumberInterface applyInternal(NumberInterface[] params) {
-                    return subtractFunction.apply(params);
+                public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
+                    return subtractFunction.apply(implementation, params);
                 }
             });
             registerOperator("-", new NumberOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX,
                     0) {
 
                 @Override
-                public boolean matchesParams(NumberInterface[] params) {
+                public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
                     return true;
                 }
 
                 @Override
-                public NumberInterface applyInternal(NumberInterface[] params) {
-                    return subtractFunction.apply(params);
+                public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
+                    return subtractFunction.apply(implementation, params);
                 }
             });
             registerFunction("subtract", subtractFunction);

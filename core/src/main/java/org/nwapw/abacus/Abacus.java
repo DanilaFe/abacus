@@ -2,6 +2,7 @@ package org.nwapw.abacus;
 
 import org.nwapw.abacus.config.Configuration;
 import org.nwapw.abacus.number.NumberInterface;
+import org.nwapw.abacus.number.PromotionManager;
 import org.nwapw.abacus.parsing.LexerTokenizer;
 import org.nwapw.abacus.parsing.ShuntingYardParser;
 import org.nwapw.abacus.parsing.TreeBuilder;
@@ -42,6 +43,10 @@ public class Abacus {
      * from a string.
      */
     private TreeBuilder treeBuilder;
+    /**
+     * Promotion manager responsible for the promotion system.
+     */
+    private PromotionManager promotionManager;
 
     /**
      * Creates a new instance of the Abacus calculator.
@@ -55,9 +60,20 @@ public class Abacus {
         LexerTokenizer lexerTokenizer = new LexerTokenizer();
         ShuntingYardParser shuntingYardParser = new ShuntingYardParser();
         treeBuilder = new TreeBuilder<>(lexerTokenizer, shuntingYardParser);
+        promotionManager = new PromotionManager(this);
 
         pluginManager.addListener(shuntingYardParser);
         pluginManager.addListener(lexerTokenizer);
+        pluginManager.addListener(promotionManager);
+    }
+
+    /**
+     * Gets the promotion manager.
+     *
+     * @return the promotion manager.
+     */
+    public PromotionManager getPromotionManager() {
+        return promotionManager;
     }
 
     /**
@@ -120,16 +136,15 @@ public class Abacus {
     }
 
     /**
-     * Creates a number from a string.
+     * Gets the number implementation.
      *
-     * @param numberString the string to create the number from.
-     * @return the resulting number.
+     * @return the number implementation to use for creating numbers.
      */
-    public NumberInterface numberFromString(String numberString) {
-        NumberImplementation toInstantiate =
+    public NumberImplementation getNumberImplementation() {
+        NumberImplementation selectedImplementation =
                 pluginManager.numberImplementationFor(configuration.getNumberImplementation());
-        if (toInstantiate == null) toInstantiate = DEFAULT_IMPLEMENTATION;
-
-        return toInstantiate.instanceForString(numberString);
+        if (selectedImplementation != null) return selectedImplementation;
+        return DEFAULT_IMPLEMENTATION;
     }
+
 }

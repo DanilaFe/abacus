@@ -1,5 +1,6 @@
 package org.nwapw.abacus.function.applicable
 
+import org.nwapw.abacus.plugin.NumberImplementation
 import org.nwapw.abacus.tree.Reducer
 
 /**
@@ -18,7 +19,7 @@ interface ReducerApplicable<in T : Any, out O : Any, in R : Any> {
      * given parameters.
      * @param params the parameters to check.
      */
-    fun matchesParams(params: Array<out T>): Boolean
+    fun matchesParams(implementation: NumberImplementation, params: Array<out T>): Boolean
 
     /**
      * Applies this applicable to the given arguments, and reducer.
@@ -26,7 +27,7 @@ interface ReducerApplicable<in T : Any, out O : Any, in R : Any> {
      * @param params the arguments to apply to.
      * @return the result of the application.
      */
-    fun applyWithReducerInternal(reducer: Reducer<R>, params: Array<out T>): O?
+    fun applyWithReducerInternal(implementation: NumberImplementation, reducer: Reducer<R>, params: Array<out T>): O?
 
     /**
      * Applies this applicable to the given arguments, and reducer,
@@ -35,9 +36,9 @@ interface ReducerApplicable<in T : Any, out O : Any, in R : Any> {
      * @param params the arguments to apply to.
      * @return the result of the application, or null if the arguments are incompatible.
      */
-    fun applyWithReducer(reducer: Reducer<R>, vararg params: T): O? {
-        if (!matchesParams(params)) return null
-        return applyWithReducerInternal(reducer, params)
+    fun applyWithReducer(implementation: NumberImplementation, reducer: Reducer<R>, vararg params: T): O? {
+        if (!matchesParams(implementation, params)) return null
+        return applyWithReducerInternal(implementation, reducer, params)
     }
 
 }

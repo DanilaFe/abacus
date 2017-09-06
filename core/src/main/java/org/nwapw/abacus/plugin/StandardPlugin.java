@@ -7,7 +7,6 @@ import org.nwapw.abacus.number.PreciseNumber;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.function.BiFunction;
 
 /**
  * The plugin providing standard functions such as addition and subtraction to
@@ -20,12 +19,12 @@ public class StandardPlugin extends Plugin {
      */
     public static final NumberOperator OP_ADD = new NumberOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 0) {
         @Override
-        public boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
             return params.length == 2;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
             return params[0].add(params[1]);
         }
     };
@@ -34,12 +33,12 @@ public class StandardPlugin extends Plugin {
      */
     public static final NumberOperator OP_SUBTRACT = new NumberOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 0) {
         @Override
-        public boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
             return params.length == 2;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
             return params[0].subtract(params[1]);
 
         }
@@ -49,12 +48,12 @@ public class StandardPlugin extends Plugin {
      */
     public static final NumberOperator OP_NEGATE = new NumberOperator(OperatorAssociativity.LEFT, OperatorType.UNARY_PREFIX, 0) {
         @Override
-        public boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
             return params[0].negate();
         }
     };
@@ -63,12 +62,12 @@ public class StandardPlugin extends Plugin {
      */
     public static final NumberOperator OP_MULTIPLY = new NumberOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 1) {
         @Override
-        public boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
             return params.length == 2;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
             return params[0].multiply(params[1]);
         }
     };
@@ -87,20 +86,6 @@ public class StandardPlugin extends Plugin {
         }
     };
     /**
-     * The square root function.
-     */
-    public static final NumberFunction FUNCTION_SQRT = new NumberFunction() {
-        @Override
-        public boolean matchesParams(NumberInterface[] params) {
-            return params.length == 1;
-        }
-
-        @Override
-        public NumberInterface applyInternal(NumberInterface[] params) {
-            return OP_CARET.apply(params[0], ((new NaiveNumber(0.5)).promoteTo(params[0].getClass())));
-        }
-    };
-    /**
      * The implementation for the infinite-precision BigDecimal.
      */
     public static final NumberImplementation IMPLEMENTATION_PRECISE = new NumberImplementation(PreciseNumber.class, 0) {
@@ -111,7 +96,7 @@ public class StandardPlugin extends Plugin {
 
         @Override
         public NumberInterface instanceForPi() {
-            NumberInterface C = FUNCTION_SQRT.apply(new PreciseNumber("10005")).multiply(new PreciseNumber("426880"));
+            NumberInterface C = FUNCTION_SQRT.apply(this, new PreciseNumber("10005")).multiply(new PreciseNumber("426880"));
             NumberInterface M = PreciseNumber.ONE;
             NumberInterface L = new PreciseNumber("13591409");
             NumberInterface X = M;
@@ -137,20 +122,16 @@ public class StandardPlugin extends Plugin {
         }
     };
     /**
-     * Stores objects of NumberInterface with integer values for reuse.
-     */
-    private final static HashMap<Class<? extends NumberInterface>, HashMap<Integer, NumberInterface>> integerValues = new HashMap<>();
-    /**
      * The division operator, /
      */
     public static final NumberOperator OP_DIVIDE = new NumberOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 1) {
         @Override
-        public boolean matchesParams(NumberInterface[] params) {
-            return params.length == 2 && params[1].compareTo(fromInt(params[0].getClass(), 0)) != 0;
+        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
+            return params.length == 2 && params[1].compareTo(implementation.instanceForString(Integer.toString(0))) != 0;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
             return params[0].divide(params[1]);
         }
     };
@@ -160,18 +141,18 @@ public class StandardPlugin extends Plugin {
     public static final NumberOperator OP_FACTORIAL = new NumberOperator(OperatorAssociativity.RIGHT, OperatorType.UNARY_POSTFIX, 0) {
         //private HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>> storedList = new HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>>();
         @Override
-        public boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
             return params.length == 1
-                    && params[0].fractionalPart().compareTo(fromInt(params[0].getClass(), 0)) == 0
+                    && params[0].fractionalPart().compareTo(implementation.instanceForString("0")) == 0
                     && params[0].signum() >= 0;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
             if (params[0].signum() == 0) {
-                return fromInt(params[0].getClass(), 1);
+                return implementation.instanceForString("1");
             }
-            NumberInterface one = fromInt(params[0].getClass(), 1);
+            NumberInterface one = implementation.instanceForString("1");
             NumberInterface factorial = params[0];
             NumberInterface multiplier = params[0];
             //It is necessary to later prevent calls of factorial on anything but non-negative integers.
@@ -191,27 +172,27 @@ public class StandardPlugin extends Plugin {
      */
     public static final NumberOperator OP_NPR = new NumberOperator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 0) {
         @Override
-        public boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
             return params.length == 2 && params[0].fractionalPart().signum() == 0
                     && params[1].fractionalPart().signum() == 0;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
             if (params[0].compareTo(params[1]) < 0 ||
                     params[0].signum() < 0 ||
-                    (params[0].signum() == 0 && params[1].signum() != 0)) return fromInt(params[0].getClass(), 0);
-            NumberInterface total = fromInt(params[0].getClass(), 1);
+                    (params[0].signum() == 0 && params[1].signum() != 0)) return implementation.instanceForString("0");
+            NumberInterface total = implementation.instanceForString("1");
             NumberInterface multiplyBy = params[0];
             NumberInterface remainingMultiplications = params[1];
-            NumberInterface halfway = params[0].divide(fromInt(params[0].getClass(), 2));
+            NumberInterface halfway = params[0].divide(implementation.instanceForString("2"));
             if (remainingMultiplications.compareTo(halfway) > 0) {
                 remainingMultiplications = params[0].subtract(remainingMultiplications);
             }
             while (remainingMultiplications.signum() > 0) {
                 total = total.multiply(multiplyBy);
-                remainingMultiplications = remainingMultiplications.subtract(fromInt(params[0].getClass(), 1));
-                multiplyBy = multiplyBy.subtract(fromInt(params[0].getClass(), 1));
+                remainingMultiplications = remainingMultiplications.subtract(implementation.instanceForString("1"));
+                multiplyBy = multiplyBy.subtract(implementation.instanceForString("1"));
             }
             return total;
         }
@@ -221,14 +202,14 @@ public class StandardPlugin extends Plugin {
      */
     public static final NumberOperator OP_NCR = new NumberOperator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 0) {
         @Override
-        public boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
             return params.length == 2 && params[0].fractionalPart().signum() == 0
                     && params[1].fractionalPart().signum() == 0;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberInterface[] params) {
-            return OP_NPR.apply(params).divide(OP_FACTORIAL.apply(params[1]));
+        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
+            return OP_NPR.apply(implementation, params).divide(OP_FACTORIAL.apply(implementation, params[1]));
         }
     };
     /**
@@ -236,13 +217,13 @@ public class StandardPlugin extends Plugin {
      */
     public static final NumberFunction FUNCTION_ABS = new NumberFunction() {
         @Override
-        public boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberInterface[] params) {
-            return params[0].multiply(fromInt(params[0].getClass(), params[0].signum()));
+        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
+            return params[0].multiply(implementation.instanceForString(Integer.toString(params[0].signum())));
         }
     };
     /**
@@ -250,25 +231,25 @@ public class StandardPlugin extends Plugin {
      */
     public static final NumberFunction FUNCTION_LN = new NumberFunction() {
         @Override
-        public boolean matchesParams(NumberInterface[] params) {
-            return params.length == 1 && params[0].compareTo(fromInt(params[0].getClass(), 0)) > 0;
+        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
+            return params.length == 1 && params[0].compareTo(implementation.instanceForString("0")) > 0;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
             NumberInterface param = params[0];
-            NumberInterface one = fromInt(param.getClass(), 1);
+            NumberInterface one = implementation.instanceForString("1");
             int powersOf2 = 0;
-            while (FUNCTION_ABS.apply(param.subtract(one)).compareTo(new NaiveNumber(0.1).promoteTo(param.getClass())) >= 0) {
+            while (FUNCTION_ABS.apply(implementation, param.subtract(one)).compareTo(implementation.instanceForString(".1")) >= 0) {
                 if (param.subtract(one).signum() == 1) {
-                    param = param.divide(fromInt(param.getClass(), 2));
+                    param = param.divide(implementation.instanceForString("2"));
                     powersOf2++;
                     if (param.subtract(one).signum() != 1) {
                         break;
                         //No infinite loop for you.
                     }
                 } else {
-                    param = param.multiply(fromInt(param.getClass(), 2));
+                    param = param.multiply(implementation.instanceForString("2"));
                     powersOf2--;
                     if (param.subtract(one).signum() != -1) {
                         break;
@@ -276,7 +257,7 @@ public class StandardPlugin extends Plugin {
                     }
                 }
             }
-            return getLog2(param).multiply(fromInt(param.getClass(), powersOf2)).add(getLogPartialSum(param));
+            return getLog2(implementation, param).multiply(implementation.instanceForString(Integer.toString(powersOf2))).add(getLogPartialSum(implementation, param));
         }
 
         /**
@@ -285,16 +266,16 @@ public class StandardPlugin extends Plugin {
          * @param x value at which the series is evaluated. 0 < x < 2. (x=2 is convergent but impractical.)
          * @return the partial sum.
          */
-        private NumberInterface getLogPartialSum(NumberInterface x) {
+        private NumberInterface getLogPartialSum(NumberImplementation implementation, NumberInterface x) {
 
             NumberInterface maxError = x.getMaxError();
-            x = x.subtract(fromInt(x.getClass(), 1)); //Terms used are for log(x+1).
+            x = x.subtract(implementation.instanceForString("1")); //Terms used are for log(x+1).
             NumberInterface currentNumerator = x, currentTerm = x, sum = x;
             int n = 1;
-            while (FUNCTION_ABS.apply(currentTerm).compareTo(maxError) > 0) {
+            while (FUNCTION_ABS.apply(implementation, currentTerm).compareTo(maxError) > 0) {
                 n++;
                 currentNumerator = currentNumerator.multiply(x).negate();
-                currentTerm = currentNumerator.divide(fromInt(x.getClass(), n));
+                currentTerm = currentNumerator.divide(implementation.instanceForString(Integer.toString(n)));
                 sum = sum.add(currentTerm);
             }
             return sum;
@@ -305,21 +286,21 @@ public class StandardPlugin extends Plugin {
          * @param number a number of the same type as the return type. (Used for precision.)
          * @return the value of log(2) with the appropriate precision.
          */
-        private NumberInterface getLog2(NumberInterface number) {
+        private NumberInterface getLog2(NumberImplementation implementation, NumberInterface number) {
             NumberInterface maxError = number.getMaxError();
-            //NumberInterface errorBound = fromInt(number.getClass(), 1);
+            //NumberInterface errorBound = implementation.instanceForString("1");
             //We'll use the series \sigma_{n >= 1) ((1/3^n + 1/4^n) * 1/n)
             //In the following, a=1/3^n, b=1/4^n, c = 1/n.
             //a is also an error bound.
-            NumberInterface a = fromInt(number.getClass(), 1), b = a, c = a;
-            NumberInterface sum = fromInt(number.getClass(), 0);
-            NumberInterface one = fromInt(number.getClass(), 1);
+            NumberInterface a = implementation.instanceForString("1"), b = a, c = a;
+            NumberInterface sum = implementation.instanceForString("0");
+            NumberInterface one = implementation.instanceForString("1");
             int n = 0;
             while (a.compareTo(maxError) >= 1) {
                 n++;
-                a = a.divide(fromInt(number.getClass(), 3));
-                b = b.divide(fromInt(number.getClass(), 4));
-                c = one.divide(fromInt(number.getClass(), n));
+                a = a.divide(implementation.instanceForString("3"));
+                b = b.divide(implementation.instanceForString("4"));
+                c = one.divide(implementation.instanceForString(Integer.toString(n)));
                 sum = sum.add(a.add(b).multiply(c));
             }
             return sum;
@@ -330,44 +311,88 @@ public class StandardPlugin extends Plugin {
      */
     public static final NumberFunction FUNCTION_RAND_INT = new NumberFunction() {
         @Override
-        public boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberInterface[] params) {
-            return fromInt(params[0].getClass(), (int) Math.round(Math.random() * params[0].floor().intValue()));
+        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
+            return implementation.instanceForString(Long.toString(Math.round(Math.random() * params[0].floor().intValue())));
         }
     };
-    private static final HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>> FACTORIAL_LISTS = new HashMap<>();
+    /**
+     * The caret / pow operator, ^
+     */
+    public static final NumberOperator OP_CARET = new NumberOperator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 2) {
+        @Override
+        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
+            NumberInterface zero = implementation.instanceForString("0");
+            return params.length == 2
+                    && !(params[0].compareTo(zero) == 0
+                    && params[1].compareTo(zero) == 0)
+                    && !(params[0].signum() == -1 && params[1].fractionalPart().compareTo(zero) != 0);
+        }
+
+        @Override
+        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
+            NumberInterface zero = implementation.instanceForString("0");
+            if (params[0].compareTo(zero) == 0)
+                return zero;
+            else if (params[1].compareTo(zero) == 0)
+                return implementation.instanceForString("1");
+            //Detect integer bases:
+            if (params[0].fractionalPart().compareTo(implementation.instanceForString("0")) == 0
+                    && FUNCTION_ABS.apply(implementation, params[1]).compareTo(implementation.instanceForString(Integer.toString(Integer.MAX_VALUE))) < 0
+                    && FUNCTION_ABS.apply(implementation, params[1]).compareTo(implementation.instanceForString("1")) >= 0) {
+                NumberInterface[] newParams = {params[0], params[1].fractionalPart()};
+                return params[0].intPow(params[1].floor().intValue()).multiply(applyInternal(implementation, newParams));
+            }
+            return FUNCTION_EXP.apply(implementation, FUNCTION_LN.apply(implementation, FUNCTION_ABS.apply(implementation, params[0])).multiply(params[1]));
+        }
+    };
+    /**
+     * The square root function.
+     */
+    public static final NumberFunction FUNCTION_SQRT = new NumberFunction() {
+        @Override
+        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
+            return params.length == 1;
+        }
+
+        @Override
+        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
+            return OP_CARET.apply(implementation, params[0], implementation.instanceForString(".5"));
+        }
+    };
+    private static final HashMap<NumberImplementation, ArrayList<NumberInterface>> FACTORIAL_LISTS = new HashMap<>();
     /**
      * The exponential function, exp(1) = e^1 = 2.71...
      */
     public static final NumberFunction FUNCTION_EXP = new NumberFunction() {
         @Override
-        public boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
             NumberInterface maxError = params[0].getMaxError();
             int n = 0;
             if (params[0].signum() < 0) {
                 NumberInterface[] negatedParams = {params[0].negate()};
-                return fromInt(params[0].getClass(), 1).divide(applyInternal(negatedParams));
+                return implementation.instanceForString("1").divide(applyInternal(implementation, negatedParams));
             } else {
                 //We need n such that x^(n+1) * 3^ceil(x) <= maxError * (n+1)!.
                 //right and left refer to lhs and rhs in the above inequality.
-                NumberInterface sum = fromInt(params[0].getClass(), 1);
+                NumberInterface sum = implementation.instanceForString("1");
                 NumberInterface nextNumerator = params[0];
-                NumberInterface left = params[0].multiply(fromInt(params[0].getClass(), 3).intPow(params[0].ceiling().intValue())), right = maxError;
+                NumberInterface left = params[0].multiply(implementation.instanceForString("3").intPow(params[0].ceiling().intValue())), right = maxError;
                 do {
-                    sum = sum.add(nextNumerator.divide(factorial(params[0].getClass(), n + 1)));
+                    sum = sum.add(nextNumerator.divide(factorial(implementation, n + 1)));
                     n++;
                     nextNumerator = nextNumerator.multiply(params[0]);
                     left = left.multiply(params[0]);
-                    NumberInterface nextN = fromInt(params[0].getClass(), n + 1);
+                    NumberInterface nextN = implementation.instanceForString(Integer.toString(n + 1));
                     right = right.multiply(nextN);
                     //System.out.println(left + ", " + right);
                 }
@@ -378,57 +403,27 @@ public class StandardPlugin extends Plugin {
         }
     };
     /**
-     * The caret / pow operator, ^
-     */
-    public static final NumberOperator OP_CARET = new NumberOperator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 2) {
-        @Override
-        public boolean matchesParams(NumberInterface[] params) {
-            NumberInterface zero = fromInt(params[0].getClass(), 0);
-            return params.length == 2
-                    && !(params[0].compareTo(zero) == 0
-                    && params[1].compareTo(zero) == 0)
-                    && !(params[0].signum() == -1 && params[1].fractionalPart().compareTo(zero) != 0);
-        }
-
-        @Override
-        public NumberInterface applyInternal(NumberInterface[] params) {
-            NumberInterface zero = fromInt(params[0].getClass(), 0);
-            if (params[0].compareTo(zero) == 0)
-                return zero;
-            else if (params[1].compareTo(zero) == 0)
-                return fromInt(params[0].getClass(), 1);
-            //Detect integer bases:
-            if (params[0].fractionalPart().compareTo(fromInt(params[0].getClass(), 0)) == 0
-                    && FUNCTION_ABS.apply(params[1]).compareTo(fromInt(params[0].getClass(), Integer.MAX_VALUE)) < 0
-                    && FUNCTION_ABS.apply(params[1]).compareTo(fromInt(params[1].getClass(), 1)) >= 0) {
-                NumberInterface[] newParams = {params[0], params[1].fractionalPart()};
-                return params[0].intPow(params[1].floor().intValue()).multiply(applyInternal(newParams));
-            }
-            return FUNCTION_EXP.apply(FUNCTION_LN.apply(FUNCTION_ABS.apply(params[0])).multiply(params[1]));
-        }
-    };
-    /**
      * The sine function (the argument is interpreted in radians).
      */
     public final NumberFunction functionSin = new NumberFunction() {
         @Override
-        public boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
             NumberInterface pi = piFor(params[0].getClass());
-            NumberInterface twoPi = pi.multiply(fromInt(pi.getClass(), 2));
-            NumberInterface theta = getSmallAngle(params[0], pi);
+            NumberInterface twoPi = pi.multiply(implementation.instanceForString("2"));
+            NumberInterface theta = getSmallAngle(implementation, params[0], pi);
             //System.out.println(theta);
-            if (theta.compareTo(pi.multiply(new NaiveNumber(1.5).promoteTo(twoPi.getClass()))) >= 0) {
+            if (theta.compareTo(pi.multiply(implementation.instanceForString("1.5"))) >= 0) {
                 theta = theta.subtract(twoPi);
-            } else if (theta.compareTo(pi.divide(fromInt(pi.getClass(), 2))) > 0) {
+            } else if (theta.compareTo(pi.divide(implementation.instanceForString("2"))) > 0) {
                 theta = pi.subtract(theta);
             }
             //System.out.println(theta);
-            return sinTaylor(theta);
+            return sinTaylor(implementation, theta);
         }
     };
     /**
@@ -436,13 +431,13 @@ public class StandardPlugin extends Plugin {
      */
     public final NumberFunction functionCos = new NumberFunction() {
         @Override
-        public boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberInterface[] params) {
-            return functionSin.apply(piFor(params[0].getClass()).divide(fromInt(params[0].getClass(), 2))
+        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
+            return functionSin.apply(implementation, piFor(params[0].getClass()).divide(implementation.instanceForString("2"))
                     .subtract(params[0]));
         }
     };
@@ -451,13 +446,13 @@ public class StandardPlugin extends Plugin {
      */
     public final NumberFunction functionTan = new NumberFunction() {
         @Override
-        public boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberInterface[] params) {
-            return functionSin.apply(params[0]).divide(functionCos.apply(params[0]));
+        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
+            return functionSin.apply(implementation, params[0]).divide(functionCos.apply(implementation, params[0]));
         }
     };
     /**
@@ -465,13 +460,13 @@ public class StandardPlugin extends Plugin {
      */
     public final NumberFunction functionSec = new NumberFunction() {
         @Override
-        public boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberInterface[] params) {
-            return fromInt(params[0].getClass(), 1).divide(functionCos.apply(params[0]));
+        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
+            return implementation.instanceForString("1").divide(functionCos.apply(implementation, params[0]));
         }
     };
     /**
@@ -479,13 +474,13 @@ public class StandardPlugin extends Plugin {
      */
     public final NumberFunction functionCsc = new NumberFunction() {
         @Override
-        public boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberInterface[] params) {
-            return fromInt(params[0].getClass(), 1).divide(functionSin.apply(params[0]));
+        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
+            return implementation.instanceForString("1").divide(functionSin.apply(implementation, params[0]));
         }
     };
     /**
@@ -493,13 +488,13 @@ public class StandardPlugin extends Plugin {
      */
     public final NumberFunction functionCot = new NumberFunction() {
         @Override
-        public boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberInterface[] params) {
-            return functionCos.apply(params[0]).divide(functionSin.apply(params[0]));
+        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
+            return functionCos.apply(implementation, params[0]).divide(functionSin.apply(implementation, params[0]));
         }
     };
 
@@ -508,28 +503,28 @@ public class StandardPlugin extends Plugin {
      */
     public final NumberFunction functionArcsin = new NumberFunction() {
         @Override
-        public boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
             return params.length == 1
-                    && FUNCTION_ABS.apply(params[0]).compareTo(fromInt(params[0].getClass(), 1)) <= 0;
+                    && FUNCTION_ABS.apply(implementation, params[0]).compareTo(implementation.instanceForString("1")) <= 0;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberInterface[] params) {
-            if (FUNCTION_ABS.apply(params[0]).compareTo(new NaiveNumber(0.8).promoteTo(params[0].getClass())) >= 0) {
-                NumberInterface[] newParams = {FUNCTION_SQRT.apply(fromInt(params[0].getClass(), 1).subtract(params[0].multiply(params[0])))};
-                return piFor(params[0].getClass()).divide(fromInt(params[0].getClass(), 2))
-                        .subtract(applyInternal(newParams)).multiply(fromInt(params[0].getClass(), params[0].signum()));
+        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
+            if (FUNCTION_ABS.apply(implementation, params[0]).compareTo(implementation.instanceForString(".8")) >= 0) {
+                NumberInterface[] newParams = {FUNCTION_SQRT.apply(implementation, implementation.instanceForString("1").subtract(params[0].multiply(params[0])))};
+                return piFor(params[0].getClass()).divide(implementation.instanceForString("2"))
+                        .subtract(applyInternal(implementation, newParams)).multiply(implementation.instanceForString(Integer.toString(params[0].signum())));
             }
             NumberInterface currentTerm = params[0], sum = currentTerm,
-                    multiplier = currentTerm.multiply(currentTerm), summandBound = sum.getMaxError().multiply(fromInt(sum.getClass(), 1).subtract(multiplier)),
-                    power = currentTerm, coefficient = fromInt(params[0].getClass(), 1);
+                    multiplier = currentTerm.multiply(currentTerm), summandBound = sum.getMaxError().multiply(implementation.instanceForString("1").subtract(multiplier)),
+                    power = currentTerm, coefficient = implementation.instanceForString("1");
             int exponent = 1;
-            while (FUNCTION_ABS.apply(currentTerm).compareTo(summandBound) > 0) {
+            while (FUNCTION_ABS.apply(implementation, currentTerm).compareTo(summandBound) > 0) {
                 exponent += 2;
                 power = power.multiply(multiplier);
-                coefficient = coefficient.multiply(fromInt(params[0].getClass(), exponent - 2))
-                        .divide(fromInt(params[0].getClass(), exponent - 1));
-                currentTerm = power.multiply(coefficient).divide(fromInt(power.getClass(), exponent));
+                coefficient = coefficient.multiply(implementation.instanceForString(Integer.toString(exponent - 2)))
+                        .divide(implementation.instanceForString(Integer.toString(exponent - 1)));
+                currentTerm = power.multiply(coefficient).divide(implementation.instanceForString(Integer.toString(exponent)));
                 sum = sum.add(currentTerm);
             }
             return sum;
@@ -541,14 +536,14 @@ public class StandardPlugin extends Plugin {
      */
     public final NumberFunction functionArccos = new NumberFunction() {
         @Override
-        public boolean matchesParams(NumberInterface[] params) {
-            return params.length == 1 && FUNCTION_ABS.apply(params[0]).compareTo(fromInt(params[0].getClass(), 1)) <= 0;
+        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
+            return params.length == 1 && FUNCTION_ABS.apply(implementation, params[0]).compareTo(implementation.instanceForString("1")) <= 0;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberInterface[] params) {
-            return piFor(params[0].getClass()).divide(fromInt(params[0].getClass(), 2))
-                    .subtract(functionArcsin.apply(params));
+        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
+            return piFor(params[0].getClass()).divide(implementation.instanceForString("2"))
+                    .subtract(functionArcsin.apply(implementation, params));
         }
     };
 
@@ -557,14 +552,14 @@ public class StandardPlugin extends Plugin {
      */
     public final NumberFunction functionArccsc = new NumberFunction() {
         @Override
-        public boolean matchesParams(NumberInterface[] params) {
-            return params.length == 1 && FUNCTION_ABS.apply(params[0]).compareTo(fromInt(params[0].getClass(), 1)) >= 0;
+        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
+            return params.length == 1 && FUNCTION_ABS.apply(implementation, params[0]).compareTo(implementation.instanceForString("1")) >= 0;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberInterface[] params) {
-            NumberInterface[] reciprocalParamArr = {fromInt(params[0].getClass(), 1).divide(params[0])};
-            return functionArcsin.apply(reciprocalParamArr);
+        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
+            NumberInterface[] reciprocalParamArr = {implementation.instanceForString("1").divide(params[0])};
+            return functionArcsin.apply(implementation, reciprocalParamArr);
         }
     };
 
@@ -573,14 +568,14 @@ public class StandardPlugin extends Plugin {
      */
     public final NumberFunction functionArcsec = new NumberFunction() {
         @Override
-        public boolean matchesParams(NumberInterface[] params) {
-            return params.length == 1 && FUNCTION_ABS.apply(params[0]).compareTo(fromInt(params[0].getClass(), 1)) >= 0;
+        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
+            return params.length == 1 && FUNCTION_ABS.apply(implementation, params[0]).compareTo(implementation.instanceForString("1")) >= 0;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberInterface[] params) {
-            NumberInterface[] reciprocalParamArr = {fromInt(params[0].getClass(), 1).divide(params[0])};
-            return functionArccos.apply(reciprocalParamArr);
+        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
+            NumberInterface[] reciprocalParamArr = {implementation.instanceForString("1").divide(params[0])};
+            return functionArccos.apply(implementation, reciprocalParamArr);
         }
     };
 
@@ -589,36 +584,36 @@ public class StandardPlugin extends Plugin {
      */
     public final NumberFunction functionArctan = new NumberFunction() {
         @Override
-        public boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberInterface[] params) {
+        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
             if (params[0].signum() == -1) {
                 NumberInterface[] negatedParams = {params[0].negate()};
-                return applyInternal(negatedParams).negate();
+                return applyInternal(implementation, negatedParams).negate();
             }
-            if (params[0].compareTo(fromInt(params[0].getClass(), 1)) > 0) {
-                NumberInterface[] reciprocalParams = {fromInt(params[0].getClass(), 1).divide(params[0])};
-                return piFor(params[0].getClass()).divide(fromInt(params[0].getClass(), 2))
-                        .subtract(applyInternal(reciprocalParams));
+            if (params[0].compareTo(implementation.instanceForString("1")) > 0) {
+                NumberInterface[] reciprocalParams = {implementation.instanceForString("1").divide(params[0])};
+                return piFor(params[0].getClass()).divide(implementation.instanceForString("2"))
+                        .subtract(applyInternal(implementation, reciprocalParams));
             }
-            if (params[0].compareTo(fromInt(params[0].getClass(), 1)) == 0) {
-                return piFor(params[0].getClass()).divide(fromInt(params[0].getClass(), 4));
+            if (params[0].compareTo(implementation.instanceForString("1")) == 0) {
+                return piFor(params[0].getClass()).divide(implementation.instanceForString("4"));
             }
-            if (params[0].compareTo(new NaiveNumber(0.9).promoteTo(params[0].getClass())) >= 0) {
-                NumberInterface[] newParams = {params[0].multiply(fromInt(params[0].getClass(), 2))
-                        .divide(fromInt(params[0].getClass(), 1).subtract(params[0].multiply(params[0])))};
-                return applyInternal(newParams).divide(fromInt(params[0].getClass(), 2));
+            if (params[0].compareTo(implementation.instanceForString(".9")) >= 0) {
+                NumberInterface[] newParams = {params[0].multiply(implementation.instanceForString("2"))
+                        .divide(implementation.instanceForString("1").subtract(params[0].multiply(params[0])))};
+                return applyInternal(implementation, newParams).divide(implementation.instanceForString("2"));
             }
             NumberInterface currentPower = params[0], currentTerm = currentPower, sum = currentTerm,
                     maxError = params[0].getMaxError(), multiplier = currentPower.multiply(currentPower).negate();
             int n = 1;
-            while (FUNCTION_ABS.apply(currentTerm).compareTo(maxError) > 0) {
+            while (FUNCTION_ABS.apply(implementation, currentTerm).compareTo(maxError) > 0) {
                 n += 2;
                 currentPower = currentPower.multiply(multiplier);
-                currentTerm = currentPower.divide(fromInt(currentPower.getClass(), n));
+                currentTerm = currentPower.divide(implementation.instanceForString(Integer.toString(n)));
                 sum = sum.add(currentTerm);
             }
             return sum;
@@ -630,14 +625,14 @@ public class StandardPlugin extends Plugin {
      */
     public final NumberFunction functionArccot = new NumberFunction() {
         @Override
-        public boolean matchesParams(NumberInterface[] params) {
+        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberInterface[] params) {
-            return piFor(params[0].getClass()).divide(fromInt(params[0].getClass(), 2))
-                    .subtract(functionArctan.apply(params));
+        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
+            return piFor(params[0].getClass()).divide(implementation.instanceForString("2"))
+                    .subtract(functionArctan.apply(implementation, params));
         }
     };
 
@@ -646,39 +641,24 @@ public class StandardPlugin extends Plugin {
     }
 
     /**
-     * Returns a partial sum of a series whose terms are given by the nthTermFunction, evaluated at x.
-     *
-     * @param x               the value at which the series is evaluated.
-     * @param nthTermFunction the function that returns the nth term of the series, in the format term(x, n).
-     * @param n               the number of terms in the partial sum.
-     * @return the value of the partial sum that has the same class as x.
-     */
-    private static NumberInterface sumSeries(NumberInterface x, BiFunction<Integer, NumberInterface, NumberInterface> nthTermFunction, int n) {
-        NumberInterface sum = fromInt(x.getClass(), 0);
-        for (int i = 0; i <= n; i++) {
-            sum = sum.add(nthTermFunction.apply(i, x));
-        }
-        return sum;
-    }
-
-    /**
      * A factorial function that uses memoization for each number class; it efficiently
      * computes factorials of non-negative integers.
      *
-     * @param numberClass type of number to return.
-     * @param n           non-negative integer.
+     * @param implementation type of number to return.
+     * @param n              non-negative integer.
      * @return a number of numClass with value n factorial.
      */
-    public static NumberInterface factorial(Class<? extends NumberInterface> numberClass, int n) {
-        if (!FACTORIAL_LISTS.containsKey(numberClass)) {
-            FACTORIAL_LISTS.put(numberClass, new ArrayList<>());
-            FACTORIAL_LISTS.get(numberClass).add(fromInt(numberClass, 1));
-            FACTORIAL_LISTS.get(numberClass).add(fromInt(numberClass, 1));
+    public static NumberInterface factorial(NumberImplementation implementation, int n) {
+
+        if (!FACTORIAL_LISTS.containsKey(implementation)) {
+            FACTORIAL_LISTS.put(implementation, new ArrayList<>());
+            FACTORIAL_LISTS.get(implementation).add(implementation.instanceForString("1"));
+            FACTORIAL_LISTS.get(implementation).add(implementation.instanceForString("1"));
         }
-        ArrayList<NumberInterface> list = FACTORIAL_LISTS.get(numberClass);
+        ArrayList<NumberInterface> list = FACTORIAL_LISTS.get(implementation);
         if (n >= list.size()) {
             while (list.size() < n + 16) {
-                list.add(list.get(list.size() - 1).multiply(fromInt(numberClass, list.size())));
+                list.add(list.get(list.size() - 1).multiply(implementation.instanceForString(Integer.toString(list.size()))));
             }
         }
         return list.get(n);
@@ -690,16 +670,16 @@ public class StandardPlugin extends Plugin {
      * @param x where the series is evaluated.
      * @return the value of the series
      */
-    private static NumberInterface sinTaylor(NumberInterface x) {
+    private static NumberInterface sinTaylor(NumberImplementation implementation, NumberInterface x) {
         NumberInterface power = x, multiplier = x.multiply(x).negate(), currentTerm = x, sum = x;
         NumberInterface maxError = x.getMaxError();
         int n = 1;
         do {
             n += 2;
             power = power.multiply(multiplier);
-            currentTerm = power.divide(factorial(x.getClass(), n));
+            currentTerm = power.divide(factorial(implementation, n));
             sum = sum.add(currentTerm);
-        } while (FUNCTION_ABS.apply(currentTerm).compareTo(maxError) > 0);
+        } while (FUNCTION_ABS.apply(implementation, currentTerm).compareTo(maxError) > 0);
         return sum;
     }
 
@@ -709,31 +689,14 @@ public class StandardPlugin extends Plugin {
      * @param phi an angle (in radians).
      * @return theta in [0, 2pi) that differs from phi by a multiple of 2pi.
      */
-    private static NumberInterface getSmallAngle(NumberInterface phi, NumberInterface pi) {
-        NumberInterface twoPi = pi.multiply(fromInt(pi.getClass(), 2));
-        NumberInterface theta = FUNCTION_ABS.apply(phi).subtract(twoPi
-                .multiply(FUNCTION_ABS.apply(phi).divide(twoPi).floor())); //Now theta is in [0, 2pi).
+    private static NumberInterface getSmallAngle(NumberImplementation implementation, NumberInterface phi, NumberInterface pi) {
+        NumberInterface twoPi = pi.multiply(implementation.instanceForString("2"));
+        NumberInterface theta = FUNCTION_ABS.apply(implementation, phi).subtract(twoPi
+                .multiply(FUNCTION_ABS.apply(implementation, phi).divide(twoPi).floor())); //Now theta is in [0, 2pi).
         if (phi.signum() < 0) {
             theta = twoPi.subtract(theta);
         }
         return theta;
-    }
-
-    /**
-     * Returns a number of class numType with value n.
-     *
-     * @param numType class of number to return.
-     * @param n       value of returned number.
-     * @return numClass instance with value n.
-     */
-    private static NumberInterface fromInt(Class<? extends NumberInterface> numType, int n) {
-        if (!integerValues.containsKey(numType)) {
-            integerValues.put(numType, new HashMap<>());
-        }
-        if (!integerValues.get(numType).containsKey(n)) {
-            integerValues.get(numType).put(n, new NaiveNumber(n).promoteTo(numType));
-        }
-        return integerValues.get(numType).get(n);
     }
 
     @Override
@@ -824,6 +787,6 @@ public class StandardPlugin extends Plugin {
 
     @Override
     public void onDisable() {
-
+        FACTORIAL_LISTS.clear();
     }
 }
