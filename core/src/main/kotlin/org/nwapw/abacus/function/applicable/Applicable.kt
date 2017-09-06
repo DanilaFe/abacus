@@ -1,5 +1,6 @@
 package org.nwapw.abacus.function.applicable
 
+import org.nwapw.abacus.function.DomainException
 import org.nwapw.abacus.plugin.NumberImplementation
 
 /**
@@ -25,7 +26,7 @@ interface Applicable<in T : Any, out O : Any> {
      * @param params the parameters to apply to.
      * @return the result of the application.
      */
-    fun applyInternal(implementation: NumberImplementation, params: Array<out T>): O?
+    fun applyInternal(implementation: NumberImplementation, params: Array<out T>): O
 
     /**
      * If the parameters can be used with this applicable, returns
@@ -34,8 +35,8 @@ interface Applicable<in T : Any, out O : Any> {
      * @param params the parameters to apply to.
      * @return the result of the operation, or null if parameters do not match.
      */
-    fun apply(implementation: NumberImplementation, vararg params: T): O? {
-        if (!matchesParams(implementation, params)) return null
+    fun apply(implementation: NumberImplementation, vararg params: T): O {
+        if (!matchesParams(implementation, params)) throw DomainException()
         return applyInternal(implementation, params)
     }
 

@@ -5,6 +5,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.nwapw.abacus.Abacus;
 import org.nwapw.abacus.config.Configuration;
+import org.nwapw.abacus.function.DomainException;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.plugin.StandardPlugin;
 import org.nwapw.abacus.tree.TreeNode;
@@ -28,11 +29,14 @@ public class CalculationTests {
         Assert.assertTrue(result.toString().startsWith(output));
     }
 
-    private void testEvalError(String input, String parseOutput) {
+    private void testDomainException(String input, String parseOutput) {
         TreeNode parsedTree = abacus.parseString(input);
         Assert.assertNotNull(parsedTree);
         Assert.assertEquals(parsedTree.toString(), parseOutput);
-        Assert.assertNull(abacus.evaluateTree(parsedTree));
+        try {
+            abacus.evaluateTree(parsedTree);
+            Assert.fail("Function did not throw DomainException.");
+        } catch (DomainException e){ }
     }
 
     @Test
@@ -73,7 +77,7 @@ public class CalculationTests {
 
     @Test
     public void testLn() {
-        testEvalError("ln(-1)", "ln((1)`)");
+        testDomainException("ln(-1)", "ln((1)`)");
         testOutput("ln2", "ln(2)", "0.6931471805599453094172321214581765680755");
     }
 
@@ -100,8 +104,8 @@ public class CalculationTests {
         testOutput("2^-1", "(2^(1)`)", "0.5");
         testOutput("2^50", "(2^50)", "112589990684262");
         testOutput("7^(-sqrt2*17)", "(7^((sqrt(2)*17))`)", "4.81354609155297814551845300063563");
-        testEvalError("0^0", "(0^0)");
-        testEvalError("(-13)^.9999", "((13)`^.9999)");
+        testDomainException("0^0", "(0^0)");
+        testDomainException("(-13)^.9999", "((13)`^.9999)");
     }
 
 }
