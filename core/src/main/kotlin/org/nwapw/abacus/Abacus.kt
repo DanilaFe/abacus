@@ -84,6 +84,6 @@ class Abacus(val configuration: Configuration) {
      * @return the resulting number, or null of the reduction failed.
      */
     fun evaluateTree(tree: TreeNode): NumberInterface? =
-            tree.reduce(NumberReducer(this, context.mutableSubInstance()))
+            tree.reduce(NumberReducer(this, context))
 
 }

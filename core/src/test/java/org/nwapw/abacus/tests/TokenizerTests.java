@@ -1,10 +1,12 @@
 package org.nwapw.abacus.tests;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.nwapw.abacus.Abacus;
 import org.nwapw.abacus.config.Configuration;
+import org.nwapw.abacus.context.MutableReductionContext;
 import org.nwapw.abacus.function.*;
 import org.nwapw.abacus.lexing.pattern.Match;
 import org.nwapw.abacus.number.NumberInterface;
@@ -21,12 +23,12 @@ public class TokenizerTests {
     private static LexerTokenizer lexerTokenizer = new LexerTokenizer();
     private static NumberFunction subtractFunction = new NumberFunction() {
         @Override
-        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
+        public boolean matchesParams(MutableReductionContext context, NumberInterface[] params) {
             return params.length == 2;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
+        public NumberInterface applyInternal(MutableReductionContext context, NumberInterface[] params) {
             return params[0].subtract(params[1]);
         }
     };
@@ -37,26 +39,26 @@ public class TokenizerTests {
                     0) {
 
                 @Override
-                public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
+                public boolean matchesParams(MutableReductionContext context, NumberInterface[] params) {
                     return true;
                 }
 
-                @Override
-                public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
-                    return subtractFunction.apply(implementation, params);
+                                @Override
+                public NumberInterface applyInternal(MutableReductionContext context, NumberInterface[] params) {
+                    return subtractFunction.apply(context, params);
                 }
             });
             registerOperator("-", new NumberOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX,
                     0) {
 
                 @Override
-                public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
+                public boolean matchesParams(MutableReductionContext context, NumberInterface[] params) {
                     return true;
                 }
 
-                @Override
-                public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
-                    return subtractFunction.apply(implementation, params);
+                                @Override
+                public NumberInterface applyInternal(MutableReductionContext context, NumberInterface[] params) {
+                    return subtractFunction.apply(context, params);
                 }
             });
             registerFunction("subtract", subtractFunction);

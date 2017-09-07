@@ -1,7 +1,6 @@
 package org.nwapw.abacus.plugin;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.nwapw.abacus.context.MutableReductionContext;
 import org.nwapw.abacus.function.*;
 import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
@@ -24,15 +23,16 @@ public class StandardPlugin extends Plugin {
      */
     public final TreeValueOperator opSet = new TreeValueOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 0) {
         @Override
-        public boolean matchesParams(NumberImplementation implementation, TreeNode[] params) {
+        public boolean matchesParams(MutableReductionContext context, TreeNode[] params) {
             return params.length == 2 && params[0] instanceof VariableNode;
         }
 
         @Override
-        public NumberInterface applyWithReducerInternal(NumberImplementation implementation, Reducer<? extends NumberInterface> reducer, TreeNode[] params) {
+        public NumberInterface applyInternal(MutableReductionContext context, TreeNode[] params) {
             String assignTo = ((VariableNode) params[0]).getVariable();
-            NumberInterface value = params[1].reduce(reducer);
-            getVariableDatabase().getVariables().put(assignTo, value);
+            NumberInterface value = params[1].reduce(context.getReducer());
+            if(value == null) throw new EvaluationException();
+            context.setVariable(assignTo, value);
             return value;
         }
     };
@@ -41,16 +41,17 @@ public class StandardPlugin extends Plugin {
      */
     public final TreeValueOperator opDefine = new TreeValueOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 0) {
         @Override
-        public boolean matchesParams(NumberImplementation implementation, TreeNode[] params) {
+        public boolean matchesParams(MutableReductionContext context, TreeNode[] params) {
             return params.length == 2 && params[0] instanceof VariableNode;
         }
 
-        @Nullable
         @Override
-        public NumberInterface applyWithReducerInternal(NumberImplementation implementation, Reducer<? extends NumberInterface> reducer, TreeNode[] params) {
+        public NumberInterface applyInternal(MutableReductionContext context, TreeNode[] params) {
             String assignTo = ((VariableNode) params[0]).getVariable();
-            getVariableDatabase().getDefinitions().put(assignTo, params[1]);
-            return params[1].reduce(reducer);
+            context.setDefinition(assignTo, params[1]);
+            NumberInterface value = params[1].reduce(context.getReducer());
+            if(value == null) throw new EvaluationException();
+            return value;
         }
     };
     /**
@@ -58,12 +59,12 @@ public class StandardPlugin extends Plugin {
      */
     public static final NumberOperator OP_ADD = new NumberOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 0) {
         @Override
-        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
+        public boolean matchesParams(MutableReductionContext context, NumberInterface[] params) {
             return params.length == 2;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
+        public NumberInterface applyInternal(MutableReductionContext context, NumberInterface[] params) {
             return params[0].add(params[1]);
         }
     };
@@ -72,12 +73,12 @@ public class StandardPlugin extends Plugin {
      */
     public static final NumberOperator OP_SUBTRACT = new NumberOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 0) {
         @Override
-        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
+        public boolean matchesParams(MutableReductionContext context, NumberInterface[] params) {
             return params.length == 2;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
+        public NumberInterface applyInternal(MutableReductionContext context, NumberInterface[] params) {
             return params[0].subtract(params[1]);
 
         }
@@ -87,12 +88,12 @@ public class StandardPlugin extends Plugin {
      */
     public static final NumberOperator OP_NEGATE = new NumberOperator(OperatorAssociativity.LEFT, OperatorType.UNARY_PREFIX, 0) {
         @Override
-        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
+        public boolean matchesParams(MutableReductionContext context, NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
+        public NumberInterface applyInternal(MutableReductionContext context, NumberInterface[] params) {
             return params[0].negate();
         }
     };
@@ -101,12 +102,12 @@ public class StandardPlugin extends Plugin {
      */
     public static final NumberOperator OP_MULTIPLY = new NumberOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 1) {
         @Override
-        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
+        public boolean matchesParams(MutableReductionContext context, NumberInterface[] params) {
             return params.length == 2;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
+        public NumberInterface applyInternal(MutableReductionContext context, NumberInterface[] params) {
             return params[0].multiply(params[1]);
         }
     };
@@ -135,7 +136,8 @@ public class StandardPlugin extends Plugin {
 
         @Override
         public NumberInterface instanceForPi() {
-            NumberInterface C = FUNCTION_SQRT.apply(this, new PreciseNumber("10005")).multiply(new PreciseNumber("426880"));
+            MutableReductionContext dummyContext = new MutableReductionContext(null, this, null);
+            NumberInterface C = FUNCTION_SQRT.apply(dummyContext, new PreciseNumber("10005")).multiply(new PreciseNumber("426880"));
             NumberInterface M = PreciseNumber.ONE;
             NumberInterface L = new PreciseNumber("13591409");
             NumberInterface X = M;
@@ -165,12 +167,12 @@ public class StandardPlugin extends Plugin {
      */
     public static final NumberOperator OP_DIVIDE = new NumberOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 1) {
         @Override
-        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
-            return params.length == 2 && params[1].compareTo(implementation.instanceForString(Integer.toString(0))) != 0;
+        public boolean matchesParams(MutableReductionContext context, NumberInterface[] params) {
+            return params.length == 2 && params[1].compareTo(context.getInheritedNumberImplementation().instanceForString(Integer.toString(0))) != 0;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
+        public NumberInterface applyInternal(MutableReductionContext context, NumberInterface[] params) {
             return params[0].divide(params[1]);
         }
     };
@@ -180,14 +182,15 @@ public class StandardPlugin extends Plugin {
     public static final NumberOperator OP_FACTORIAL = new NumberOperator(OperatorAssociativity.RIGHT, OperatorType.UNARY_POSTFIX, 0) {
         //private HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>> storedList = new HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>>();
         @Override
-        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
+        public boolean matchesParams(MutableReductionContext context, NumberInterface[] params) {
             return params.length == 1
-                    && params[0].fractionalPart().compareTo(implementation.instanceForString("0")) == 0
+                    && params[0].fractionalPart().compareTo(context.getInheritedNumberImplementation().instanceForString("0")) == 0
                     && params[0].signum() >= 0;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
+        public NumberInterface applyInternal(MutableReductionContext context, NumberInterface[] params) {
+            NumberImplementation implementation = context.getInheritedNumberImplementation();
             if (params[0].signum() == 0) {
                 return implementation.instanceForString("1");
             }
@@ -211,13 +214,14 @@ public class StandardPlugin extends Plugin {
      */
     public static final NumberOperator OP_NPR = new NumberOperator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 0) {
         @Override
-        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
+        public boolean matchesParams(MutableReductionContext context, NumberInterface[] params) {
             return params.length == 2 && params[0].fractionalPart().signum() == 0
                     && params[1].fractionalPart().signum() == 0;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
+        public NumberInterface applyInternal(MutableReductionContext context, NumberInterface[] params) {
+            NumberImplementation implementation = context.getInheritedNumberImplementation();
             if (params[0].compareTo(params[1]) < 0 ||
                     params[0].signum() < 0 ||
                     (params[0].signum() == 0 && params[1].signum() != 0)) return implementation.instanceForString("0");
@@ -241,14 +245,14 @@ public class StandardPlugin extends Plugin {
      */
     public static final NumberOperator OP_NCR = new NumberOperator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 0) {
         @Override
-        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
+        public boolean matchesParams(MutableReductionContext context, NumberInterface[] params) {
             return params.length == 2 && params[0].fractionalPart().signum() == 0
                     && params[1].fractionalPart().signum() == 0;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
-            return OP_NPR.apply(implementation, params).divide(OP_FACTORIAL.apply(implementation, params[1]));
+        public NumberInterface applyInternal(MutableReductionContext context, NumberInterface[] params) {
+            return OP_NPR.apply(context, params).divide(OP_FACTORIAL.apply(context, params[1]));
         }
     };
     /**
@@ -256,13 +260,13 @@ public class StandardPlugin extends Plugin {
      */
     public static final NumberFunction FUNCTION_ABS = new NumberFunction() {
         @Override
-        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
+        public boolean matchesParams(MutableReductionContext context, NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
-            return params[0].multiply(implementation.instanceForString(Integer.toString(params[0].signum())));
+        public NumberInterface applyInternal(MutableReductionContext context, NumberInterface[] params) {
+            return params[0].multiply(context.getInheritedNumberImplementation().instanceForString(Integer.toString(params[0].signum())));
         }
     };
     /**
@@ -270,16 +274,17 @@ public class StandardPlugin extends Plugin {
      */
     public static final NumberFunction FUNCTION_LN = new NumberFunction() {
         @Override
-        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
-            return params.length == 1 && params[0].compareTo(implementation.instanceForString("0")) > 0;
+        public boolean matchesParams(MutableReductionContext context, NumberInterface[] params) {
+            return params.length == 1 && params[0].compareTo(context.getInheritedNumberImplementation().instanceForString("0")) > 0;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
+        public NumberInterface applyInternal(MutableReductionContext context, NumberInterface[] params) {
+            NumberImplementation implementation = context.getInheritedNumberImplementation();
             NumberInterface param = params[0];
             NumberInterface one = implementation.instanceForString("1");
             int powersOf2 = 0;
-            while (FUNCTION_ABS.apply(implementation, param.subtract(one)).compareTo(implementation.instanceForString(".1")) >= 0) {
+            while (FUNCTION_ABS.apply(context, param.subtract(one)).compareTo(implementation.instanceForString(".1")) >= 0) {
                 if (param.subtract(one).signum() == 1) {
                     param = param.divide(implementation.instanceForString("2"));
                     powersOf2++;
@@ -296,7 +301,7 @@ public class StandardPlugin extends Plugin {
                     }
                 }
             }
-            return getLog2(implementation, param).multiply(implementation.instanceForString(Integer.toString(powersOf2))).add(getLogPartialSum(implementation, param));
+            return getLog2(context.getInheritedNumberImplementation(), param).multiply(implementation.instanceForString(Integer.toString(powersOf2))).add(getLogPartialSum(context, param));
         }
 
         /**
@@ -305,13 +310,13 @@ public class StandardPlugin extends Plugin {
          * @param x value at which the series is evaluated. 0 < x < 2. (x=2 is convergent but impractical.)
          * @return the partial sum.
          */
-        private NumberInterface getLogPartialSum(NumberImplementation implementation, NumberInterface x) {
-
+        private NumberInterface getLogPartialSum(MutableReductionContext context, NumberInterface x) {
+            NumberImplementation implementation = context.getInheritedNumberImplementation();
             NumberInterface maxError = x.getMaxError();
             x = x.subtract(implementation.instanceForString("1")); //Terms used are for log(x+1).
             NumberInterface currentNumerator = x, currentTerm = x, sum = x;
             int n = 1;
-            while (FUNCTION_ABS.apply(implementation, currentTerm).compareTo(maxError) > 0) {
+            while (FUNCTION_ABS.apply(context, currentTerm).compareTo(maxError) > 0) {
                 n++;
                 currentNumerator = currentNumerator.multiply(x).negate();
                 currentTerm = currentNumerator.divide(implementation.instanceForString(Integer.toString(n)));
@@ -350,13 +355,13 @@ public class StandardPlugin extends Plugin {
      */
     public static final NumberFunction FUNCTION_RAND_INT = new NumberFunction() {
         @Override
-        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
+        public boolean matchesParams(MutableReductionContext context, NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
-            return implementation.instanceForString(Long.toString(Math.round(Math.random() * params[0].floor().intValue())));
+        public NumberInterface applyInternal(MutableReductionContext context, NumberInterface[] params) {
+            return context.getInheritedNumberImplementation().instanceForString(Long.toString(Math.round(Math.random() * params[0].floor().intValue())));
         }
     };
     /**
@@ -364,8 +369,8 @@ public class StandardPlugin extends Plugin {
      */
     public static final NumberOperator OP_CARET = new NumberOperator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 2) {
         @Override
-        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
-            NumberInterface zero = implementation.instanceForString("0");
+        public boolean matchesParams(MutableReductionContext context, NumberInterface[] params) {
+            NumberInterface zero = context.getInheritedNumberImplementation().instanceForString("0");
             return params.length == 2
                     && !(params[0].compareTo(zero) == 0
                     && params[1].compareTo(zero) == 0)
@@ -373,7 +378,8 @@ public class StandardPlugin extends Plugin {
         }
 
         @Override
-        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
+        public NumberInterface applyInternal(MutableReductionContext context, NumberInterface[] params) {
+            NumberImplementation implementation = context.getInheritedNumberImplementation();
             NumberInterface zero = implementation.instanceForString("0");
             if (params[0].compareTo(zero) == 0)
                 return zero;
@@ -381,12 +387,12 @@ public class StandardPlugin extends Plugin {
                 return implementation.instanceForString("1");
             //Detect integer bases:
             if (params[0].fractionalPart().compareTo(implementation.instanceForString("0")) == 0
-                    && FUNCTION_ABS.apply(implementation, params[1]).compareTo(implementation.instanceForString(Integer.toString(Integer.MAX_VALUE))) < 0
-                    && FUNCTION_ABS.apply(implementation, params[1]).compareTo(implementation.instanceForString("1")) >= 0) {
+                    && FUNCTION_ABS.apply(context, params[1]).compareTo(implementation.instanceForString(Integer.toString(Integer.MAX_VALUE))) < 0
+                    && FUNCTION_ABS.apply(context, params[1]).compareTo(implementation.instanceForString("1")) >= 0) {
                 NumberInterface[] newParams = {params[0], params[1].fractionalPart()};
-                return params[0].intPow(params[1].floor().intValue()).multiply(applyInternal(implementation, newParams));
+                return params[0].intPow(params[1].floor().intValue()).multiply(applyInternal(context, newParams));
             }
-            return FUNCTION_EXP.apply(implementation, FUNCTION_LN.apply(implementation, FUNCTION_ABS.apply(implementation, params[0])).multiply(params[1]));
+            return FUNCTION_EXP.apply(context, FUNCTION_LN.apply(context, FUNCTION_ABS.apply(context, params[0])).multiply(params[1]));
         }
     };
     /**
@@ -394,13 +400,13 @@ public class StandardPlugin extends Plugin {
      */
     public static final NumberFunction FUNCTION_SQRT = new NumberFunction() {
         @Override
-        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
+        public boolean matchesParams(MutableReductionContext context, NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
-            return OP_CARET.apply(implementation, params[0], implementation.instanceForString(".5"));
+        public NumberInterface applyInternal(MutableReductionContext context, NumberInterface[] params) {
+            return OP_CARET.apply(context, params[0], context.getInheritedNumberImplementation().instanceForString(".5"));
         }
     };
     private static final HashMap<NumberImplementation, ArrayList<NumberInterface>> FACTORIAL_LISTS = new HashMap<>();
@@ -409,17 +415,18 @@ public class StandardPlugin extends Plugin {
      */
     public static final NumberFunction FUNCTION_EXP = new NumberFunction() {
         @Override
-        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
+        public boolean matchesParams(MutableReductionContext context, NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
+        public NumberInterface applyInternal(MutableReductionContext context, NumberInterface[] params) {
+            NumberImplementation implementation = context.getInheritedNumberImplementation();
             NumberInterface maxError = params[0].getMaxError();
             int n = 0;
             if (params[0].signum() < 0) {
                 NumberInterface[] negatedParams = {params[0].negate()};
-                return implementation.instanceForString("1").divide(applyInternal(implementation, negatedParams));
+                return implementation.instanceForString("1").divide(applyInternal(context, negatedParams));
             } else {
                 //We need n such that x^(n+1) * 3^ceil(x) <= maxError * (n+1)!.
                 //right and left refer to lhs and rhs in the above inequality.
@@ -446,15 +453,16 @@ public class StandardPlugin extends Plugin {
      */
     public final NumberFunction functionSin = new NumberFunction() {
         @Override
-        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
+        public boolean matchesParams(MutableReductionContext context, NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
+        public NumberInterface applyInternal(MutableReductionContext context, NumberInterface[] params) {
+            NumberImplementation implementation = context.getInheritedNumberImplementation();
             NumberInterface pi = piFor(params[0].getClass());
             NumberInterface twoPi = pi.multiply(implementation.instanceForString("2"));
-            NumberInterface theta = getSmallAngle(implementation, params[0], pi);
+            NumberInterface theta = getSmallAngle(context, params[0], pi);
             //System.out.println(theta);
             if (theta.compareTo(pi.multiply(implementation.instanceForString("1.5"))) >= 0) {
                 theta = theta.subtract(twoPi);
@@ -462,7 +470,7 @@ public class StandardPlugin extends Plugin {
                 theta = pi.subtract(theta);
             }
             //System.out.println(theta);
-            return sinTaylor(implementation, theta);
+            return sinTaylor(context, theta);
         }
     };
     /**
@@ -470,13 +478,13 @@ public class StandardPlugin extends Plugin {
      */
     public final NumberFunction functionCos = new NumberFunction() {
         @Override
-        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
+        public boolean matchesParams(MutableReductionContext context, NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
-            return functionSin.apply(implementation, piFor(params[0].getClass()).divide(implementation.instanceForString("2"))
+        public NumberInterface applyInternal(MutableReductionContext context, NumberInterface[] params) {
+            return functionSin.apply(context, piFor(params[0].getClass()).divide(context.getInheritedNumberImplementation().instanceForString("2"))
                     .subtract(params[0]));
         }
     };
@@ -485,13 +493,13 @@ public class StandardPlugin extends Plugin {
      */
     public final NumberFunction functionTan = new NumberFunction() {
         @Override
-        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
+        public boolean matchesParams(MutableReductionContext context, NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
-            return functionSin.apply(implementation, params[0]).divide(functionCos.apply(implementation, params[0]));
+        public NumberInterface applyInternal(MutableReductionContext context, NumberInterface[] params) {
+            return functionSin.apply(context, params[0]).divide(functionCos.apply(context, params[0]));
         }
     };
     /**
@@ -499,13 +507,13 @@ public class StandardPlugin extends Plugin {
      */
     public final NumberFunction functionSec = new NumberFunction() {
         @Override
-        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
+        public boolean matchesParams(MutableReductionContext context, NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
-            return implementation.instanceForString("1").divide(functionCos.apply(implementation, params[0]));
+        public NumberInterface applyInternal(MutableReductionContext context, NumberInterface[] params) {
+            return context.getInheritedNumberImplementation().instanceForString("1").divide(functionCos.apply(context, params[0]));
         }
     };
     /**
@@ -513,13 +521,13 @@ public class StandardPlugin extends Plugin {
      */
     public final NumberFunction functionCsc = new NumberFunction() {
         @Override
-        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
+        public boolean matchesParams(MutableReductionContext context, NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
-            return implementation.instanceForString("1").divide(functionSin.apply(implementation, params[0]));
+        public NumberInterface applyInternal(MutableReductionContext context, NumberInterface[] params) {
+            return context.getInheritedNumberImplementation().instanceForString("1").divide(functionSin.apply(context, params[0]));
         }
     };
     /**
@@ -527,13 +535,13 @@ public class StandardPlugin extends Plugin {
      */
     public final NumberFunction functionCot = new NumberFunction() {
         @Override
-        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
+        public boolean matchesParams(MutableReductionContext context, NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
-            return functionCos.apply(implementation, params[0]).divide(functionSin.apply(implementation, params[0]));
+        public NumberInterface applyInternal(MutableReductionContext context, NumberInterface[] params) {
+            return functionCos.apply(context, params[0]).divide(functionSin.apply(context, params[0]));
         }
     };
 
@@ -542,23 +550,24 @@ public class StandardPlugin extends Plugin {
      */
     public final NumberFunction functionArcsin = new NumberFunction() {
         @Override
-        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
+        public boolean matchesParams(MutableReductionContext context, NumberInterface[] params) {
             return params.length == 1
-                    && FUNCTION_ABS.apply(implementation, params[0]).compareTo(implementation.instanceForString("1")) <= 0;
+                    && FUNCTION_ABS.apply(context, params[0]).compareTo(context.getInheritedNumberImplementation().instanceForString("1")) <= 0;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
-            if (FUNCTION_ABS.apply(implementation, params[0]).compareTo(implementation.instanceForString(".8")) >= 0) {
-                NumberInterface[] newParams = {FUNCTION_SQRT.apply(implementation, implementation.instanceForString("1").subtract(params[0].multiply(params[0])))};
+        public NumberInterface applyInternal(MutableReductionContext context, NumberInterface[] params) {
+            NumberImplementation implementation = context.getInheritedNumberImplementation();
+            if (FUNCTION_ABS.apply(context, params[0]).compareTo(implementation.instanceForString(".8")) >= 0) {
+                NumberInterface[] newParams = {FUNCTION_SQRT.apply(context, implementation.instanceForString("1").subtract(params[0].multiply(params[0])))};
                 return piFor(params[0].getClass()).divide(implementation.instanceForString("2"))
-                        .subtract(applyInternal(implementation, newParams)).multiply(implementation.instanceForString(Integer.toString(params[0].signum())));
+                        .subtract(applyInternal(context, newParams)).multiply(implementation.instanceForString(Integer.toString(params[0].signum())));
             }
             NumberInterface currentTerm = params[0], sum = currentTerm,
                     multiplier = currentTerm.multiply(currentTerm), summandBound = sum.getMaxError().multiply(implementation.instanceForString("1").subtract(multiplier)),
                     power = currentTerm, coefficient = implementation.instanceForString("1");
             int exponent = 1;
-            while (FUNCTION_ABS.apply(implementation, currentTerm).compareTo(summandBound) > 0) {
+            while (FUNCTION_ABS.apply(context, currentTerm).compareTo(summandBound) > 0) {
                 exponent += 2;
                 power = power.multiply(multiplier);
                 coefficient = coefficient.multiply(implementation.instanceForString(Integer.toString(exponent - 2)))
@@ -575,14 +584,14 @@ public class StandardPlugin extends Plugin {
      */
     public final NumberFunction functionArccos = new NumberFunction() {
         @Override
-        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
-            return params.length == 1 && FUNCTION_ABS.apply(implementation, params[0]).compareTo(implementation.instanceForString("1")) <= 0;
+        public boolean matchesParams(MutableReductionContext context, NumberInterface[] params) {
+            return params.length == 1 && FUNCTION_ABS.apply(context, params[0]).compareTo(context.getInheritedNumberImplementation().instanceForString("1")) <= 0;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
-            return piFor(params[0].getClass()).divide(implementation.instanceForString("2"))
-                    .subtract(functionArcsin.apply(implementation, params));
+        public NumberInterface applyInternal(MutableReductionContext context, NumberInterface[] params) {
+            return piFor(params[0].getClass()).divide(context.getInheritedNumberImplementation().instanceForString("2"))
+                    .subtract(functionArcsin.apply(context, params));
         }
     };
 
@@ -591,14 +600,14 @@ public class StandardPlugin extends Plugin {
      */
     public final NumberFunction functionArccsc = new NumberFunction() {
         @Override
-        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
-            return params.length == 1 && FUNCTION_ABS.apply(implementation, params[0]).compareTo(implementation.instanceForString("1")) >= 0;
+        public boolean matchesParams(MutableReductionContext context, NumberInterface[] params) {
+            return params.length == 1 && FUNCTION_ABS.apply(context, params[0]).compareTo(context.getInheritedNumberImplementation().instanceForString("1")) >= 0;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
-            NumberInterface[] reciprocalParamArr = {implementation.instanceForString("1").divide(params[0])};
-            return functionArcsin.apply(implementation, reciprocalParamArr);
+        public NumberInterface applyInternal(MutableReductionContext context, NumberInterface[] params) {
+            NumberInterface[] reciprocalParamArr = {context.getInheritedNumberImplementation().instanceForString("1").divide(params[0])};
+            return functionArcsin.apply(context, reciprocalParamArr);
         }
     };
 
@@ -607,14 +616,14 @@ public class StandardPlugin extends Plugin {
      */
     public final NumberFunction functionArcsec = new NumberFunction() {
         @Override
-        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
-            return params.length == 1 && FUNCTION_ABS.apply(implementation, params[0]).compareTo(implementation.instanceForString("1")) >= 0;
+        public boolean matchesParams(MutableReductionContext context, NumberInterface[] params) {
+            return params.length == 1 && FUNCTION_ABS.apply(context, params[0]).compareTo(context.getInheritedNumberImplementation().instanceForString("1")) >= 0;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
-            NumberInterface[] reciprocalParamArr = {implementation.instanceForString("1").divide(params[0])};
-            return functionArccos.apply(implementation, reciprocalParamArr);
+        public NumberInterface applyInternal(MutableReductionContext context, NumberInterface[] params) {
+            NumberInterface[] reciprocalParamArr = {context.getInheritedNumberImplementation().instanceForString("1").divide(params[0])};
+            return functionArccos.apply(context, reciprocalParamArr);
         }
     };
 
@@ -623,20 +632,21 @@ public class StandardPlugin extends Plugin {
      */
     public final NumberFunction functionArctan = new NumberFunction() {
         @Override
-        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
+        public boolean matchesParams(MutableReductionContext context, NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
+        public NumberInterface applyInternal(MutableReductionContext context, NumberInterface[] params) {
+            NumberImplementation implementation = context.getInheritedNumberImplementation();
             if (params[0].signum() == -1) {
                 NumberInterface[] negatedParams = {params[0].negate()};
-                return applyInternal(implementation, negatedParams).negate();
+                return applyInternal(context, negatedParams).negate();
             }
             if (params[0].compareTo(implementation.instanceForString("1")) > 0) {
                 NumberInterface[] reciprocalParams = {implementation.instanceForString("1").divide(params[0])};
                 return piFor(params[0].getClass()).divide(implementation.instanceForString("2"))
-                        .subtract(applyInternal(implementation, reciprocalParams));
+                        .subtract(applyInternal(context, reciprocalParams));
             }
             if (params[0].compareTo(implementation.instanceForString("1")) == 0) {
                 return piFor(params[0].getClass()).divide(implementation.instanceForString("4"));
@@ -644,12 +654,12 @@ public class StandardPlugin extends Plugin {
             if (params[0].compareTo(implementation.instanceForString(".9")) >= 0) {
                 NumberInterface[] newParams = {params[0].multiply(implementation.instanceForString("2"))
                         .divide(implementation.instanceForString("1").subtract(params[0].multiply(params[0])))};
-                return applyInternal(implementation, newParams).divide(implementation.instanceForString("2"));
+                return applyInternal(context, newParams).divide(implementation.instanceForString("2"));
             }
             NumberInterface currentPower = params[0], currentTerm = currentPower, sum = currentTerm,
                     maxError = params[0].getMaxError(), multiplier = currentPower.multiply(currentPower).negate();
             int n = 1;
-            while (FUNCTION_ABS.apply(implementation, currentTerm).compareTo(maxError) > 0) {
+            while (FUNCTION_ABS.apply(context, currentTerm).compareTo(maxError) > 0) {
                 n += 2;
                 currentPower = currentPower.multiply(multiplier);
                 currentTerm = currentPower.divide(implementation.instanceForString(Integer.toString(n)));
@@ -664,14 +674,14 @@ public class StandardPlugin extends Plugin {
      */
     public final NumberFunction functionArccot = new NumberFunction() {
         @Override
-        public boolean matchesParams(NumberImplementation implementation, NumberInterface[] params) {
+        public boolean matchesParams(MutableReductionContext context, NumberInterface[] params) {
             return params.length == 1;
         }
 
         @Override
-        public NumberInterface applyInternal(NumberImplementation implementation, NumberInterface[] params) {
-            return piFor(params[0].getClass()).divide(implementation.instanceForString("2"))
-                    .subtract(functionArctan.apply(implementation, params));
+        public NumberInterface applyInternal(MutableReductionContext context, NumberInterface[] params) {
+            return piFor(params[0].getClass()).divide(context.getInheritedNumberImplementation().instanceForString("2"))
+                    .subtract(functionArctan.apply(context, params));
         }
     };
 
@@ -709,16 +719,16 @@ public class StandardPlugin extends Plugin {
      * @param x where the series is evaluated.
      * @return the value of the series
      */
-    private static NumberInterface sinTaylor(NumberImplementation implementation, NumberInterface x) {
+    private static NumberInterface sinTaylor(MutableReductionContext context, NumberInterface x) {
         NumberInterface power = x, multiplier = x.multiply(x).negate(), currentTerm = x, sum = x;
         NumberInterface maxError = x.getMaxError();
         int n = 1;
         do {
             n += 2;
             power = power.multiply(multiplier);
-            currentTerm = power.divide(factorial(implementation, n));
+            currentTerm = power.divide(factorial(context.getInheritedNumberImplementation(), n));
             sum = sum.add(currentTerm);
-        } while (FUNCTION_ABS.apply(implementation, currentTerm).compareTo(maxError) > 0);
+        } while (FUNCTION_ABS.apply(context, currentTerm).compareTo(maxError) > 0);
         return sum;
     }
 
@@ -728,10 +738,10 @@ public class StandardPlugin extends Plugin {
      * @param phi an angle (in radians).
      * @return theta in [0, 2pi) that differs from phi by a multiple of 2pi.
      */
-    private static NumberInterface getSmallAngle(NumberImplementation implementation, NumberInterface phi, NumberInterface pi) {
-        NumberInterface twoPi = pi.multiply(implementation.instanceForString("2"));
-        NumberInterface theta = FUNCTION_ABS.apply(implementation, phi).subtract(twoPi
-                .multiply(FUNCTION_ABS.apply(implementation, phi).divide(twoPi).floor())); //Now theta is in [0, 2pi).
+    private static NumberInterface getSmallAngle(MutableReductionContext context, NumberInterface phi, NumberInterface pi) {
+        NumberInterface twoPi = pi.multiply(context.getInheritedNumberImplementation().instanceForString("2"));
+        NumberInterface theta = FUNCTION_ABS.apply(context, phi).subtract(twoPi
+                .multiply(FUNCTION_ABS.apply(context, phi).divide(twoPi).floor())); //Now theta is in [0, 2pi).
         if (phi.signum() < 0) {
             theta = twoPi.subtract(theta);
         }

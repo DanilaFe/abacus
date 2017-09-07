@@ -1,6 +1,6 @@
 package org.nwapw.abacus.function
 
-import org.nwapw.abacus.function.applicable.ReducerApplicable
+import org.nwapw.abacus.function.applicable.Applicable
 import org.nwapw.abacus.number.NumberInterface
 import org.nwapw.abacus.tree.TreeNode
 
@@ -15,4 +15,4 @@ import org.nwapw.abacus.tree.TreeNode
 abstract class TreeValueOperator(associativity: OperatorAssociativity, type: OperatorType,
                                  precedence: Int) :
         Operator(associativity, type, precedence),
-        ReducerApplicable<TreeNode, NumberInterface, NumberInterface>
+        Applicable<TreeNode, NumberInterface>
