@@ -2,7 +2,7 @@ package org.nwapw.abacus.tree
 
 import org.nwapw.abacus.Abacus
 import org.nwapw.abacus.context.EvaluationContext
-import org.nwapw.abacus.function.EvaluationException
+import org.nwapw.abacus.exception.EvaluationException
 import org.nwapw.abacus.number.NumberInterface
 
 class NumberReducer(val abacus: Abacus, context: EvaluationContext) : Reducer<NumberInterface> {

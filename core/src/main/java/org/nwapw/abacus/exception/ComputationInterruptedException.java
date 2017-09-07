@@ -1,16 +1,16 @@
-package org.nwapw.abacus.number;
+package org.nwapw.abacus.exception;
 
 /**
  * Exception thrown when the computation is interrupted by
  * the user.
  */
-public class ComputationInterruptedException extends RuntimeException {
+public class ComputationInterruptedException extends AbacusException {
 
     /**
      * Creates a new exception of this type.
      */
     public ComputationInterruptedException() {
-        super("Computation interrupted.");
+        super("Computation interrupted", null);
     }
 
 }

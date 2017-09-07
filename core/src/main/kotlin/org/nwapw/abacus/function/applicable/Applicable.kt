@@ -1,7 +1,7 @@
 package org.nwapw.abacus.function.applicable
 
 import org.nwapw.abacus.context.MutableEvaluationContext
-import org.nwapw.abacus.function.DomainException
+import org.nwapw.abacus.exception.DomainException
 
 /**
  * A class that can be applied to arguments.
