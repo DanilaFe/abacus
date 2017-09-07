@@ -12,6 +12,7 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 import org.nwapw.abacus.Abacus;
 import org.nwapw.abacus.config.Configuration;
+import org.nwapw.abacus.exception.AbacusException;
 import org.nwapw.abacus.exception.ComputationInterruptedException;
 import org.nwapw.abacus.function.Documentation;
 import org.nwapw.abacus.function.DocumentationType;
@@ -153,7 +154,7 @@ public class AbacusController implements PluginListener {
                 historyData.add(new HistoryModel(inputField.getText(), constructedTree.toString(), resultingString));
                 abacus.applyToContext(result.getResultingContext());
                 return resultingString;
-            } catch (ComputationInterruptedException | DomainException | EvaluationException exception) {
+            } catch (AbacusException exception) {
                 return exception.getMessage();
             } catch (RuntimeException exception) {
                 exception.printStackTrace();
