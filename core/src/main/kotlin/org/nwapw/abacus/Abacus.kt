@@ -1,6 +1,8 @@
 package org.nwapw.abacus
 
 import org.nwapw.abacus.config.Configuration
+import org.nwapw.abacus.context.MutableReductionContext
+import org.nwapw.abacus.context.ReductionContext
 import org.nwapw.abacus.number.NumberInterface
 import org.nwapw.abacus.number.PromotionManager
 import org.nwapw.abacus.parsing.LexerTokenizer
@@ -37,10 +39,6 @@ class Abacus(val configuration: Configuration) {
      */
     val pluginManager = PluginManager(this)
     /**
-     * The reducer used to turn trees into a single number.
-     */
-    val numberReducer = NumberReducer(this)
-    /**
      * The tree builder that handles the conversion of strings into trees.
      */
     val treeBuilder = TreeBuilder(tokenizer, parser)
@@ -52,16 +50,16 @@ class Abacus(val configuration: Configuration) {
      * The database of variable definitions.
      */
     val variableDatabase = VariableDatabase(this)
+
     /**
-     * The number implementation used by default.
+     * The hidden, mutable implementation of the context.
      */
-    val numberImplementation: NumberImplementation
-        get() {
-            val selectedImplementation =
-                    pluginManager.numberImplementationFor(configuration.numberImplementation)
-            if (selectedImplementation != null) return selectedImplementation
-            return StandardPlugin.IMPLEMENTATION_NAIVE
-        }
+    private val mutableContext = MutableReductionContext(numberImplementation = StandardPlugin.IMPLEMENTATION_NAIVE)
+    /**
+     * The base context from which calculations are started.
+     */
+    val context: ReductionContext
+        get() = mutableContext
 
     init {
         pluginManager.addListener(tokenizer)
@@ -85,6 +83,7 @@ class Abacus(val configuration: Configuration) {
      * @param tree the tree to reduce, must not be null.
      * @return the resulting number, or null of the reduction failed.
      */
-    fun evaluateTree(tree: TreeNode): NumberInterface? = tree.reduce(numberReducer)
+    fun evaluateTree(tree: TreeNode): NumberInterface? =
+            tree.reduce(NumberReducer(this, context.mutableSubInstance()))
 
 }
