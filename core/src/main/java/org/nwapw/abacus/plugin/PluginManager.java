@@ -422,12 +422,5 @@ public class PluginManager {
     public Set<Class<?>> getLoadedPluginClasses() {
         return loadedPluginClasses;
     }
-
-    /**
-     * Gets the variable database.
-     * @return the database.
-     */
-    public VariableDatabase getVariableDatabase(){
-        return abacus.getVariableDatabase();
-    }
+    
 }

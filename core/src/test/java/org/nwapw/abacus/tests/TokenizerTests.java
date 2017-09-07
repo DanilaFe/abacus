@@ -82,7 +82,7 @@ public class TokenizerTests {
     public static void prepareTests() {
         abacus.getPluginManager().addListener(lexerTokenizer);
         abacus.getPluginManager().addInstantiated(testPlugin);
-        abacus.getPluginManager().load();
+        abacus.reload();
     }
 
     @Test

@@ -17,7 +17,7 @@ public class CalculationTests {
     @BeforeClass
     public static void prepareTests() {
         abacus.getPluginManager().addInstantiated(new StandardPlugin(abacus.getPluginManager()));
-        abacus.getPluginManager().load();
+        abacus.reload();
     }
 
     private void testOutput(String input, String parseOutput, String output) {

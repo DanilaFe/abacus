@@ -46,10 +46,6 @@ class Abacus(val configuration: Configuration) {
      * The promotion manager used to convert between number implementations.
      */
     val promotionManager = PromotionManager(this)
-    /**
-     * The database of variable definitions.
-     */
-    val variableDatabase = VariableDatabase(this)
 
     /**
      * The hidden, mutable implementation of the context.
@@ -65,9 +61,16 @@ class Abacus(val configuration: Configuration) {
         pluginManager.addListener(tokenizer)
         pluginManager.addListener(parser)
         pluginManager.addListener(promotionManager)
-        pluginManager.addListener(variableDatabase)
     }
 
+    fun reload(){
+        pluginManager.reload()
+        with(mutableContext) {
+            numberImplementation = pluginManager.numberImplementationFor(configuration.numberImplementation)
+            clearVariables()
+            clearDefinitions()
+        }
+    }
     /**
      * Parses a string into a tree structure using the main
      * tree builder.

@@ -220,12 +220,4 @@ public abstract class Plugin {
      */
     public abstract void onDisable();
 
-    /**
-     * Get the variable database.
-     * @return the variable database.
-     */
-    public final VariableDatabase getVariableDatabase(){
-        return manager.getVariableDatabase();
-    }
-
 }

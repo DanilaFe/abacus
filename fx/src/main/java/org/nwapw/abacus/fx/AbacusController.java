@@ -320,13 +320,13 @@ public class AbacusController implements PluginListener {
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        abacusPluginManager.reload();
+        abacus.reload();
     }
 
     @FXML
     public void performReload() {
         alertIfApplyNeeded(true);
-        abacus.getPluginManager().reload();
+        abacus.reload();
     }
 
     @FXML
