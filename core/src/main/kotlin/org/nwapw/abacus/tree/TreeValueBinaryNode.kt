@@ -11,7 +11,7 @@ package org.nwapw.abacus.tree
  * @param left the left child of this node.
  * @param right the right child of this node.
  */
-class TreeValueBinaryNode(operation: String, left: TreeNode?, right: TreeNode?)
+class TreeValueBinaryNode(operation: String, left: TreeNode, right: TreeNode)
     : BinaryNode(operation, left, right) {
 
     override fun <T : Any> reduce(reducer: Reducer<T>): T? {

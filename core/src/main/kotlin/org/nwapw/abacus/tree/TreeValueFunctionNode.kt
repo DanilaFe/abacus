@@ -7,7 +7,7 @@ package org.nwapw.abacus.tree
  * is mostly to help the reducer. Besides that, this class also does not
  * even attempt to reduce its children.
  */
-class TreeValueFunctionNode(name: String) : CallNode(name) {
+class TreeValueFunctionNode(name: String, children: List<TreeNode>) : CallNode(name, children) {
 
     override fun <T : Any> reduce(reducer: Reducer<T>): T? {
         return reducer.reduceNode(this)
