@@ -18,14 +18,14 @@ class NumberReducer(val abacus: Abacus, context: EvaluationContext) : Reducer<Nu
         return when(treeNode){
             is NumberNode -> {
                 context.inheritedNumberImplementation?.instanceForString(treeNode.number)
-                        ?: throw EvaluationException()
+                        ?: throw EvaluationException("no number implementation selected.")
             }
             is VariableNode -> {
                 val variable = context.getVariable(treeNode.variable)
                 if(variable != null) return variable
                 val definition = context.getDefinition(treeNode.variable)
                 if(definition != null) return definition.reduce(this)
-                throw EvaluationException()
+                throw EvaluationException("variable is not defined.")
             }
             is NumberUnaryNode -> {
                 val child = children[0] as NumberInterface
@@ -36,13 +36,15 @@ class NumberReducer(val abacus: Abacus, context: EvaluationContext) : Reducer<Nu
             is NumberBinaryNode -> {
                 val left = children[0] as NumberInterface
                 val right = children[1] as NumberInterface
-                val promotionResult = promotionManager.promote(left, right) ?: throw EvaluationException()
+                val promotionResult = promotionManager.promote(left, right) ?:
+                        throw EvaluationException("promotion failed.")
                 context.numberImplementation = promotionResult.promotedTo
                 abacus.pluginManager.operatorFor(treeNode.operation).apply(context, *promotionResult.items)
             }
             is FunctionNode -> {
                 val promotionResult = promotionManager
-                        .promote(*children.map { it as NumberInterface }.toTypedArray()) ?: throw EvaluationException()
+                        .promote(*children.map { it as NumberInterface }.toTypedArray()) ?:
+                        throw EvaluationException("promotion failed.")
                 context.numberImplementation = promotionResult.promotedTo
                 abacus.pluginManager.functionFor(treeNode.callTo).apply(context, *promotionResult.items)
             }
@@ -58,7 +60,7 @@ class NumberReducer(val abacus: Abacus, context: EvaluationContext) : Reducer<Nu
                 abacus.pluginManager.treeValueFunctionFor(treeNode.callTo)
                         .apply(context, *treeNode.children.toTypedArray())
             }
-            else -> throw EvaluationException()
+            else -> throw EvaluationException("unrecognized tree node.")
         }
     }
 

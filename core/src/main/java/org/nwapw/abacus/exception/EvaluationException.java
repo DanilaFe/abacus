@@ -11,7 +11,7 @@ public class EvaluationException extends AbacusException {
      * Creates a new EvaluationException with the default string.
      */
     public EvaluationException() {
-        this(null);
+        this("");
     }
 
     /**

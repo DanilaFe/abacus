@@ -10,7 +10,7 @@ public class ComputationInterruptedException extends AbacusException {
      * Creates a new exception of this type.
      */
     public ComputationInterruptedException() {
-        super("Computation interrupted", null);
+        super("Computation interrupted", "");
     }
 
 }

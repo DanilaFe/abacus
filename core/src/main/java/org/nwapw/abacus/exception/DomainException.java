@@ -18,7 +18,7 @@ public class DomainException extends AbacusException {
      * Creates a new DomainException with a default message.
      */
     public DomainException(){
-        this(null);
+        this("");
     }
 
 }

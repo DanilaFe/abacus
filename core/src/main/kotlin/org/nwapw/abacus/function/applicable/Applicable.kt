@@ -36,7 +36,8 @@ interface Applicable<in T : Any, out O : Any> {
      * @return the result of the operation, or null if parameters do not match.
      */
     fun apply(context: MutableEvaluationContext, vararg params: T): O {
-        if (!matchesParams(context, params)) throw DomainException()
+        if (!matchesParams(context, params))
+            throw DomainException("parameters do not match function requirements.")
         return applyInternal(context, params)
     }
 
