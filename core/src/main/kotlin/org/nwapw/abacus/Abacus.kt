@@ -11,6 +11,7 @@ import org.nwapw.abacus.parsing.TreeBuilder
 import org.nwapw.abacus.plugin.NumberImplementation
 import org.nwapw.abacus.plugin.PluginManager
 import org.nwapw.abacus.plugin.StandardPlugin
+import org.nwapw.abacus.tree.EvaluationResult
 import org.nwapw.abacus.tree.NumberReducer
 import org.nwapw.abacus.tree.TreeNode
 import org.nwapw.abacus.variables.VariableDatabase
@@ -63,6 +64,9 @@ class Abacus(val configuration: Configuration) {
         pluginManager.addListener(promotionManager)
     }
 
+    /**
+     * Reloads the Abacus core.
+     */
     fun reload(){
         pluginManager.reload()
         with(mutableContext) {
@@ -70,6 +74,14 @@ class Abacus(val configuration: Configuration) {
             clearVariables()
             clearDefinitions()
         }
+    }
+    /**
+     * Merges the current context with the provided one, updating
+     * variables and the like.
+     * @param context the context to apply.
+     */
+    fun applyToContext(context: ReductionContext){
+        mutableContext.apply(context)
     }
     /**
      * Parses a string into a tree structure using the main
@@ -86,7 +98,10 @@ class Abacus(val configuration: Configuration) {
      * @param tree the tree to reduce, must not be null.
      * @return the resulting number, or null of the reduction failed.
      */
-    fun evaluateTree(tree: TreeNode): NumberInterface? =
-            tree.reduce(NumberReducer(this, context))
+    fun evaluateTree(tree: TreeNode): EvaluationResult {
+        val newReducer = NumberReducer(this, context)
+        val evaluationValue = tree.reduce(newReducer)
+        return EvaluationResult(evaluationValue, newReducer.context)
+    }
 
 }
