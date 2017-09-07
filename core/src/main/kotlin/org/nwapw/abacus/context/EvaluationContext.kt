@@ -15,9 +15,9 @@ import org.nwapw.abacus.tree.TreeNode
  * @property numberImplementation the implementation for numbers of this context.
  * @property reducer the reducer used by this context.
  */
-open class ReductionContext(val parent: ReductionContext? = null,
-                            open val numberImplementation: NumberImplementation? = null,
-                            open val reducer: Reducer<NumberInterface>? = null) {
+open class EvaluationContext(val parent: EvaluationContext? = null,
+                             open val numberImplementation: NumberImplementation? = null,
+                             open val reducer: Reducer<NumberInterface>? = null) {
 
     /**
      * The map of variables in this context.
@@ -66,7 +66,7 @@ open class ReductionContext(val parent: ReductionContext? = null,
      * Create a new child instance of this context that is mutable.
      * @return the new child instance.
      */
-    fun mutableSubInstance(): MutableReductionContext = MutableReductionContext(this)
+    fun mutableSubInstance(): MutableEvaluationContext = MutableEvaluationContext(this)
 
     /**
      * Gets a variable stored in this context.

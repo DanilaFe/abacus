@@ -1,12 +1,10 @@
 package org.nwapw.abacus.tree
 
 import org.nwapw.abacus.Abacus
-import org.nwapw.abacus.context.MutableReductionContext
-import org.nwapw.abacus.context.ReductionContext
-import org.nwapw.abacus.function.NumberFunction
+import org.nwapw.abacus.context.EvaluationContext
 import org.nwapw.abacus.number.NumberInterface
 
-class NumberReducer(val abacus: Abacus, context: ReductionContext) : Reducer<NumberInterface> {
+class NumberReducer(val abacus: Abacus, context: EvaluationContext) : Reducer<NumberInterface> {
 
     val context = context.mutableSubInstance()
 

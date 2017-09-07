@@ -11,10 +11,10 @@ import org.nwapw.abacus.tree.TreeNode
  * @param numberImplementation the number implementation used in this context.
  * @param reducer the reducer used in this context
  */
-class MutableReductionContext(parent: ReductionContext? = null,
-                              numberImplementation: NumberImplementation? = null,
-                              reducer: Reducer<NumberInterface>? = null) :
-        ReductionContext(parent, numberImplementation, reducer) {
+class MutableEvaluationContext(parent: EvaluationContext? = null,
+                               numberImplementation: NumberImplementation? = null,
+                               reducer: Reducer<NumberInterface>? = null) :
+        EvaluationContext(parent, numberImplementation, reducer) {
 
     override var numberImplementation: NumberImplementation? = super.numberImplementation
     override var reducer: Reducer<NumberInterface>? = super.reducer
@@ -23,7 +23,7 @@ class MutableReductionContext(parent: ReductionContext? = null,
      * Writes data stored in the [other] context over data stored in this one.
      * @param other the context from which to copy data.
      */
-    fun apply(other: ReductionContext) {
+    fun apply(other: EvaluationContext) {
         if(other.numberImplementation != null) numberImplementation = other.numberImplementation
         if(other.reducer != null) reducer = other.reducer
         for(name in other.variables) {
