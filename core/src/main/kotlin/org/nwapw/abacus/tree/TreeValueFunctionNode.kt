@@ -9,7 +9,7 @@ package org.nwapw.abacus.tree
  */
 class TreeValueFunctionNode(name: String, children: List<TreeNode>) : CallNode(name, children) {
 
-    override fun <T : Any> reduce(reducer: Reducer<T>): T? {
+    override fun <T : Any> reduce(reducer: Reducer<T>): T {
         return reducer.reduceNode(this)
     }
 

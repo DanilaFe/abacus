@@ -14,6 +14,6 @@ interface Reducer<out T> {
      * @param treeNode the tree node to reduce.
      * @param children the list of children, of type T.
      */
-    fun reduceNode(treeNode: TreeNode, vararg children: Any): T?
+    fun reduceNode(treeNode: TreeNode, vararg children: Any): T
 
 }

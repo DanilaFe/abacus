@@ -14,7 +14,7 @@ package org.nwapw.abacus.tree
 class TreeValueBinaryNode(operation: String, left: TreeNode, right: TreeNode)
     : BinaryNode(operation, left, right) {
 
-    override fun <T : Any> reduce(reducer: Reducer<T>): T? {
+    override fun <T : Any> reduce(reducer: Reducer<T>): T {
         return reducer.reduceNode(this)
     }
 

@@ -10,8 +10,8 @@ package org.nwapw.abacus.tree
  */
 class FunctionNode(function: String, children: List<TreeNode>) : CallNode(function, children) {
 
-    override fun <T : Any> reduce(reducer: Reducer<T>): T? {
-        val children = Array<Any>(children.size, { children[it].reduce(reducer) ?: return null; })
+    override fun <T : Any> reduce(reducer: Reducer<T>): T {
+        val children = Array<Any>(children.size, { children[it].reduce(reducer) })
         return reducer.reduceNode(this, *children)
     }
 

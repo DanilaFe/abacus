@@ -10,7 +10,7 @@ package org.nwapw.abacus.tree
  */
 class VariableNode(val variable: String) : TreeNode() {
 
-    override fun <T : Any> reduce(reducer: Reducer<T>): T? {
+    override fun <T : Any> reduce(reducer: Reducer<T>): T {
         return reducer.reduceNode(this)
     }
 

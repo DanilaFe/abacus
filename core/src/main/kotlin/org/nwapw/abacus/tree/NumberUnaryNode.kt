@@ -11,7 +11,7 @@ package org.nwapw.abacus.tree
 class NumberUnaryNode(operation: String, child: TreeNode)
     : UnaryNode(operation, child) {
 
-    override fun <T : Any> reduce(reducer: Reducer<T>): T? {
+    override fun <T : Any> reduce(reducer: Reducer<T>): T {
         val child = applyTo.reduce(reducer)
         return reducer.reduceNode(this, child)
     }

@@ -2,6 +2,7 @@ package org.nwapw.abacus.tree
 
 import org.nwapw.abacus.Abacus
 import org.nwapw.abacus.context.EvaluationContext
+import org.nwapw.abacus.function.EvaluationException
 import org.nwapw.abacus.number.NumberInterface
 
 class NumberReducer(val abacus: Abacus, context: EvaluationContext) : Reducer<NumberInterface> {
@@ -12,18 +13,19 @@ class NumberReducer(val abacus: Abacus, context: EvaluationContext) : Reducer<Nu
         this.context.reducer = this
     }
 
-    override fun reduceNode(treeNode: TreeNode, vararg children: Any): NumberInterface? {
+    override fun reduceNode(treeNode: TreeNode, vararg children: Any): NumberInterface {
         val promotionManager = abacus.promotionManager
         return when(treeNode){
             is NumberNode -> {
                 context.inheritedNumberImplementation?.instanceForString(treeNode.number)
+                        ?: throw EvaluationException()
             }
             is VariableNode -> {
                 val variable = context.getVariable(treeNode.variable)
                 if(variable != null) return variable
                 val definition = context.getDefinition(treeNode.variable)
                 if(definition != null) return definition.reduce(this)
-                null
+                throw EvaluationException()
             }
             is NumberUnaryNode -> {
                 val child = children[0] as NumberInterface
@@ -34,29 +36,29 @@ class NumberReducer(val abacus: Abacus, context: EvaluationContext) : Reducer<Nu
             is NumberBinaryNode -> {
                 val left = children[0] as NumberInterface
                 val right = children[1] as NumberInterface
-                val promotionResult = promotionManager.promote(left, right) ?: return null
+                val promotionResult = promotionManager.promote(left, right) ?: throw EvaluationException()
                 context.numberImplementation = promotionResult.promotedTo
                 abacus.pluginManager.operatorFor(treeNode.operation).apply(context, *promotionResult.items)
             }
             is FunctionNode -> {
                 val promotionResult = promotionManager
-                        .promote(*children.map { it as NumberInterface }.toTypedArray()) ?: return null
+                        .promote(*children.map { it as NumberInterface }.toTypedArray()) ?: throw EvaluationException()
                 context.numberImplementation = promotionResult.promotedTo
                 abacus.pluginManager.functionFor(treeNode.callTo).apply(context, *promotionResult.items)
             }
             is TreeValueUnaryNode -> {
                 abacus.pluginManager.treeValueOperatorFor(treeNode.operation)
-                        .apply(context, treeNode.applyTo ?: return null)
+                        .apply(context, treeNode.applyTo)
             }
             is TreeValueBinaryNode -> {
                 abacus.pluginManager.treeValueOperatorFor(treeNode.operation)
-                        .apply(context, treeNode.left ?: return null, treeNode.right ?: return null)
+                        .apply(context, treeNode.left, treeNode.right)
             }
             is TreeValueFunctionNode -> {
                 abacus.pluginManager.treeValueFunctionFor(treeNode.callTo)
                         .apply(context, *treeNode.children.toTypedArray())
             }
-            else -> null
+            else -> throw EvaluationException()
         }
     }
 

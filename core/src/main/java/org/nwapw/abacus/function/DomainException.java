@@ -18,7 +18,7 @@ public class DomainException extends RuntimeException {
      * Creates a new DomainException with a default message.
      */
     public DomainException(){
-        this("Domain Error");
+        this("Domain error.");
     }
 
 }

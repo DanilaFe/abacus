@@ -11,7 +11,7 @@ public class EvaluationException extends RuntimeException {
      * Creates a new EvaluationException with the default string.
      */
     public EvaluationException() {
-        super("Error evaluating expression.");
+        super("Evaluation error.");
     }
 
     /**

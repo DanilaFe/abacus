@@ -12,8 +12,8 @@ package org.nwapw.abacus.tree
 class TreeValueUnaryNode(operation: String, child: TreeNode)
     : UnaryNode(operation, child) {
 
-    override fun <T : Any> reduce(reducer: Reducer<T>): T? {
-        return reducer.reduceNode(this);
+    override fun <T : Any> reduce(reducer: Reducer<T>): T {
+        return reducer.reduceNode(this)
     }
 
 }

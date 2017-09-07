@@ -13,9 +13,9 @@ package org.nwapw.abacus.tree
 class NumberBinaryNode(operation: String, left: TreeNode, right: TreeNode)
     : BinaryNode(operation, left, right) {
 
-    override fun <T : Any> reduce(reducer: Reducer<T>): T? {
-        val left = left.reduce(reducer) ?: return null
-        val right = right.reduce(reducer) ?: return null
+    override fun <T : Any> reduce(reducer: Reducer<T>): T {
+        val left = left.reduce(reducer)
+        val right = right.reduce(reducer)
         return reducer.reduceNode(this, left, right)
     }
 
