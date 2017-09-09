@@ -363,7 +363,12 @@ public class AbacusController implements PluginListener {
             enabledPlugins.add(plugin);
         }
         PluginManager pluginManager = abacus.getPluginManager();
-        functionList.addAll(manager.getAllFunctions().stream().map(name -> pluginManager.documentationFor(name, DocumentationType.FUNCTION))
+        functionList.addAll(manager.getAllFunctions().stream().map(name -> {
+            Documentation documentationInstance = pluginManager.documentationFor(name, DocumentationType.FUNCTION);
+            if(documentationInstance == null)
+                documentationInstance = new Documentation(name, "", "", "", DocumentationType.FUNCTION);
+            return documentationInstance;
+        })
                 .collect(Collectors.toCollection(ArrayList::new)));
         functionList.addAll(manager.getAllTreeValueFunctions().stream().map(name -> pluginManager.documentationFor(name, DocumentationType.TREE_VALUE_FUNCTION))
                 .collect(Collectors.toCollection(ArrayList::new)));
