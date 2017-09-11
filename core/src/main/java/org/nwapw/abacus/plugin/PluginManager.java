@@ -3,7 +3,6 @@ package org.nwapw.abacus.plugin;
 import org.nwapw.abacus.Abacus;
 import org.nwapw.abacus.function.*;
 import org.nwapw.abacus.number.NumberInterface;
-import org.nwapw.abacus.variables.VariableDatabase;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;

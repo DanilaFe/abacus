@@ -2,7 +2,6 @@ package org.nwapw.abacus.plugin;
 
 import org.nwapw.abacus.function.*;
 import org.nwapw.abacus.number.NumberInterface;
-import org.nwapw.abacus.variables.VariableDatabase;
 
 /**
  * A plugin class that can be externally implemented and loaded via the
