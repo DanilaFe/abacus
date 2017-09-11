@@ -696,8 +696,7 @@ public class StandardPlugin extends Plugin {
      * @param n              non-negative integer.
      * @return a number of numClass with value n factorial.
      */
-    public static NumberInterface factorial(NumberImplementation implementation, int n) {
-
+    synchronized public static NumberInterface factorial(NumberImplementation implementation, int n) {
         if (!FACTORIAL_LISTS.containsKey(implementation)) {
             FACTORIAL_LISTS.put(implementation, new ArrayList<>());
             FACTORIAL_LISTS.get(implementation).add(implementation.instanceForString("1"));
