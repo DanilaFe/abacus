@@ -3,6 +3,7 @@
   {% include head.html %}
   <style>
   body {
+    margin: 0px;
     margin-top: 50px;
     color: white;
     text-align: center;
@@ -37,6 +38,58 @@
     background-color: #06e8a4;
     color: white;
   }
+
+  div.fullwidth {
+    width: 100%;
+    height: auto;
+    overflow: hidden;
+  }
+
+  div.fullwidth img {
+    max-width: 100%;
+    max-height: 450px;
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    display: block;
+    border-radius: 5px;
+  }
+
+  div.white {
+    background-color: white;
+    color: black;
+  }
+
+  div.green {
+    background-color: #06e8a4;
+    color: white;
+  }
+
+  div.fullwidth div.double {
+    height: 100%;
+    text-align: left;
+    width: 50%;
+    box-sizing: border-box;
+    padding: 40px;
+    float: left;
+    background-color: inherit;
+  }
+
+  @media (max-width: 750px) {
+    div.fullwidth div.double {
+      width: 100%;
+      padding: 15px;
+    }
+    div.fullwidth img {
+      margin-top: 0px;
+      margin-bottom: 0px;
+    }
+  }
+
+  div.fullwidth div.double h1, h2, h3, h4, h5, h6 {
+    text-align: center;
+  }
+
   </style>
   <body>
   <img src="https://raw.githubusercontent.com/DanilaFe/abacus/master/image/logo.png" id="logo">
@@ -49,5 +102,58 @@
     <a class="button inverted" href="https://github.com/DanilaFe/abacus/wiki">Wiki</a>
   </div>
   <img src="http://i.imgur.com/Min70QY.png" title="source: imgur.com" id="image_preview"/>
+  <h2>Features</h2>
+  <div class="fullwidth white">
+    <div class="double">
+      <img src="https://i.imgur.com/gmGJBBK.png">
+    </div>
+    <div class="double">
+      <h2>Precision</h2>
+      Abacus uses a mathematical tool called Taylor Series to determine values
+      as accurate as the user desires. Of course, this comes with some
+      performance issues with larger numbers. However, Abacus has been
+      tested to generate the value of e correctly to a thousand digits.
+    </div>
+  </div>
+  <div class="fullwidth green">
+    <div class="double">
+      <h2>Configurable and Customizable</h2>
+      The very first idea for Abacus was inspired by how difficult it was
+      to program a TI-84 calculator. Only two languages were available, TI-BASIC
+      and Assembly, the latter having virtually no documentation. Determined
+      to be better than a TI-84, Abacus implemented a plugin system that allows
+      users to easily create and add plugins written in the same programming
+      language as Abacus itself - Java. These plugins can access the full
+      power of the language, and implement their own ways of handling numbers,
+      as well as their own functions and even operators.<br><br>
+      Besides the ability to add plugins, Abacus also adds some general
+      options that can be used to make the user's experience more pleasant.
+      For instance, it allows for a computation limit to be set in order
+      to prevent excessively long evaluation: 8!!! is, for example, an expression
+      that even Wolfram Alpha doesn't compute accurately, and will never finish
+      on Abacus (it's simply too large). The computation limit will allow Abacus
+      to kill a computation if it takes too long. Support for user-definable
+      precision is also planned.
+    </div>
+    <div class="double">
+      <img src="https://i.imgur.com/JzenWPV.png">
+    </div>
+  </div>
+  <div class="fullwidth white">
+    <div class="double">
+      <img src="https://i.imgur.com/jY17I3A.png">
+    </div>
+    <div class="double">
+      <h2>Built-in Documentation</h2>
+      Abacus plugins are given a mechanism to register documentation for
+      the functions that they provide. The Abacus GUI displays these
+      functions in a searchable list, allowing the user to read the parameters
+      that have to be supplied to each function, as well as learn about
+      its return value.<br><br>
+      The search finds functions not only by their names, but also by relevant
+      terms mentioned in the function's description, thus allowing related
+      functions to be displayed together.
+    </div>
+  </div>
   </body>
 </html>
