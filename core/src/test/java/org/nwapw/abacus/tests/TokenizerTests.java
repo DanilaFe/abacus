@@ -17,7 +17,7 @@ import java.util.List;
 
 public class TokenizerTests {
 
-    private static Abacus abacus = new Abacus(new Configuration(0, "precise", new String[]{}));
+    private static Abacus abacus = new Abacus(new Configuration("precise", new String[]{}));
     private static LexerTokenizer lexerTokenizer = new LexerTokenizer();
     private static NumberFunction subtractFunction = new NumberFunction() {
         @Override
