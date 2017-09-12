@@ -45,7 +45,9 @@ class ExtendedConfiguration(var computationDelay: Double = 0.0,
      * @param tomlFile the file from disk to load.
      */
     constructor(tomlFile: File) : this() {
-        copyFrom(Toml(DEFAULT_TOML_READER).read(tomlFile).to(ExtendedConfiguration::class.java))
+        val toml = Toml(DEFAULT_TOML_READER)
+        if(tomlFile.exists()) toml.read(tomlFile)
+        copyFrom(toml.to(ExtendedConfiguration::class.java))
     }
 
     /**
