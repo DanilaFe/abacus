@@ -200,7 +200,7 @@ public class AbacusController implements PluginListener {
      */
     private final Runnable TIMER_RUNNABLE = () -> {
         try {
-            Configuration abacusConfig = abacus.getConfiguration();
+            ExtendedConfiguration abacusConfig = (ExtendedConfiguration) abacus.getConfiguration();
             if (abacusConfig.getComputationDelay() == 0) return;
             Thread.sleep((long) (abacusConfig.getComputationDelay() * 1000));
             performStop();
@@ -260,12 +260,12 @@ public class AbacusController implements PluginListener {
             if (oldValue.equals(settingsTab)) alertIfApplyNeeded(true);
         });
 
-        abacus = new Abacus(new Configuration(CONFIG_FILE));
+        abacus = new Abacus(new ExtendedConfiguration(CONFIG_FILE));
         PluginManager abacusPluginManager = abacus.getPluginManager();
         abacusPluginManager.addListener(this);
         performScan();
 
-        computationLimitField.setText(Double.toString(abacus.getConfiguration().getComputationDelay()));
+        computationLimitField.setText(Double.toString(((ExtendedConfiguration) abacus.getConfiguration()).getComputationDelay()));
         computationLimitField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("(\\d+(\\.\\d*)?)?")) {
                 computationLimitField.setText(oldValue);
@@ -342,8 +342,8 @@ public class AbacusController implements PluginListener {
             if (!pluginEntry.isEnabled()) disabledPlugins.add(pluginEntry.getClassName());
         }
         if (computationLimitField.getText().matches("\\d*(\\.\\d+)?") && computationLimitField.getText().length() != 0)
-            configuration.setComputationDelay(Double.parseDouble(computationLimitField.getText()));
-        configuration.saveTo(CONFIG_FILE);
+            ((ExtendedConfiguration) configuration).setComputationDelay(Double.parseDouble(computationLimitField.getText()));
+        ((ExtendedConfiguration) configuration).saveTo(CONFIG_FILE);
         changesMade = false;
         reloadAlertShown = false;
     }

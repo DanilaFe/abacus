@@ -1,4 +1,3 @@
 dependencies {
-    compile 'com.moandjiezana.toml:toml4j:0.7.1'
     testCompile 'junit:junit:4.12'
 }
