@@ -2,7 +2,6 @@ package org.nwapw.abacus.plugin;
 
 import org.nwapw.abacus.function.*;
 import org.nwapw.abacus.number.NumberInterface;
-import org.nwapw.abacus.variables.VariableDatabase;
 
 /**
  * A plugin class that can be externally implemented and loaded via the
@@ -219,13 +218,5 @@ public abstract class Plugin {
      * are supposed to dispose of loaded functions, operators, and macros.
      */
     public abstract void onDisable();
-
-    /**
-     * Get the variable database.
-     * @return the variable database.
-     */
-    public final VariableDatabase getVariableDatabase(){
-        return manager.getVariableDatabase();
-    }
 
 }

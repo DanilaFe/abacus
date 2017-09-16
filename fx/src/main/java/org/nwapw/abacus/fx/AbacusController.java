@@ -20,6 +20,7 @@ import org.nwapw.abacus.plugin.ClassFinder;
 import org.nwapw.abacus.plugin.PluginListener;
 import org.nwapw.abacus.plugin.PluginManager;
 import org.nwapw.abacus.plugin.StandardPlugin;
+import org.nwapw.abacus.tree.EvaluationResult;
 import org.nwapw.abacus.tree.TreeNode;
 
 import java.io.File;
@@ -144,12 +145,14 @@ public class AbacusController implements PluginListener {
                 if (constructedTree == null) {
                     return ERR_SYNTAX;
                 }
-                NumberInterface evaluatedNumber = abacus.evaluateTree(constructedTree);
+                EvaluationResult result = abacus.evaluateTree(constructedTree);
+                NumberInterface evaluatedNumber = result.getValue();
                 if (evaluatedNumber == null) {
                     return ERR_EVAL;
                 }
                 String resultingString = evaluatedNumber.toString();
                 historyData.add(new HistoryModel(inputField.getText(), constructedTree.toString(), resultingString));
+                abacus.applyToContext(result.getResultingContext());
                 return resultingString;
             } catch (ComputationInterruptedException exception) {
                 return ERR_STOP;
@@ -320,13 +323,13 @@ public class AbacusController implements PluginListener {
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        abacusPluginManager.reload();
+        abacus.reload();
     }
 
     @FXML
     public void performReload() {
         alertIfApplyNeeded(true);
-        abacus.getPluginManager().reload();
+        abacus.reload();
     }
 
     @FXML

@@ -17,14 +17,14 @@ public class CalculationTests {
     @BeforeClass
     public static void prepareTests() {
         abacus.getPluginManager().addInstantiated(new StandardPlugin(abacus.getPluginManager()));
-        abacus.getPluginManager().load();
+        abacus.reload();
     }
 
     private void testOutput(String input, String parseOutput, String output) {
         TreeNode parsedTree = abacus.parseString(input);
         Assert.assertNotNull(parsedTree);
         Assert.assertEquals(parsedTree.toString(), parseOutput);
-        NumberInterface result = abacus.evaluateTree(parsedTree);
+        NumberInterface result = abacus.evaluateTree(parsedTree).getValue();
         Assert.assertNotNull(result);
         Assert.assertTrue(result.toString().startsWith(output));
     }

@@ -1,17 +1,17 @@
 package org.nwapw.abacus
 
 import org.nwapw.abacus.config.Configuration
-import org.nwapw.abacus.number.NumberInterface
+import org.nwapw.abacus.context.MutableEvaluationContext
+import org.nwapw.abacus.context.EvaluationContext
 import org.nwapw.abacus.number.PromotionManager
 import org.nwapw.abacus.parsing.LexerTokenizer
 import org.nwapw.abacus.parsing.ShuntingYardParser
 import org.nwapw.abacus.parsing.TreeBuilder
-import org.nwapw.abacus.plugin.NumberImplementation
 import org.nwapw.abacus.plugin.PluginManager
 import org.nwapw.abacus.plugin.StandardPlugin
+import org.nwapw.abacus.tree.EvaluationResult
 import org.nwapw.abacus.tree.NumberReducer
 import org.nwapw.abacus.tree.TreeNode
-import org.nwapw.abacus.variables.VariableDatabase
 
 /**
  * Core class to handle all mathematics.
@@ -37,10 +37,6 @@ class Abacus(val configuration: Configuration) {
      */
     val pluginManager = PluginManager(this)
     /**
-     * The reducer used to turn trees into a single number.
-     */
-    val numberReducer = NumberReducer(this)
-    /**
      * The tree builder that handles the conversion of strings into trees.
      */
     val treeBuilder = TreeBuilder(tokenizer, parser)
@@ -48,28 +44,42 @@ class Abacus(val configuration: Configuration) {
      * The promotion manager used to convert between number implementations.
      */
     val promotionManager = PromotionManager(this)
+
     /**
-     * The database of variable definitions.
+     * The hidden, mutable implementation of the context.
      */
-    val variableDatabase = VariableDatabase(this)
+    private val mutableContext = MutableEvaluationContext(numberImplementation = StandardPlugin.IMPLEMENTATION_NAIVE)
     /**
-     * The number implementation used by default.
+     * The base context from which calculations are started.
      */
-    val numberImplementation: NumberImplementation
-        get() {
-            val selectedImplementation =
-                    pluginManager.numberImplementationFor(configuration.numberImplementation)
-            if (selectedImplementation != null) return selectedImplementation
-            return StandardPlugin.IMPLEMENTATION_NAIVE
-        }
+    val context: EvaluationContext
+        get() = mutableContext
 
     init {
         pluginManager.addListener(tokenizer)
         pluginManager.addListener(parser)
         pluginManager.addListener(promotionManager)
-        pluginManager.addListener(variableDatabase)
     }
 
+    /**
+     * Reloads the Abacus core.
+     */
+    fun reload(){
+        pluginManager.reload()
+        with(mutableContext) {
+            numberImplementation = pluginManager.numberImplementationFor(configuration.numberImplementation)
+            clearVariables()
+            clearDefinitions()
+        }
+    }
+    /**
+     * Merges the current context with the provided one, updating
+     * variables and the like.
+     * @param context the context to apply.
+     */
+    fun applyToContext(context: EvaluationContext){
+        mutableContext.apply(context)
+    }
     /**
      * Parses a string into a tree structure using the main
      * tree builder.
@@ -79,12 +89,26 @@ class Abacus(val configuration: Configuration) {
      */
     fun parseString(input: String): TreeNode? = treeBuilder.fromString(input)
     /**
-     * Evaluates the given tree using the main
-     * number reducer.
+     * Evaluates the given tree.
      *
      * @param tree the tree to reduce, must not be null.
-     * @return the resulting number, or null of the reduction failed.
+     * @return the evaluation result.
      */
-    fun evaluateTree(tree: TreeNode): NumberInterface? = tree.reduce(numberReducer)
+    fun evaluateTree(tree: TreeNode): EvaluationResult {
+        return evaluateTreeWithContext(tree, context.mutableSubInstance())
+    }
+    /**
+     * Evaluates the given tree using a different context than
+     * the default one.
+     *
+     * @param tree the tree to reduce, must not be null.
+     * @param context the context to use for the evaluation.
+     * @return the evaluation result.
+     */
+    fun evaluateTreeWithContext(tree: TreeNode, context: MutableEvaluationContext): EvaluationResult {
+        val newReducer = NumberReducer(this, context)
+        val evaluationValue = tree.reduce(newReducer)
+        return EvaluationResult(evaluationValue, newReducer.context)
+    }
 
 }
