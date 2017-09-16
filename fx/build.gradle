@@ -2,7 +2,14 @@ apply plugin: 'application'
 
 dependencies {
     compile 'com.moandjiezana.toml:toml4j:0.7.1'
+    compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.18'
     compile project(':core')
+}
+
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
 }
 
 mainClassName = 'org.nwapw.abacus.fx.AbacusApplication'
