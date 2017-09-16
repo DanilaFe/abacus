@@ -68,6 +68,7 @@ class Abacus(val configuration: Configuration) {
         pluginManager.reload()
         with(mutableContext) {
             numberImplementation = pluginManager.numberImplementationFor(configuration.numberImplementation)
+                    ?: StandardPlugin.IMPLEMENTATION_NAIVE
             clearVariables()
             clearDefinitions()
         }
