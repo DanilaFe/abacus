@@ -7,13 +7,9 @@ package org.nwapw.abacus.tree
  * to extend this functionality.
  *
  * @param callTo the name of the things being called.
+ * @param children the children of this node.
  */
-abstract class CallNode(val callTo: String) : TreeNode() {
-
-    /**
-     * The list of children this node has.
-     */
-    val children: MutableList<TreeNode> = mutableListOf()
+abstract class CallNode(val callTo: String, val children: List<TreeNode>) : TreeNode() {
 
     override fun toString(): String {
         val buffer = StringBuffer()

@@ -12,9 +12,12 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 import org.nwapw.abacus.Abacus;
 import org.nwapw.abacus.config.Configuration;
+import org.nwapw.abacus.exception.AbacusException;
+import org.nwapw.abacus.exception.ComputationInterruptedException;
 import org.nwapw.abacus.function.Documentation;
 import org.nwapw.abacus.function.DocumentationType;
-import org.nwapw.abacus.function.DomainException;
+import org.nwapw.abacus.exception.DomainException;
+import org.nwapw.abacus.exception.EvaluationException;
 import org.nwapw.abacus.number.*;
 import org.nwapw.abacus.plugin.ClassFinder;
 import org.nwapw.abacus.plugin.PluginListener;
@@ -147,16 +150,11 @@ public class AbacusController implements PluginListener {
                 }
                 EvaluationResult result = abacus.evaluateTree(constructedTree);
                 NumberInterface evaluatedNumber = result.getValue();
-                if (evaluatedNumber == null) {
-                    return ERR_EVAL;
-                }
                 String resultingString = evaluatedNumber.toString();
                 historyData.add(new HistoryModel(inputField.getText(), constructedTree.toString(), resultingString));
                 abacus.applyToContext(result.getResultingContext());
                 return resultingString;
-            } catch (ComputationInterruptedException exception) {
-                return ERR_STOP;
-            } catch (DomainException exception) {
+            } catch (AbacusException exception) {
                 return exception.getMessage();
             } catch (RuntimeException exception) {
                 exception.printStackTrace();
