@@ -24,7 +24,9 @@ hs_err_pid*
 # Custom Stuff
 # Gradle
 .gradle/*
-build/*
+**/build/*
+**/out/**
+**/.DS_Store
 
 # IntelliJ
 .idea/*

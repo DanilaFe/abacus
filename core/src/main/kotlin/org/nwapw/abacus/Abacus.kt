@@ -68,6 +68,7 @@ class Abacus(val configuration: Configuration) {
         pluginManager.reload()
         with(mutableContext) {
             numberImplementation = pluginManager.numberImplementationFor(configuration.numberImplementation)
+                    ?: StandardPlugin.IMPLEMENTATION_NAIVE
             clearVariables()
             clearDefinitions()
         }
@@ -87,7 +88,7 @@ class Abacus(val configuration: Configuration) {
      * @param input the input string to parse
      * @return the resulting tree, null if the tree builder or the produced tree are null.
      */
-    fun parseString(input: String): TreeNode? = treeBuilder.fromString(input)
+    fun parseString(input: String): TreeNode = treeBuilder.fromString(input)
     /**
      * Evaluates the given tree.
      *

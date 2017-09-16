@@ -5,7 +5,7 @@ import org.nwapw.abacus.exception.ComputationInterruptedException;
 /**
  * An interface used to represent a number.
  */
-public abstract class NumberInterface {
+public abstract class NumberInterface implements Comparable<NumberInterface> {
 
     /**
      * Check if the thread was interrupted and
@@ -157,14 +157,6 @@ public abstract class NumberInterface {
         checkInterrupted();
         return intPowInternal(exponent);
     }
-
-    /**
-     * Compares this number to another.
-     *
-     * @param number the number to compare to.
-     * @return same as Integer.compare();
-     */
-    public abstract int compareTo(NumberInterface number);
 
     /**
      * Same as Math.signum().
