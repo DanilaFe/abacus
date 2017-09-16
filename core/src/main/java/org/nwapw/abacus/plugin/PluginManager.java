@@ -141,6 +141,7 @@ public class PluginManager {
         registeredNumberImplementations.put(name, implementation);
         interfaceImplementationNames.put(implementation.getImplementation(), name);
         interfaceImplementations.put(implementation.getImplementation(), implementation);
+        cachedPi.put(implementation.getImplementation(), implementation.instanceForPi());
     }
 
     /**
@@ -218,10 +219,6 @@ public class PluginManager {
                 break;
             }
         }
-        if (toReturn == null) {
-            toReturn = new Documentation(name, "", "", "", type);
-            registerDocumentation(toReturn);
-        }
         return toReturn;
     }
 
@@ -252,14 +249,7 @@ public class PluginManager {
      * @return pi
      */
     public NumberInterface piFor(Class<? extends NumberInterface> forClass) {
-        if (cachedPi.containsKey(forClass)) return cachedPi.get(forClass);
-        NumberImplementation implementation = interfaceImplementationFor(forClass);
-        NumberInterface generatedPi = null;
-        if (implementation != null) {
-            generatedPi = implementation.instanceForPi();
-        }
-        cachedPi.put(forClass, generatedPi);
-        return generatedPi;
+        return cachedPi.get(forClass);
     }
 
     /**
