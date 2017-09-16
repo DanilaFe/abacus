@@ -9,11 +9,11 @@ package org.nwapw.abacus.tree
  * @param operation the operation this node performs.
  * @param child the node the operation should be applied to.
  */
-class TreeValueUnaryNode(operation: String, child: TreeNode?)
+class TreeValueUnaryNode(operation: String, child: TreeNode)
     : UnaryNode(operation, child) {
 
-    override fun <T : Any> reduce(reducer: Reducer<T>): T? {
-        return reducer.reduceNode(this);
+    override fun <T : Any> reduce(reducer: Reducer<T>): T {
+        return reducer.reduceNode(this)
     }
 
 }

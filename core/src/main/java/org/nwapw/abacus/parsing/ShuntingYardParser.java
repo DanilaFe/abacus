@@ -154,19 +154,20 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
             return new VariableNode(match.getContent());
         } else if (matchType == TokenType.FUNCTION || matchType == TokenType.TREE_VALUE_FUNCTION) {
             String functionName = match.getContent();
-            CallNode node;
-            if (matchType == TokenType.FUNCTION) {
-                node = new FunctionNode(functionName);
-            } else {
-                node = new TreeValueFunctionNode(functionName);
-            }
+            List<TreeNode> children = new ArrayList<>();
             while (!matches.isEmpty() && matches.get(0).getType() != TokenType.INTERNAL_FUNCTION_END) {
                 TreeNode argument = constructRecursive(matches);
                 if (argument == null) return null;
-                node.getChildren().add(0, argument);
+                children.add(0, argument);
             }
             if (matches.isEmpty()) return null;
             matches.remove(0);
+            CallNode node;
+            if (matchType == TokenType.FUNCTION) {
+                node = new FunctionNode(functionName, children);
+            } else {
+                node = new TreeValueFunctionNode(functionName, children);
+            }
             return node;
         }
         return null;

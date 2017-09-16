@@ -11,10 +11,10 @@ package org.nwapw.abacus.tree
  * @param left the left node.
  * @param right the right node.
  */
-abstract class BinaryNode(val operation: String, val left: TreeNode? = null, val right: TreeNode?) : TreeNode() {
+abstract class BinaryNode(val operation: String, val left: TreeNode, val right: TreeNode) : TreeNode() {
 
     override fun toString(): String {
-        return "(" + (left?.toString() ?: "null") + operation + (right?.toString() ?: "null") + ")"
+        return "(" + left.toString() + operation + right.toString() + ")"
     }
 
 }

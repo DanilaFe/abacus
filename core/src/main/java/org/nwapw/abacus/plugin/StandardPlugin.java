@@ -29,8 +29,7 @@ public class StandardPlugin extends Plugin {
         @Override
         public NumberInterface applyInternal(MutableEvaluationContext context, TreeNode[] params) {
             String assignTo = ((VariableNode) params[0]).getVariable();
-            NumberInterface value = params[1].reduce(context.getReducer());
-            if(value == null) throw new EvaluationException();
+            NumberInterface value = params[1].reduce(context.getInheritedReducer());
             context.setVariable(assignTo, value);
             return value;
         }
@@ -48,9 +47,7 @@ public class StandardPlugin extends Plugin {
         public NumberInterface applyInternal(MutableEvaluationContext context, TreeNode[] params) {
             String assignTo = ((VariableNode) params[0]).getVariable();
             context.setDefinition(assignTo, params[1]);
-            NumberInterface value = params[1].reduce(context.getReducer());
-            if(value == null) throw new EvaluationException();
-            return value;
+            return params[1].reduce(context.getInheritedReducer());
         }
     };
     /**

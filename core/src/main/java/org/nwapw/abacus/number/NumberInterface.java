@@ -1,5 +1,7 @@
 package org.nwapw.abacus.number;
 
+import org.nwapw.abacus.exception.ComputationInterruptedException;
+
 /**
  * An interface used to represent a number.
  */
