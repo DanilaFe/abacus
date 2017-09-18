@@ -37,11 +37,30 @@ class Graph(val abacus: Abacus,
     }
 
     fun <T> evaluateWith(tree: TreeNode, values: List<T>,
-                        contextModifier: MutableEvaluationContext.(T) -> Unit) = runBlocking {
+                         contextModifier: MutableEvaluationContext.(T) -> Unit) = runBlocking {
         values.map {
             val context = abacus.context.mutableSubInstance()
             context.contextModifier(it)
             async(CommonPool) { abacus.evaluateTreeWithContext(tree, context) }
         }.map { it.await() }
     }
+
+    fun <T> List<T>.evaluateWith(tree: TreeNode,
+                                 contextModifier: MutableEvaluationContext.(T) -> Unit ) =
+            evaluateWith(tree, this, contextModifier)
+
+    fun generateInputs(): List<NumberInterface> =
+            generateSequence(1) {
+                it + 1
+            }.map {
+                val context = abacus.context.mutableSubInstance()
+                context.setVariable(pointInputVariable,
+                        context.inheritedNumberImplementation!!.instanceForString(it.toString()))
+                abacus.evaluateTreeWithContext(pointExpressionTree!!, context).value
+            }.takeWhile { it in domain }.toList()
+
+    fun generateOutputs(inputs: List<NumberInterface>): List<NumberInterface> =
+            inputs.evaluateWith(expressionTree!!) {
+                setVariable(inputVariable, it)
+            }.map { it.value }
 }
