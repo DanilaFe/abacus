@@ -238,4 +238,16 @@ public abstract class NumberInterface implements Comparable<NumberInterface> {
      */
     public abstract NumberInterface getMaxError();
 
+    /**
+     * Returns a NumberRangeBuilder object, which is used to create a range.
+     * The reason that this returns a builder and not an actual range is that
+     * the NumberRange needs to promote values passed to it, which
+     * requires an abacus instance.
+     * @param other the value at the bottom of the range.
+     * @return the resulting range builder.
+     */
+    public NumberRangeBuilder rangeTo(NumberInterface other){
+        return new NumberRangeBuilder(this, other);
+    }
+
 }
