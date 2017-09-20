@@ -18,7 +18,7 @@ public class PromotionException extends AbacusException {
      * @param message the additional message to include with the error.
      */
     public PromotionException(String message) {
-        super("Failed to promote number instances.", message);
+        super("Failed to promote number instances", message);
     }
 
 }
