@@ -59,14 +59,12 @@ class PromotionManager(val abacus: Abacus) : PluginListener {
 
     override fun onLoad(manager: PluginManager) {
         val implementations = manager.allNumberImplementations.map { manager.numberImplementationFor(it) }
-        for((index, value) in implementations.withIndex()){
-            for(i in index until implementations.size){
-                val other = implementations[i]
-
-                val promoteFrom = if(other.priority > value.priority) value else other
-                val promoteTo = if(other.priority > value.priority) other else value
+        for(first in implementations) {
+            for(second in implementations) {
+                val promoteFrom = if(second.priority > first.priority) first else second
+                val promoteTo = if(second.priority > first.priority) second else first
                 val path = computePathBetween(promoteFrom, promoteTo)
-                computePaths.put(promoteFrom to promoteTo, path)
+                computePaths[promoteFrom to promoteTo] = path
             }
         }
     }
