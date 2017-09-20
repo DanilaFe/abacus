@@ -36,15 +36,13 @@ class NumberReducer(val abacus: Abacus, context: EvaluationContext) : Reducer<Nu
             is NumberBinaryNode -> {
                 val left = children[0] as NumberInterface
                 val right = children[1] as NumberInterface
-                val promotionResult = promotionManager.promote(left, right) ?:
-                        throw EvaluationException("promotion failed.")
+                val promotionResult = promotionManager.promote(left, right)
                 context.numberImplementation = promotionResult.promotedTo
                 abacus.pluginManager.operatorFor(treeNode.operation).apply(context, *promotionResult.items)
             }
             is FunctionNode -> {
                 val promotionResult = promotionManager
-                        .promote(*children.map { it as NumberInterface }.toTypedArray()) ?:
-                        throw EvaluationException("promotion failed.")
+                        .promote(*children.map { it as NumberInterface }.toTypedArray())
                 context.numberImplementation = promotionResult.promotedTo
                 abacus.pluginManager.functionFor(treeNode.callTo).apply(context, *promotionResult.items)
             }

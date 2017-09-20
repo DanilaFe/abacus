@@ -1,6 +1,7 @@
 package org.nwapw.abacus.number
 
 import org.nwapw.abacus.Abacus
+import org.nwapw.abacus.exception.PromotionException
 import org.nwapw.abacus.plugin.NumberImplementation
 import org.nwapw.abacus.plugin.PluginListener
 import org.nwapw.abacus.plugin.PluginManager
@@ -45,14 +46,14 @@ class PromotionManager(val abacus: Abacus) : PluginListener {
      * @param numbers the numbers to promote.
      * @return the resulting promotion result.
      */
-    fun promote(vararg numbers: NumberInterface): PromotionResult? {
+    fun promote(vararg numbers: NumberInterface): PromotionResult {
         val pluginManager = abacus.pluginManager
         val implementations = numbers.map { pluginManager.interfaceImplementationFor(it.javaClass) }
         val highestPriority = implementations.sortedBy { it.priority }.last()
         return PromotionResult(items = numbers.map {
             if(it.javaClass == highestPriority.implementation) it
             else computePaths[pluginManager.interfaceImplementationFor(it.javaClass) to highestPriority]
-                    ?.promote(it) ?: return null
+                    ?.promote(it) ?: throw PromotionException()
         }.toTypedArray(), promotedTo = highestPriority)
     }
 
