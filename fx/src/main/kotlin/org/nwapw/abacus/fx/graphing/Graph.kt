@@ -9,6 +9,7 @@ import org.nwapw.abacus.context.EvaluationContext
 import org.nwapw.abacus.context.MutableEvaluationContext
 import org.nwapw.abacus.number.NaiveNumber
 import org.nwapw.abacus.number.NumberInterface
+import org.nwapw.abacus.number.NumberRange
 import org.nwapw.abacus.plugin.StandardPlugin
 import org.nwapw.abacus.tree.TreeNode
 
@@ -30,7 +31,7 @@ import org.nwapw.abacus.tree.TreeNode
  * @property pointInputVariable the variable which is substituted for the number of the input point being generated.
  */
 class Graph(val abacus: Abacus,
-            var domain: ClosedRange<NumberInterface>, var range: ClosedRange<NumberInterface>,
+            var domain: NumberRange, var range: NumberRange,
             var inputVariable: String = "x", var pointInputVariable: String = "n") {
 
     /**
