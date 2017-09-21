@@ -230,4 +230,39 @@ abstract class NumberInterface: Comparable<NumberInterface> {
      */
     operator fun rangeTo(other: NumberInterface) = NumberRangeBuilder(this, other)
 
+    /**
+     * Plus operator overloaded to allow "nice" looking math.
+     * @param other the value to add to this number.
+     * @return the result of the addition.
+     */
+    operator fun plus(other: NumberInterface) = add(other)
+    /**
+     * Minus operator overloaded to allow "nice" looking math.
+     * @param other the value to subtract to this number.
+     * @return the result of the subtraction.
+     */
+    operator fun minus(other: NumberInterface) = subtract(other)
+    /**
+     * Times operator overloaded to allow "nice" looking math.
+     * @param other the value to multiply this number by.
+     * @return the result of the multiplication.
+     */
+    operator fun times(other: NumberInterface) = multiply(other)
+    /**
+     * Divide operator overloaded to allow "nice" looking math.
+     * @param other the value to divide this number by.
+     * @return the result of the division.
+     */
+    operator fun div(other: NumberInterface) = divide(other)
+    /**
+     * The plus operator.
+     * @return this number.
+     */
+    operator fun unaryPlus() = this
+    /**
+     * The minus operator.
+     * @return the negative of this number.
+     */
+    operator fun unaryMinus() = negate()
+
 }
