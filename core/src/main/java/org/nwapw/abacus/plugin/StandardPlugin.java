@@ -5,6 +5,10 @@ import org.nwapw.abacus.function.*;
 import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.number.PreciseNumber;
+import org.nwapw.abacus.plugin.standard.OperatorAdd;
+import org.nwapw.abacus.plugin.standard.OperatorDivide;
+import org.nwapw.abacus.plugin.standard.OperatorMultiply;
+import org.nwapw.abacus.plugin.standard.OperatorSubtract;
 import org.nwapw.abacus.tree.TreeNode;
 import org.nwapw.abacus.tree.VariableNode;
 
@@ -53,32 +57,11 @@ public class StandardPlugin extends Plugin {
     /**
      * The addition operator, +
      */
-    public static final NumberOperator OP_ADD = new NumberOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 0) {
-        @Override
-        public boolean matchesParams(MutableEvaluationContext context, NumberInterface[] params) {
-            return params.length == 2;
-        }
-
-        @Override
-        public NumberInterface applyInternal(MutableEvaluationContext context, NumberInterface[] params) {
-            return params[0].add(params[1]);
-        }
-    };
+    public static final NumberOperator OP_ADD = new OperatorAdd();
     /**
      * The subtraction operator, -
      */
-    public static final NumberOperator OP_SUBTRACT = new NumberOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 0) {
-        @Override
-        public boolean matchesParams(MutableEvaluationContext context, NumberInterface[] params) {
-            return params.length == 2;
-        }
-
-        @Override
-        public NumberInterface applyInternal(MutableEvaluationContext context, NumberInterface[] params) {
-            return params[0].subtract(params[1]);
-
-        }
-    };
+    public static final NumberOperator OP_SUBTRACT = new OperatorSubtract();
     /**
      * The negation operator, -
      */
@@ -96,17 +79,7 @@ public class StandardPlugin extends Plugin {
     /**
      * The multiplication operator, *
      */
-    public static final NumberOperator OP_MULTIPLY = new NumberOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 1) {
-        @Override
-        public boolean matchesParams(MutableEvaluationContext context, NumberInterface[] params) {
-            return params.length == 2;
-        }
-
-        @Override
-        public NumberInterface applyInternal(MutableEvaluationContext context, NumberInterface[] params) {
-            return params[0].multiply(params[1]);
-        }
-    };
+    public static final NumberOperator OP_MULTIPLY = new OperatorMultiply();
     /**
      * The implementation for double-based naive numbers.
      */
@@ -161,17 +134,7 @@ public class StandardPlugin extends Plugin {
     /**
      * The division operator, /
      */
-    public static final NumberOperator OP_DIVIDE = new NumberOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 1) {
-        @Override
-        public boolean matchesParams(MutableEvaluationContext context, NumberInterface[] params) {
-            return params.length == 2 && params[1].compareTo(context.getInheritedNumberImplementation().instanceForString(Integer.toString(0))) != 0;
-        }
-
-        @Override
-        public NumberInterface applyInternal(MutableEvaluationContext context, NumberInterface[] params) {
-            return params[0].divide(params[1]);
-        }
-    };
+    public static final NumberOperator OP_DIVIDE = new OperatorDivide();
     /**
      * The factorial operator, !
      */
