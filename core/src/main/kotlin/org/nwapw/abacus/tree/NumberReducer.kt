@@ -17,7 +17,7 @@ class NumberReducer(val abacus: Abacus, context: EvaluationContext) : Reducer<Nu
         val promotionManager = abacus.promotionManager
         return when(treeNode){
             is NumberNode -> {
-                context.inheritedNumberImplementation?.instanceForString(treeNode.number)
+                context.inheritedNumberImplementation.instanceForString(treeNode.number)
                         ?: throw EvaluationException("no number implementation selected.")
             }
             is VariableNode -> {

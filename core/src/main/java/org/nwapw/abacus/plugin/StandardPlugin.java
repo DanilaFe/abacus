@@ -332,7 +332,7 @@ public class StandardPlugin extends Plugin {
             //We'll use the series \sigma_{n >= 1) ((1/3^n + 1/4^n) * 1/n)
             //In the following, a=1/3^n, b=1/4^n, c = 1/n.
             //a is also an error bound.
-            NumberInterface a = implementation.instanceForString("1"), b = a, c = a;
+            NumberInterface a = implementation.instanceForString("1"), b = a, c;
             NumberInterface sum = implementation.instanceForString("0");
             NumberInterface one = implementation.instanceForString("1");
             int n = 0;
@@ -715,7 +715,7 @@ public class StandardPlugin extends Plugin {
      * @return the value of the series
      */
     private static NumberInterface sinTaylor(MutableEvaluationContext context, NumberInterface x) {
-        NumberInterface power = x, multiplier = x.multiply(x).negate(), currentTerm = x, sum = x;
+        NumberInterface power = x, multiplier = x.multiply(x).negate(), currentTerm, sum = x;
         NumberInterface maxError = x.getMaxError();
         int n = 1;
         do {
