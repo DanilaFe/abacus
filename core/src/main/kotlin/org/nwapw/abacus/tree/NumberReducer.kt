@@ -18,7 +18,6 @@ class NumberReducer(val abacus: Abacus, context: EvaluationContext) : Reducer<Nu
         return when(treeNode){
             is NumberNode -> {
                 context.inheritedNumberImplementation.instanceForString(treeNode.number)
-                        ?: throw EvaluationException("no number implementation selected.")
             }
             is VariableNode -> {
                 val variable = context.getVariable(treeNode.variable)
