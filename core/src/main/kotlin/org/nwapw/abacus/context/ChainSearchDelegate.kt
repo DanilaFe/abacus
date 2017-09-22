@@ -1,5 +1,6 @@
 package org.nwapw.abacus.context
 
+import org.nwapw.abacus.exception.ContextException
 import kotlin.reflect.KProperty
 
 /**
@@ -16,14 +17,14 @@ import kotlin.reflect.KProperty
  */
 class ChainSearchDelegate<out V>(private val valueGetter: EvaluationContext.() -> V?) {
 
-    operator fun getValue(selfRef: Any, property: KProperty<*>): V? {
-        var currentRef = selfRef as? EvaluationContext ?: return null
+    operator fun getValue(selfRef: Any, property: KProperty<*>): V {
+        var currentRef = selfRef as EvaluationContext
         var returnedValue = currentRef.valueGetter()
         while (returnedValue == null) {
             currentRef = currentRef.parent ?: break
             returnedValue = currentRef.valueGetter()
         }
-        return returnedValue
+        return returnedValue ?: throw ContextException()
     }
 
 }
