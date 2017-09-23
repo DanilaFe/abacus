@@ -5,10 +5,7 @@ import org.nwapw.abacus.function.*;
 import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.number.PreciseNumber;
-import org.nwapw.abacus.plugin.standard.OperatorAdd;
-import org.nwapw.abacus.plugin.standard.OperatorDivide;
-import org.nwapw.abacus.plugin.standard.OperatorMultiply;
-import org.nwapw.abacus.plugin.standard.OperatorSubtract;
+import org.nwapw.abacus.plugin.standard.*;
 import org.nwapw.abacus.tree.TreeNode;
 import org.nwapw.abacus.tree.VariableNode;
 
@@ -65,17 +62,7 @@ public class StandardPlugin extends Plugin {
     /**
      * The negation operator, -
      */
-    public static final NumberOperator OP_NEGATE = new NumberOperator(OperatorAssociativity.LEFT, OperatorType.UNARY_PREFIX, 0) {
-        @Override
-        public boolean matchesParams(MutableEvaluationContext context, NumberInterface[] params) {
-            return params.length == 1;
-        }
-
-        @Override
-        public NumberInterface applyInternal(MutableEvaluationContext context, NumberInterface[] params) {
-            return params[0].negate();
-        }
-    };
+    public static final NumberOperator OP_NEGATE = new OperatorNegate();
     /**
      * The multiplication operator, *
      */
@@ -138,36 +125,7 @@ public class StandardPlugin extends Plugin {
     /**
      * The factorial operator, !
      */
-    public static final NumberOperator OP_FACTORIAL = new NumberOperator(OperatorAssociativity.RIGHT, OperatorType.UNARY_POSTFIX, 0) {
-        //private HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>> storedList = new HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>>();
-        @Override
-        public boolean matchesParams(MutableEvaluationContext context, NumberInterface[] params) {
-            return params.length == 1
-                    && params[0].fractionalPart().compareTo(context.getInheritedNumberImplementation().instanceForString("0")) == 0
-                    && params[0].signum() >= 0;
-        }
-
-        @Override
-        public NumberInterface applyInternal(MutableEvaluationContext context, NumberInterface[] params) {
-            NumberImplementation implementation = context.getInheritedNumberImplementation();
-            if (params[0].signum() == 0) {
-                return implementation.instanceForString("1");
-            }
-            NumberInterface one = implementation.instanceForString("1");
-            NumberInterface factorial = params[0];
-            NumberInterface multiplier = params[0];
-            //It is necessary to later prevent calls of factorial on anything but non-negative integers.
-            while ((multiplier = multiplier.subtract(one)).signum() == 1) {
-                factorial = factorial.multiply(multiplier);
-            }
-            return factorial;
-                /*if(!storedList.containsKey(params[0].getClass())){
-                    storedList.put(params[0].getClass(), new ArrayList<NumberInterface>());
-                    storedList.get(params[0].getClass()).add(NaiveNumber.ONE.promoteTo(params[0].getClass()));
-                    storedList.get(params[0].getClass()).add(NaiveNumber.ONE.promoteTo(params[0].getClass()));
-                }*/
-        }
-    };
+    public static final NumberOperator OP_FACTORIAL = new OperatorFactorial();
     /**
      * The permutation operator.
      */
