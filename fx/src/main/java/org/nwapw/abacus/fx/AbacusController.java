@@ -142,9 +142,6 @@ public class AbacusController implements PluginListener {
         private String attemptCalculation() {
             try {
                 TreeNode constructedTree = abacus.parseString(inputField.getText());
-                if (constructedTree == null) {
-                    return ERR_SYNTAX;
-                }
                 EvaluationResult result = abacus.evaluateTree(constructedTree);
                 NumberInterface evaluatedNumber = result.getValue();
                 String resultingString = evaluatedNumber.toString();

@@ -1,5 +1,6 @@
 package org.nwapw.abacus.parsing;
 
+import org.nwapw.abacus.exception.TokenizeException;
 import org.nwapw.abacus.lexing.Lexer;
 import org.nwapw.abacus.lexing.pattern.Match;
 import org.nwapw.abacus.lexing.pattern.Pattern;
@@ -42,7 +43,9 @@ public class LexerTokenizer implements Tokenizer<Match<TokenType>>, PluginListen
 
     @Override
     public List<Match<TokenType>> tokenizeString(String string) {
-        return lexer.lexAll(string, 0, TOKEN_SORTER);
+        List<Match<TokenType>> tokens = lexer.lexAll(string, 0, TOKEN_SORTER);
+        if(tokens == null) throw new TokenizeException();
+        return tokens;
     }
 
     @Override

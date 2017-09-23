@@ -42,9 +42,7 @@ public class TreeBuilder<T> {
      * @return the resulting tree.
      */
     public TreeNode fromString(String input) {
-        List<T> tokens = tokenizer.tokenizeString(input);
-        if (tokens == null) return null;
-        return parser.constructTree(tokens);
+        return parser.constructTree(tokenizer.tokenizeString(input));
     }
 
 }
