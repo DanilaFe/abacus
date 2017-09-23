@@ -24,7 +24,7 @@ class ChainSearchDelegate<out V>(private val valueGetter: EvaluationContext.() -
             currentRef = currentRef.parent ?: break
             returnedValue = currentRef.valueGetter()
         }
-        return returnedValue ?: throw ContextException()
+        return returnedValue ?: throw ContextException("context chain does not contain value")
     }
 
 }
