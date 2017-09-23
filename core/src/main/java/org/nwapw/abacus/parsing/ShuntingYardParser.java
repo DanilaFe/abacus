@@ -1,5 +1,6 @@
 package org.nwapw.abacus.parsing;
 
+import org.nwapw.abacus.exception.ParseException;
 import org.nwapw.abacus.function.Operator;
 import org.nwapw.abacus.function.OperatorAssociativity;
 import org.nwapw.abacus.function.OperatorType;
@@ -99,7 +100,7 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
                 while (!tokenStack.empty() && tokenStack.peek().getType() != TokenType.OPEN_PARENTH) {
                     output.add(tokenStack.pop());
                 }
-                if (tokenStack.empty()) return null;
+                if (tokenStack.empty()) throw new ParseException("mismatched parentheses");
                 if (matchType == TokenType.CLOSE_PARENTH) {
                     tokenStack.pop();
                 }
@@ -111,7 +112,7 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
             if (!(newMatchType == TokenType.OP ||
                     newMatchType == TokenType.TREE_VALUE_OP ||
                     newMatchType == TokenType.FUNCTION ||
-                    newMatchType == TokenType.TREE_VALUE_FUNCTION)) return null;
+                    newMatchType == TokenType.TREE_VALUE_FUNCTION)) throw new ParseException("mismatched parentheses");
             output.add(tokenStack.pop());
         }
         return output;
@@ -124,7 +125,7 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
      * @return the construct tree expression.
      */
     public TreeNode constructRecursive(List<Match<TokenType>> matches) {
-        if (matches.size() == 0) return null;
+        if (matches.size() == 0) throw new ParseException("no tokens left in input");
         Match<TokenType> match = matches.remove(0);
         TokenType matchType = match.getType();
         if (matchType == TokenType.OP || matchType == TokenType.TREE_VALUE_OP) {
@@ -133,7 +134,6 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
             if (type == OperatorType.BINARY_INFIX) {
                 TreeNode right = constructRecursive(matches);
                 TreeNode left = constructRecursive(matches);
-                if (left == null || right == null) return null;
                 if (matchType == TokenType.OP) {
                     return new NumberBinaryNode(operator, left, right);
                 } else {
@@ -141,7 +141,6 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
                 }
             } else {
                 TreeNode applyTo = constructRecursive(matches);
-                if (applyTo == null) return null;
                 if (matchType == TokenType.OP) {
                     return new NumberUnaryNode(operator, applyTo);
                 } else {
@@ -157,10 +156,9 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
             List<TreeNode> children = new ArrayList<>();
             while (!matches.isEmpty() && matches.get(0).getType() != TokenType.INTERNAL_FUNCTION_END) {
                 TreeNode argument = constructRecursive(matches);
-                if (argument == null) return null;
                 children.add(0, argument);
             }
-            if (matches.isEmpty()) return null;
+            if (matches.isEmpty()) throw new ParseException("incorrectly formatted function call");
             matches.remove(0);
             CallNode node;
             if (matchType == TokenType.FUNCTION) {
@@ -170,16 +168,17 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
             }
             return node;
         }
-        return null;
+        throw new ParseException("unrecognized token");
     }
 
     @Override
     public TreeNode constructTree(List<Match<TokenType>> tokens) {
+        if (tokens.isEmpty()) throw new ParseException("no input tokens");
         tokens = intoPostfix(new ArrayList<>(tokens));
-        if (tokens == null) return null;
         Collections.reverse(tokens);
         TreeNode constructedTree = constructRecursive(tokens);
-        return tokens.size() == 0 ? constructedTree : null;
+        if(tokens.size() == 0) return constructedTree;
+        throw new ParseException("could not parse all input");
     }
 
     @Override

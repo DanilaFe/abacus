@@ -43,13 +43,13 @@ open class EvaluationContext(val parent: EvaluationContext? = null,
     /**
      * The implementation inherited from this context's parent.
      */
-    val inheritedNumberImplementation: NumberImplementation?
-            by ChainSearchDelegate { numberImplementation}
+    val inheritedNumberImplementation: NumberImplementation
+            by ChainSearchDelegate { numberImplementation }
 
     /**
      * The reducer inherited from this context's parent.
      */
-    val inheritedReducer: Reducer<NumberInterface>?
+    val inheritedReducer: Reducer<NumberInterface>
             by ChainSearchDelegate { reducer }
 
     /**

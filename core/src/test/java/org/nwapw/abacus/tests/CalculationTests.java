@@ -22,7 +22,6 @@ public class CalculationTests {
 
     private void testOutput(String input, String parseOutput, String output) {
         TreeNode parsedTree = abacus.parseString(input);
-        Assert.assertNotNull(parsedTree);
         Assert.assertEquals(parsedTree.toString(), parseOutput);
         NumberInterface result = abacus.evaluateTree(parsedTree).getValue();
         Assert.assertNotNull(result);
@@ -31,7 +30,6 @@ public class CalculationTests {
 
     private void testDomainException(String input, String parseOutput) {
         TreeNode parsedTree = abacus.parseString(input);
-        Assert.assertNotNull(parsedTree);
         Assert.assertEquals(parsedTree.toString(), parseOutput);
         try {
             abacus.evaluateTree(parsedTree);

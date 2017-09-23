@@ -2,7 +2,8 @@ package org.nwapw.abacus.tree
 
 import org.nwapw.abacus.Abacus
 import org.nwapw.abacus.context.EvaluationContext
-import org.nwapw.abacus.exception.EvaluationException
+import org.nwapw.abacus.exception.NumberReducerException
+import org.nwapw.abacus.exception.ReductionException
 import org.nwapw.abacus.number.NumberInterface
 
 class NumberReducer(val abacus: Abacus, context: EvaluationContext) : Reducer<NumberInterface> {
@@ -17,15 +18,14 @@ class NumberReducer(val abacus: Abacus, context: EvaluationContext) : Reducer<Nu
         val promotionManager = abacus.promotionManager
         return when(treeNode){
             is NumberNode -> {
-                context.inheritedNumberImplementation?.instanceForString(treeNode.number)
-                        ?: throw EvaluationException("no number implementation selected.")
+                context.inheritedNumberImplementation.instanceForString(treeNode.number)
             }
             is VariableNode -> {
                 val variable = context.getVariable(treeNode.variable)
                 if(variable != null) return variable
                 val definition = context.getDefinition(treeNode.variable)
                 if(definition != null) return definition.reduce(this)
-                throw EvaluationException("variable is not defined.")
+                throw NumberReducerException("variable is not defined.")
             }
             is NumberUnaryNode -> {
                 val child = children[0] as NumberInterface
@@ -58,7 +58,7 @@ class NumberReducer(val abacus: Abacus, context: EvaluationContext) : Reducer<Nu
                 abacus.pluginManager.treeValueFunctionFor(treeNode.callTo)
                         .apply(context, *treeNode.children.toTypedArray())
             }
-            else -> throw EvaluationException("unrecognized tree node.")
+            else -> throw ReductionException("unrecognized tree node.")
         }
     }
 
