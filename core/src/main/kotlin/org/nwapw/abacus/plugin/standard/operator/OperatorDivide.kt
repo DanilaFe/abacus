@@ -1,4 +1,4 @@
-package org.nwapw.abacus.plugin.standard
+package org.nwapw.abacus.plugin.standard.operator
 
 import org.nwapw.abacus.context.MutableEvaluationContext
 import org.nwapw.abacus.function.NumberOperator
@@ -7,15 +7,15 @@ import org.nwapw.abacus.function.OperatorType
 import org.nwapw.abacus.number.NumberInterface
 
 /**
- * The subtraction operator.
+ * The division operator.
  *
- * This is a standard operator that performs subtraction.
+ * This is a standard operator that simply performs division.
  */
-class OperatorSubtract: NumberOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 0) {
+class OperatorDivide: NumberOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 1) {
 
     override fun matchesParams(context: MutableEvaluationContext, params: Array<out NumberInterface>) =
             params.size == 2
     override fun applyInternal(context: MutableEvaluationContext, params: Array<out NumberInterface>) =
-            params[0] - params[1]
+            params[0] / params[1]
 
 }

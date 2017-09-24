@@ -1,4 +1,4 @@
-package org.nwapw.abacus.plugin.standard
+package org.nwapw.abacus.plugin.standard.operator
 
 import org.nwapw.abacus.context.MutableEvaluationContext
 import org.nwapw.abacus.function.OperatorAssociativity

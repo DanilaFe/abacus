@@ -5,7 +5,7 @@ import org.nwapw.abacus.function.*;
 import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.number.PreciseNumber;
-import org.nwapw.abacus.plugin.standard.*;
+import org.nwapw.abacus.plugin.standard.operator.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
