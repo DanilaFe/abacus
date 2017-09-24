@@ -1,6 +1,6 @@
 package org.nwapw.abacus.parsing
 
-import org.nwapw.abacus.tree.TreeNode
+import org.nwapw.abacus.tree.nodes.TreeNode
 
 /**
  * Converter from tokens into a parse tree.

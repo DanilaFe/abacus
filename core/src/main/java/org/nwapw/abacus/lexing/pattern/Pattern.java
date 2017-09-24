@@ -1,5 +1,7 @@
 package org.nwapw.abacus.lexing.pattern;
 
+import org.nwapw.abacus.lexing.pattern.nodes.*;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -88,7 +90,7 @@ public class Pattern<T> {
      * @return the modified chain.
      */
     private PatternChain<T> transformPlus(PatternChain<T> chain) {
-        chain.tail.outputStates.add(chain.head);
+        chain.tail.getOutputStates().add(chain.head);
         return chain;
     }
 
@@ -102,10 +104,10 @@ public class Pattern<T> {
     private PatternChain<T> transformStar(PatternChain<T> chain) {
         LinkNode<T> newTail = new LinkNode<>();
         LinkNode<T> newHead = new LinkNode<>();
-        newHead.outputStates.add(chain.head);
-        newHead.outputStates.add(newTail);
-        chain.tail.outputStates.add(newTail);
-        newTail.outputStates.add(newHead);
+        newHead.getOutputStates().add(chain.head);
+        newHead.getOutputStates().add(newTail);
+        chain.tail.getOutputStates().add(newTail);
+        newTail.getOutputStates().add(newHead);
         chain.head = newHead;
         chain.tail = newTail;
         return chain;
@@ -121,9 +123,9 @@ public class Pattern<T> {
     private PatternChain<T> transformQuestion(PatternChain<T> chain) {
         LinkNode<T> newTail = new LinkNode<>();
         LinkNode<T> newHead = new LinkNode<>();
-        newHead.outputStates.add(chain.head);
-        newHead.outputStates.add(newTail);
-        chain.tail.outputStates.add(newTail);
+        newHead.getOutputStates().add(chain.head);
+        newHead.getOutputStates().add(newTail);
+        chain.tail.getOutputStates().add(newTail);
         chain.head = newHead;
         chain.tail = newTail;
         return chain;
@@ -140,8 +142,8 @@ public class Pattern<T> {
         LinkNode<T> tail = new LinkNode<>();
         PatternChain<T> newChain = new PatternChain<>(head, tail);
         for (PatternChain<T> chain : collection) {
-            head.outputStates.add(chain.head);
-            chain.tail.outputStates.add(tail);
+            head.getOutputStates().add(chain.head);
+            chain.tail.getOutputStates().add(tail);
         }
         return newChain;
     }

@@ -3,15 +3,14 @@ package org.nwapw.abacus
 import org.nwapw.abacus.config.Configuration
 import org.nwapw.abacus.context.MutableEvaluationContext
 import org.nwapw.abacus.context.EvaluationContext
-import org.nwapw.abacus.number.PromotionManager
-import org.nwapw.abacus.parsing.LexerTokenizer
-import org.nwapw.abacus.parsing.ShuntingYardParser
+import org.nwapw.abacus.number.promotion.PromotionManager
+import org.nwapw.abacus.parsing.standard.LexerTokenizer
+import org.nwapw.abacus.parsing.standard.ShuntingYardParser
 import org.nwapw.abacus.parsing.TreeBuilder
 import org.nwapw.abacus.plugin.PluginManager
 import org.nwapw.abacus.plugin.standard.StandardPlugin
-import org.nwapw.abacus.tree.EvaluationResult
-import org.nwapw.abacus.tree.NumberReducer
-import org.nwapw.abacus.tree.TreeNode
+import org.nwapw.abacus.tree.standard.NumberReducer
+import org.nwapw.abacus.tree.nodes.TreeNode
 
 /**
  * Core class to handle all mathematics.

@@ -8,7 +8,7 @@ import org.nwapw.abacus.config.Configuration;
 import org.nwapw.abacus.exception.DomainException;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.plugin.standard.StandardPlugin;
-import org.nwapw.abacus.tree.TreeNode;
+import org.nwapw.abacus.tree.nodes.TreeNode;
 
 public class CalculationTests {
 

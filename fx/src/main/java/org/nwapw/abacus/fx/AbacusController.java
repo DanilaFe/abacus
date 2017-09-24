@@ -20,8 +20,8 @@ import org.nwapw.abacus.plugin.ClassFinder;
 import org.nwapw.abacus.plugin.PluginListener;
 import org.nwapw.abacus.plugin.PluginManager;
 import org.nwapw.abacus.plugin.standard.StandardPlugin;
-import org.nwapw.abacus.tree.EvaluationResult;
-import org.nwapw.abacus.tree.TreeNode;
+import org.nwapw.abacus.EvaluationResult;
+import org.nwapw.abacus.tree.nodes.TreeNode;
 
 import java.io.File;
 import java.io.IOException;

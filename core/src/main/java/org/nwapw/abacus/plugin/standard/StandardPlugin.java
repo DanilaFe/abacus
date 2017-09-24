@@ -2,9 +2,12 @@ package org.nwapw.abacus.plugin.standard;
 
 import org.nwapw.abacus.context.MutableEvaluationContext;
 import org.nwapw.abacus.function.*;
-import org.nwapw.abacus.number.NaiveNumber;
+import org.nwapw.abacus.function.interfaces.NumberFunction;
+import org.nwapw.abacus.function.interfaces.NumberOperator;
+import org.nwapw.abacus.function.interfaces.TreeValueOperator;
+import org.nwapw.abacus.number.standard.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
-import org.nwapw.abacus.number.PreciseNumber;
+import org.nwapw.abacus.number.standard.PreciseNumber;
 import org.nwapw.abacus.plugin.NumberImplementation;
 import org.nwapw.abacus.plugin.Plugin;
 import org.nwapw.abacus.plugin.PluginManager;

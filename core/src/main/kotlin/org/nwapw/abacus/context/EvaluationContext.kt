@@ -3,7 +3,7 @@ package org.nwapw.abacus.context
 import org.nwapw.abacus.number.NumberInterface
 import org.nwapw.abacus.plugin.NumberImplementation
 import org.nwapw.abacus.tree.Reducer
-import org.nwapw.abacus.tree.TreeNode
+import org.nwapw.abacus.tree.nodes.TreeNode
 
 /**
  * A context for the reduction of a [org.nwapw.abacus.tree.TreeNode] into a number.

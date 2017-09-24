@@ -3,10 +3,10 @@ package org.nwapw.abacus.plugin.standard.operator
 import org.nwapw.abacus.context.MutableEvaluationContext
 import org.nwapw.abacus.function.OperatorAssociativity
 import org.nwapw.abacus.function.OperatorType
-import org.nwapw.abacus.function.TreeValueOperator
+import org.nwapw.abacus.function.interfaces.TreeValueOperator
 import org.nwapw.abacus.number.NumberInterface
-import org.nwapw.abacus.tree.TreeNode
-import org.nwapw.abacus.tree.VariableNode
+import org.nwapw.abacus.tree.nodes.TreeNode
+import org.nwapw.abacus.tree.nodes.VariableNode
 
 /**
  * The set operator.

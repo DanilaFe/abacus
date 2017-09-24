@@ -3,7 +3,7 @@ package org.nwapw.abacus.tests;
 import org.junit.Assert;
 import org.junit.Test;
 import org.nwapw.abacus.lexing.Lexer;
-import org.nwapw.abacus.lexing.pattern.Match;
+import org.nwapw.abacus.lexing.Match;
 
 import java.util.List;
 
