@@ -1,4 +1,4 @@
-package org.nwapw.abacus.plugin;
+package org.nwapw.abacus.fx;
 
 import java.io.File;
 import java.io.IOException;
