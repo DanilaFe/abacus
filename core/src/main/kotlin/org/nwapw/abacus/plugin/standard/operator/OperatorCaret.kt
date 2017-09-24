@@ -5,7 +5,7 @@ import org.nwapw.abacus.function.NumberOperator
 import org.nwapw.abacus.function.OperatorAssociativity
 import org.nwapw.abacus.function.OperatorType
 import org.nwapw.abacus.number.NumberInterface
-import org.nwapw.abacus.plugin.StandardPlugin.*
+import org.nwapw.abacus.plugin.standard.StandardPlugin.*
 
 /**
  * The power operator.

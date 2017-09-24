@@ -19,7 +19,7 @@ import org.nwapw.abacus.number.*;
 import org.nwapw.abacus.plugin.ClassFinder;
 import org.nwapw.abacus.plugin.PluginListener;
 import org.nwapw.abacus.plugin.PluginManager;
-import org.nwapw.abacus.plugin.StandardPlugin;
+import org.nwapw.abacus.plugin.standard.StandardPlugin;
 import org.nwapw.abacus.tree.EvaluationResult;
 import org.nwapw.abacus.tree.TreeNode;
 

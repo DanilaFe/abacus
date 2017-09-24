@@ -9,7 +9,7 @@ import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.number.NumberRange;
 import org.nwapw.abacus.number.PreciseNumber;
-import org.nwapw.abacus.plugin.StandardPlugin;
+import org.nwapw.abacus.plugin.standard.StandardPlugin;
 
 import java.util.function.Function;
 

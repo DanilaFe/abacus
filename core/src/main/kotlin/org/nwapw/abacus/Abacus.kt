@@ -8,7 +8,7 @@ import org.nwapw.abacus.parsing.LexerTokenizer
 import org.nwapw.abacus.parsing.ShuntingYardParser
 import org.nwapw.abacus.parsing.TreeBuilder
 import org.nwapw.abacus.plugin.PluginManager
-import org.nwapw.abacus.plugin.StandardPlugin
+import org.nwapw.abacus.plugin.standard.StandardPlugin
 import org.nwapw.abacus.tree.EvaluationResult
 import org.nwapw.abacus.tree.NumberReducer
 import org.nwapw.abacus.tree.TreeNode
