@@ -6,11 +6,16 @@ import org.nwapw.abacus.function.OperatorAssociativity
 import org.nwapw.abacus.function.OperatorType
 import org.nwapw.abacus.number.NumberInterface
 
+/**
+ * The factorial operator.
+ *
+ * This is a standard operator that simply evaluates the factorial of a number.
+ */
 class OperatorFactorial: NumberOperator(OperatorAssociativity.LEFT, OperatorType.UNARY_POSTFIX, 0) {
 
     override fun matchesParams(context: MutableEvaluationContext, params: Array<out NumberInterface>) =
         params.size == 1
-                && params[0].fractionalPart().compareTo(context.inheritedNumberImplementation.instanceForString("0")) == 0
+                && params[0].fractionalPart().signum() == 0
                 && params[0].signum() >= 0
 
     override fun applyInternal(context: MutableEvaluationContext, params: Array<out NumberInterface>): NumberInterface {

@@ -6,6 +6,11 @@ import org.nwapw.abacus.function.OperatorAssociativity
 import org.nwapw.abacus.function.OperatorType
 import org.nwapw.abacus.number.NumberInterface
 
+/**
+ * The negation operator.
+ *
+ * This is a standard operator that negates a number.
+ */
 class OperatorNegate: NumberOperator(OperatorAssociativity.LEFT, OperatorType.UNARY_PREFIX, 0) {
 
     override fun matchesParams(context: MutableEvaluationContext, params: Array<out NumberInterface>) =

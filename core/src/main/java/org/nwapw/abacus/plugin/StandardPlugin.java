@@ -6,8 +6,6 @@ import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.number.PreciseNumber;
 import org.nwapw.abacus.plugin.standard.*;
-import org.nwapw.abacus.tree.TreeNode;
-import org.nwapw.abacus.tree.VariableNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,36 +19,11 @@ public class StandardPlugin extends Plugin {
     /**
      * The set operator.
      */
-    public final TreeValueOperator opSet = new TreeValueOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 0) {
-        @Override
-        public boolean matchesParams(MutableEvaluationContext context, TreeNode[] params) {
-            return params.length == 2 && params[0] instanceof VariableNode;
-        }
-
-        @Override
-        public NumberInterface applyInternal(MutableEvaluationContext context, TreeNode[] params) {
-            String assignTo = ((VariableNode) params[0]).getVariable();
-            NumberInterface value = params[1].reduce(context.getInheritedReducer());
-            context.setVariable(assignTo, value);
-            return value;
-        }
-    };
+    public static final TreeValueOperator OP_SET = new OperatorSet();
     /**
      * The define operator.
      */
-    public final TreeValueOperator opDefine = new TreeValueOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 0) {
-        @Override
-        public boolean matchesParams(MutableEvaluationContext context, TreeNode[] params) {
-            return params.length == 2 && params[0] instanceof VariableNode;
-        }
-
-        @Override
-        public NumberInterface applyInternal(MutableEvaluationContext context, TreeNode[] params) {
-            String assignTo = ((VariableNode) params[0]).getVariable();
-            context.setDefinition(assignTo, params[1]);
-            return params[1].reduce(context.getInheritedReducer());
-        }
-    };
+    public final TreeValueOperator OP_DEFINE = new OperatorDefine();
     /**
      * The addition operator, +
      */
@@ -129,49 +102,11 @@ public class StandardPlugin extends Plugin {
     /**
      * The permutation operator.
      */
-    public static final NumberOperator OP_NPR = new NumberOperator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 0) {
-        @Override
-        public boolean matchesParams(MutableEvaluationContext context, NumberInterface[] params) {
-            return params.length == 2 && params[0].fractionalPart().signum() == 0
-                    && params[1].fractionalPart().signum() == 0;
-        }
-
-        @Override
-        public NumberInterface applyInternal(MutableEvaluationContext context, NumberInterface[] params) {
-            NumberImplementation implementation = context.getInheritedNumberImplementation();
-            if (params[0].compareTo(params[1]) < 0 ||
-                    params[0].signum() < 0 ||
-                    (params[0].signum() == 0 && params[1].signum() != 0)) return implementation.instanceForString("0");
-            NumberInterface total = implementation.instanceForString("1");
-            NumberInterface multiplyBy = params[0];
-            NumberInterface remainingMultiplications = params[1];
-            NumberInterface halfway = params[0].divide(implementation.instanceForString("2"));
-            if (remainingMultiplications.compareTo(halfway) > 0) {
-                remainingMultiplications = params[0].subtract(remainingMultiplications);
-            }
-            while (remainingMultiplications.signum() > 0) {
-                total = total.multiply(multiplyBy);
-                remainingMultiplications = remainingMultiplications.subtract(implementation.instanceForString("1"));
-                multiplyBy = multiplyBy.subtract(implementation.instanceForString("1"));
-            }
-            return total;
-        }
-    };
+    public static final NumberOperator OP_NPR = new OperatorNpr();
     /**
      * The combination operator.
      */
-    public static final NumberOperator OP_NCR = new NumberOperator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 0) {
-        @Override
-        public boolean matchesParams(MutableEvaluationContext context, NumberInterface[] params) {
-            return params.length == 2 && params[0].fractionalPart().signum() == 0
-                    && params[1].fractionalPart().signum() == 0;
-        }
-
-        @Override
-        public NumberInterface applyInternal(MutableEvaluationContext context, NumberInterface[] params) {
-            return OP_NPR.apply(context, params).divide(OP_FACTORIAL.apply(context, params[1]));
-        }
-    };
+    public static final NumberOperator OP_NCR = new OperatorNcr();
     /**
      * The absolute value function, abs(-3) = 3
      */
@@ -284,34 +219,7 @@ public class StandardPlugin extends Plugin {
     /**
      * The caret / pow operator, ^
      */
-    public static final NumberOperator OP_CARET = new NumberOperator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 2) {
-        @Override
-        public boolean matchesParams(MutableEvaluationContext context, NumberInterface[] params) {
-            NumberInterface zero = context.getInheritedNumberImplementation().instanceForString("0");
-            return params.length == 2
-                    && !(params[0].compareTo(zero) == 0
-                    && params[1].compareTo(zero) == 0)
-                    && !(params[0].signum() == -1 && params[1].fractionalPart().compareTo(zero) != 0);
-        }
-
-        @Override
-        public NumberInterface applyInternal(MutableEvaluationContext context, NumberInterface[] params) {
-            NumberImplementation implementation = context.getInheritedNumberImplementation();
-            NumberInterface zero = implementation.instanceForString("0");
-            if (params[0].compareTo(zero) == 0)
-                return zero;
-            else if (params[1].compareTo(zero) == 0)
-                return implementation.instanceForString("1");
-            //Detect integer bases:
-            if (params[0].fractionalPart().compareTo(implementation.instanceForString("0")) == 0
-                    && FUNCTION_ABS.apply(context, params[1]).compareTo(implementation.instanceForString(Integer.toString(Integer.MAX_VALUE))) < 0
-                    && FUNCTION_ABS.apply(context, params[1]).compareTo(implementation.instanceForString("1")) >= 0) {
-                NumberInterface[] newParams = {params[0], params[1].fractionalPart()};
-                return params[0].intPow(params[1].floor().intValue()).multiply(applyInternal(context, newParams));
-            }
-            return FUNCTION_EXP.apply(context, FUNCTION_LN.apply(context, FUNCTION_ABS.apply(context, params[0])).multiply(params[1]));
-        }
-    };
+    public static final NumberOperator OP_CARET = new OperatorCaret();
     /**
      * The square root function.
      */
@@ -677,8 +585,8 @@ public class StandardPlugin extends Plugin {
         registerOperator("^", OP_CARET);
         registerOperator("!", OP_FACTORIAL);
 
-        registerTreeValueOperator("=", opSet);
-        registerTreeValueOperator(":=", opDefine);
+        registerTreeValueOperator("=", OP_SET);
+        registerTreeValueOperator(":=", OP_DEFINE);
 
         registerOperator("nPr", OP_NPR);
         registerOperator("nCr", OP_NCR);
