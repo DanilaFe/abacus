@@ -79,10 +79,10 @@ public class Lexer<T> {
 
             index++;
         }
-        matches.sort((a, b) -> compare.compare(a.getType(), b.getType()));
         if (compare != null) {
-            matches.sort(Comparator.comparingInt(a -> a.getContent().length()));
+            Collections.sort(matches, (a, b) -> compare.compare(a.getType(), b.getType()));
         }
+        Collections.sort(matches, (o1, o2) -> o1.getContent().length() - o2.getContent().length());
         return matches.isEmpty() ? null : matches.get(matches.size() - 1);
     }
 
@@ -136,7 +136,10 @@ public class Lexer<T> {
 
         @Override
         public int hashCode() {
-            return Objects.hash(name, id);
+            return Arrays.hashCode(new Object[] {
+                    this.name,
+                    this.id
+            });
         }
 
         @Override

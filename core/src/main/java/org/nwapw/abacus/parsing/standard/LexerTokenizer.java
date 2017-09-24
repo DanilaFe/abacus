@@ -20,7 +20,7 @@ public class LexerTokenizer implements Tokenizer<Match<TokenType>>, PluginListen
     /**
      * Comparator used to sort the tokens produced by the lexer.
      */
-    protected static final Comparator<TokenType> TOKEN_SORTER = Comparator.comparingInt(e -> e.priority);
+    protected static final Comparator<TokenType> TOKEN_SORTER = (o1, o2) -> o1.priority - o2.priority;
 
     /**
      * The lexer instance used to turn strings into matches.
