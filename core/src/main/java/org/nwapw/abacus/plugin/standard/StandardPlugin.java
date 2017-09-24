@@ -1,12 +1,14 @@
-package org.nwapw.abacus.plugin;
+package org.nwapw.abacus.plugin.standard;
 
 import org.nwapw.abacus.context.MutableEvaluationContext;
 import org.nwapw.abacus.function.*;
 import org.nwapw.abacus.number.NaiveNumber;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.number.PreciseNumber;
-import org.nwapw.abacus.tree.TreeNode;
-import org.nwapw.abacus.tree.VariableNode;
+import org.nwapw.abacus.plugin.NumberImplementation;
+import org.nwapw.abacus.plugin.Plugin;
+import org.nwapw.abacus.plugin.PluginManager;
+import org.nwapw.abacus.plugin.standard.operator.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,93 +22,27 @@ public class StandardPlugin extends Plugin {
     /**
      * The set operator.
      */
-    public final TreeValueOperator opSet = new TreeValueOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 0) {
-        @Override
-        public boolean matchesParams(MutableEvaluationContext context, TreeNode[] params) {
-            return params.length == 2 && params[0] instanceof VariableNode;
-        }
-
-        @Override
-        public NumberInterface applyInternal(MutableEvaluationContext context, TreeNode[] params) {
-            String assignTo = ((VariableNode) params[0]).getVariable();
-            NumberInterface value = params[1].reduce(context.getInheritedReducer());
-            context.setVariable(assignTo, value);
-            return value;
-        }
-    };
+    public static final TreeValueOperator OP_SET = new OperatorSet();
     /**
      * The define operator.
      */
-    public final TreeValueOperator opDefine = new TreeValueOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 0) {
-        @Override
-        public boolean matchesParams(MutableEvaluationContext context, TreeNode[] params) {
-            return params.length == 2 && params[0] instanceof VariableNode;
-        }
-
-        @Override
-        public NumberInterface applyInternal(MutableEvaluationContext context, TreeNode[] params) {
-            String assignTo = ((VariableNode) params[0]).getVariable();
-            context.setDefinition(assignTo, params[1]);
-            return params[1].reduce(context.getInheritedReducer());
-        }
-    };
+    public final TreeValueOperator OP_DEFINE = new OperatorDefine();
     /**
      * The addition operator, +
      */
-    public static final NumberOperator OP_ADD = new NumberOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 0) {
-        @Override
-        public boolean matchesParams(MutableEvaluationContext context, NumberInterface[] params) {
-            return params.length == 2;
-        }
-
-        @Override
-        public NumberInterface applyInternal(MutableEvaluationContext context, NumberInterface[] params) {
-            return params[0].add(params[1]);
-        }
-    };
+    public static final NumberOperator OP_ADD = new OperatorAdd();
     /**
      * The subtraction operator, -
      */
-    public static final NumberOperator OP_SUBTRACT = new NumberOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 0) {
-        @Override
-        public boolean matchesParams(MutableEvaluationContext context, NumberInterface[] params) {
-            return params.length == 2;
-        }
-
-        @Override
-        public NumberInterface applyInternal(MutableEvaluationContext context, NumberInterface[] params) {
-            return params[0].subtract(params[1]);
-
-        }
-    };
+    public static final NumberOperator OP_SUBTRACT = new OperatorSubtract();
     /**
      * The negation operator, -
      */
-    public static final NumberOperator OP_NEGATE = new NumberOperator(OperatorAssociativity.LEFT, OperatorType.UNARY_PREFIX, 0) {
-        @Override
-        public boolean matchesParams(MutableEvaluationContext context, NumberInterface[] params) {
-            return params.length == 1;
-        }
-
-        @Override
-        public NumberInterface applyInternal(MutableEvaluationContext context, NumberInterface[] params) {
-            return params[0].negate();
-        }
-    };
+    public static final NumberOperator OP_NEGATE = new OperatorNegate();
     /**
      * The multiplication operator, *
      */
-    public static final NumberOperator OP_MULTIPLY = new NumberOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 1) {
-        @Override
-        public boolean matchesParams(MutableEvaluationContext context, NumberInterface[] params) {
-            return params.length == 2;
-        }
-
-        @Override
-        public NumberInterface applyInternal(MutableEvaluationContext context, NumberInterface[] params) {
-            return params[0].multiply(params[1]);
-        }
-    };
+    public static final NumberOperator OP_MULTIPLY = new OperatorMultiply();
     /**
      * The implementation for double-based naive numbers.
      */
@@ -161,96 +97,19 @@ public class StandardPlugin extends Plugin {
     /**
      * The division operator, /
      */
-    public static final NumberOperator OP_DIVIDE = new NumberOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 1) {
-        @Override
-        public boolean matchesParams(MutableEvaluationContext context, NumberInterface[] params) {
-            return params.length == 2 && params[1].compareTo(context.getInheritedNumberImplementation().instanceForString(Integer.toString(0))) != 0;
-        }
-
-        @Override
-        public NumberInterface applyInternal(MutableEvaluationContext context, NumberInterface[] params) {
-            return params[0].divide(params[1]);
-        }
-    };
+    public static final NumberOperator OP_DIVIDE = new OperatorDivide();
     /**
      * The factorial operator, !
      */
-    public static final NumberOperator OP_FACTORIAL = new NumberOperator(OperatorAssociativity.RIGHT, OperatorType.UNARY_POSTFIX, 0) {
-        //private HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>> storedList = new HashMap<Class<? extends NumberInterface>, ArrayList<NumberInterface>>();
-        @Override
-        public boolean matchesParams(MutableEvaluationContext context, NumberInterface[] params) {
-            return params.length == 1
-                    && params[0].fractionalPart().compareTo(context.getInheritedNumberImplementation().instanceForString("0")) == 0
-                    && params[0].signum() >= 0;
-        }
-
-        @Override
-        public NumberInterface applyInternal(MutableEvaluationContext context, NumberInterface[] params) {
-            NumberImplementation implementation = context.getInheritedNumberImplementation();
-            if (params[0].signum() == 0) {
-                return implementation.instanceForString("1");
-            }
-            NumberInterface one = implementation.instanceForString("1");
-            NumberInterface factorial = params[0];
-            NumberInterface multiplier = params[0];
-            //It is necessary to later prevent calls of factorial on anything but non-negative integers.
-            while ((multiplier = multiplier.subtract(one)).signum() == 1) {
-                factorial = factorial.multiply(multiplier);
-            }
-            return factorial;
-                /*if(!storedList.containsKey(params[0].getClass())){
-                    storedList.put(params[0].getClass(), new ArrayList<NumberInterface>());
-                    storedList.get(params[0].getClass()).add(NaiveNumber.ONE.promoteTo(params[0].getClass()));
-                    storedList.get(params[0].getClass()).add(NaiveNumber.ONE.promoteTo(params[0].getClass()));
-                }*/
-        }
-    };
+    public static final NumberOperator OP_FACTORIAL = new OperatorFactorial();
     /**
      * The permutation operator.
      */
-    public static final NumberOperator OP_NPR = new NumberOperator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 0) {
-        @Override
-        public boolean matchesParams(MutableEvaluationContext context, NumberInterface[] params) {
-            return params.length == 2 && params[0].fractionalPart().signum() == 0
-                    && params[1].fractionalPart().signum() == 0;
-        }
-
-        @Override
-        public NumberInterface applyInternal(MutableEvaluationContext context, NumberInterface[] params) {
-            NumberImplementation implementation = context.getInheritedNumberImplementation();
-            if (params[0].compareTo(params[1]) < 0 ||
-                    params[0].signum() < 0 ||
-                    (params[0].signum() == 0 && params[1].signum() != 0)) return implementation.instanceForString("0");
-            NumberInterface total = implementation.instanceForString("1");
-            NumberInterface multiplyBy = params[0];
-            NumberInterface remainingMultiplications = params[1];
-            NumberInterface halfway = params[0].divide(implementation.instanceForString("2"));
-            if (remainingMultiplications.compareTo(halfway) > 0) {
-                remainingMultiplications = params[0].subtract(remainingMultiplications);
-            }
-            while (remainingMultiplications.signum() > 0) {
-                total = total.multiply(multiplyBy);
-                remainingMultiplications = remainingMultiplications.subtract(implementation.instanceForString("1"));
-                multiplyBy = multiplyBy.subtract(implementation.instanceForString("1"));
-            }
-            return total;
-        }
-    };
+    public static final NumberOperator OP_NPR = new OperatorNpr();
     /**
      * The combination operator.
      */
-    public static final NumberOperator OP_NCR = new NumberOperator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 0) {
-        @Override
-        public boolean matchesParams(MutableEvaluationContext context, NumberInterface[] params) {
-            return params.length == 2 && params[0].fractionalPart().signum() == 0
-                    && params[1].fractionalPart().signum() == 0;
-        }
-
-        @Override
-        public NumberInterface applyInternal(MutableEvaluationContext context, NumberInterface[] params) {
-            return OP_NPR.apply(context, params).divide(OP_FACTORIAL.apply(context, params[1]));
-        }
-    };
+    public static final NumberOperator OP_NCR = new OperatorNcr();
     /**
      * The absolute value function, abs(-3) = 3
      */
@@ -363,34 +222,7 @@ public class StandardPlugin extends Plugin {
     /**
      * The caret / pow operator, ^
      */
-    public static final NumberOperator OP_CARET = new NumberOperator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 2) {
-        @Override
-        public boolean matchesParams(MutableEvaluationContext context, NumberInterface[] params) {
-            NumberInterface zero = context.getInheritedNumberImplementation().instanceForString("0");
-            return params.length == 2
-                    && !(params[0].compareTo(zero) == 0
-                    && params[1].compareTo(zero) == 0)
-                    && !(params[0].signum() == -1 && params[1].fractionalPart().compareTo(zero) != 0);
-        }
-
-        @Override
-        public NumberInterface applyInternal(MutableEvaluationContext context, NumberInterface[] params) {
-            NumberImplementation implementation = context.getInheritedNumberImplementation();
-            NumberInterface zero = implementation.instanceForString("0");
-            if (params[0].compareTo(zero) == 0)
-                return zero;
-            else if (params[1].compareTo(zero) == 0)
-                return implementation.instanceForString("1");
-            //Detect integer bases:
-            if (params[0].fractionalPart().compareTo(implementation.instanceForString("0")) == 0
-                    && FUNCTION_ABS.apply(context, params[1]).compareTo(implementation.instanceForString(Integer.toString(Integer.MAX_VALUE))) < 0
-                    && FUNCTION_ABS.apply(context, params[1]).compareTo(implementation.instanceForString("1")) >= 0) {
-                NumberInterface[] newParams = {params[0], params[1].fractionalPart()};
-                return params[0].intPow(params[1].floor().intValue()).multiply(applyInternal(context, newParams));
-            }
-            return FUNCTION_EXP.apply(context, FUNCTION_LN.apply(context, FUNCTION_ABS.apply(context, params[0])).multiply(params[1]));
-        }
-    };
+    public static final NumberOperator OP_CARET = new OperatorCaret();
     /**
      * The square root function.
      */
@@ -756,8 +588,8 @@ public class StandardPlugin extends Plugin {
         registerOperator("^", OP_CARET);
         registerOperator("!", OP_FACTORIAL);
 
-        registerTreeValueOperator("=", opSet);
-        registerTreeValueOperator(":=", opDefine);
+        registerTreeValueOperator("=", OP_SET);
+        registerTreeValueOperator(":=", OP_DEFINE);
 
         registerOperator("nPr", OP_NPR);
         registerOperator("nCr", OP_NCR);

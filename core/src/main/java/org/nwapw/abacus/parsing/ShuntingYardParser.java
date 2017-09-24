@@ -124,7 +124,7 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
      * @param matches the list of tokens from the source string.
      * @return the construct tree expression.
      */
-    public TreeNode constructRecursive(List<Match<TokenType>> matches) {
+    public TreeNode constructRecursive(List<? extends Match<TokenType>> matches) {
         if (matches.size() == 0) throw new ParseException("no tokens left in input");
         Match<TokenType> match = matches.remove(0);
         TokenType matchType = match.getType();
@@ -172,7 +172,7 @@ public class ShuntingYardParser implements Parser<Match<TokenType>>, PluginListe
     }
 
     @Override
-    public TreeNode constructTree(List<Match<TokenType>> tokens) {
+    public TreeNode constructTree(List<? extends Match<TokenType>> tokens) {
         if (tokens.isEmpty()) throw new ParseException("no input tokens");
         tokens = intoPostfix(new ArrayList<>(tokens));
         Collections.reverse(tokens);

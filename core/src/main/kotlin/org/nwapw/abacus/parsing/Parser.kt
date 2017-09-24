@@ -1,16 +1,17 @@
-package org.nwapw.abacus.parsing;
+package org.nwapw.abacus.parsing
 
-import org.nwapw.abacus.tree.TreeNode;
-
-import java.util.List;
+import org.nwapw.abacus.tree.TreeNode
 
 /**
- * An itnerface that provides the ability to convert a list of tokens
+ * Converter from tokens into a parse tree.
+ *
+ * An interface that provides the ability to convert a list of tokens
  * into a parse tree.
  *
  * @param <T> the type of tokens accepted by this parser.
  */
-public interface Parser<T> {
+
+interface Parser<in T> {
 
     /**
      * Constructs a tree out of the given tokens.
@@ -18,5 +19,6 @@ public interface Parser<T> {
      * @param tokens the tokens to construct a tree from.
      * @return the constructed tree, or null on error.
      */
-    public TreeNode constructTree(List<T> tokens);
+    fun constructTree(tokens: List<T>): TreeNode
+
 }
