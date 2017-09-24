@@ -5,19 +5,17 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.nwapw.abacus.Abacus;
 import org.nwapw.abacus.config.Configuration;
+import org.nwapw.abacus.number.promotion.PromotionFunction;
 import org.nwapw.abacus.number.standard.NaiveNumber;
-import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.number.range.NumberRange;
 import org.nwapw.abacus.number.standard.PreciseNumber;
 import org.nwapw.abacus.plugin.standard.StandardPlugin;
 
-import java.util.function.Function;
-
 public class RangeTests {
 
     private static Abacus abacus = new Abacus(new Configuration( "precise", new String[]{}));
-    private static Function<NumberInterface, NumberInterface> naivePromotion = i -> new NaiveNumber((i.toString()));
-    private static Function<NumberInterface, NumberInterface> precisePromotion = i -> new PreciseNumber((i.toString()));
+    private static PromotionFunction naivePromotion = i -> new NaiveNumber((i.toString()));
+    private static PromotionFunction precisePromotion = i -> new PreciseNumber((i.toString()));
 
     @BeforeClass
     public static void prepareTests() {

@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
-import java.util.function.Function;
 
 /**
  * A pattern that can be compiled from a string and used in lexing.
@@ -36,8 +35,8 @@ public class Pattern<T> {
      * A map of regex operator to functions that modify a PatternChain
      * with the appropriate operation.
      */
-    private Map<Character, Function<PatternChain<T>, PatternChain<T>>> operations =
-            new HashMap<Character, Function<PatternChain<T>, PatternChain<T>>>() {{
+    private Map<Character, Transformation<T>> operations =
+            new HashMap<Character, Transformation<T>>() {{
                 put('+', Pattern.this::transformPlus);
                 put('*', Pattern.this::transformStar);
                 put('?', Pattern.this::transformQuestion);
@@ -207,7 +206,7 @@ public class Pattern<T> {
             if (operations.containsKey(currentChar)) {
                 if (currentChain == null) return null;
 
-                currentChain = operations.get(currentChar).apply(currentChain);
+                currentChain = operations.get(currentChar).transform(currentChain);
                 fullChain.append(currentChain);
                 currentChain = null;
                 index++;

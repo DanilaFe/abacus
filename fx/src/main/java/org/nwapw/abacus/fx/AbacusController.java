@@ -16,7 +16,6 @@ import org.nwapw.abacus.exception.AbacusException;
 import org.nwapw.abacus.function.Documentation;
 import org.nwapw.abacus.function.DocumentationType;
 import org.nwapw.abacus.number.*;
-import org.nwapw.abacus.plugin.ClassFinder;
 import org.nwapw.abacus.plugin.PluginListener;
 import org.nwapw.abacus.plugin.PluginManager;
 import org.nwapw.abacus.plugin.standard.StandardPlugin;

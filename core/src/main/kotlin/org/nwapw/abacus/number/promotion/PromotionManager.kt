@@ -6,7 +6,6 @@ import org.nwapw.abacus.number.NumberInterface
 import org.nwapw.abacus.plugin.NumberImplementation
 import org.nwapw.abacus.plugin.PluginListener
 import org.nwapw.abacus.plugin.PluginManager
-import java.util.function.Function
 
 /**
  * A class that handles promotions based on priority and the
@@ -32,7 +31,11 @@ class PromotionManager(val abacus: Abacus) : PluginListener {
         val fromName = abacus.pluginManager.interfaceImplementationNameFor(from.implementation)
         val toName = abacus.pluginManager.interfaceImplementationNameFor(to.implementation)
 
-        if(fromName == toName) return listOf(Function { it })
+        if(fromName == toName) return listOf(object : PromotionFunction {
+            override fun promote(number: NumberInterface): NumberInterface {
+                return number
+            }
+        })
 
         if(from.promotionPaths.containsKey(toName))
             return listOf(from.promotionPaths[toName] ?: return null)

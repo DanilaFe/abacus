@@ -1,10 +1,10 @@
 package org.nwapw.abacus.plugin;
 
 import org.nwapw.abacus.number.NumberInterface;
+import org.nwapw.abacus.number.promotion.PromotionFunction;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 
 /**
  * A class that holds data about a number implementation.
@@ -14,7 +14,7 @@ public abstract class NumberImplementation {
     /**
      * The list of paths through which this implementation can be promoted.
      */
-    private Map<String, Function<NumberInterface, NumberInterface>> promotionPaths;
+    private Map<String, PromotionFunction> promotionPaths;
     /**
      * The implementation class for this implementation.
      */
@@ -41,7 +41,7 @@ public abstract class NumberImplementation {
      *
      * @return the map of documentation paths.
      */
-    public final Map<String, Function<NumberInterface, NumberInterface>> getPromotionPaths() {
+    public final Map<String, PromotionFunction> getPromotionPaths() {
         return promotionPaths;
     }
 
