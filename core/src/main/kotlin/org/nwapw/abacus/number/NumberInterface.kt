@@ -1,6 +1,7 @@
 package org.nwapw.abacus.number
 
 import org.nwapw.abacus.exception.ComputationInterruptedException
+import org.nwapw.abacus.number.range.NumberRangeBuilder
 
 abstract class NumberInterface: Comparable<NumberInterface> {
 

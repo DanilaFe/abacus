@@ -1,5 +1,7 @@
 package org.nwapw.abacus.lexing.pattern;
 
+import org.nwapw.abacus.lexing.pattern.nodes.PatternNode;
+
 /**
  * A chain of nodes that can be treated as a single unit.
  * Used during pattern compilation.
@@ -56,7 +58,7 @@ public class PatternChain<T> {
             this.head = other.head;
             this.tail = other.tail;
         } else {
-            tail.outputStates.add(other.head);
+            tail.getOutputStates().add(other.head);
             tail = other.tail;
         }
     }
@@ -72,7 +74,7 @@ public class PatternChain<T> {
         if (tail == null) {
             head = tail = node;
         } else {
-            tail.outputStates.add(node);
+            tail.getOutputStates().add(node);
             tail = node;
         }
     }

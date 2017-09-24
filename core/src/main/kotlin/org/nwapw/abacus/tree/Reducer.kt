@@ -1,5 +1,7 @@
 package org.nwapw.abacus.tree
 
+import org.nwapw.abacus.tree.nodes.TreeNode
+
 /**
  * Reducer interface that takes a tree and returns a single value.
  *
