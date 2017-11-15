@@ -6,14 +6,15 @@ import org.junit.Test;
 import org.nwapw.abacus.Abacus;
 import org.nwapw.abacus.config.Configuration;
 import org.nwapw.abacus.context.MutableEvaluationContext;
-import org.nwapw.abacus.function.*;
+import org.nwapw.abacus.function.OperatorAssociativity;
+import org.nwapw.abacus.function.OperatorType;
 import org.nwapw.abacus.function.interfaces.NumberFunction;
 import org.nwapw.abacus.function.interfaces.NumberOperator;
 import org.nwapw.abacus.lexing.Match;
 import org.nwapw.abacus.number.NumberInterface;
 import org.nwapw.abacus.parsing.standard.LexerTokenizer;
-import org.nwapw.abacus.plugin.Plugin;
 import org.nwapw.abacus.parsing.standard.TokenType;
+import org.nwapw.abacus.plugin.Plugin;
 
 import java.util.List;
 

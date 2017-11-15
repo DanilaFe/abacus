@@ -1,15 +1,14 @@
 package org.nwapw.abacus
 
 import org.nwapw.abacus.config.Configuration
-import org.nwapw.abacus.context.MutableEvaluationContext
 import org.nwapw.abacus.context.EvaluationContext
+import org.nwapw.abacus.context.MutableEvaluationContext
 import org.nwapw.abacus.number.promotion.PromotionManager
+import org.nwapw.abacus.parsing.TreeBuilder
 import org.nwapw.abacus.parsing.standard.LexerTokenizer
 import org.nwapw.abacus.parsing.standard.ShuntingYardParser
-import org.nwapw.abacus.parsing.TreeBuilder
 import org.nwapw.abacus.plugin.PluginManager
 import org.nwapw.abacus.plugin.standard.StandardPlugin
-import org.nwapw.abacus.tree.standard.NumberReducer
 import org.nwapw.abacus.tree.nodes.TreeNode
 
 /**
@@ -47,7 +46,7 @@ class Abacus(val configuration: Configuration) {
     /**
      * The hidden, mutable implementation of the context.
      */
-    private val mutableContext = MutableEvaluationContext(numberImplementation = StandardPlugin.IMPLEMENTATION_NAIVE)
+    private val mutableContext = MutableEvaluationContext(numberImplementation = StandardPlugin.IMPLEMENTATION_NAIVE, abacus = this)
     /**
      * The base context from which calculations are started.
      */
@@ -106,9 +105,8 @@ class Abacus(val configuration: Configuration) {
      * @return the evaluation result.
      */
     fun evaluateTreeWithContext(tree: TreeNode, context: MutableEvaluationContext): EvaluationResult {
-        val newReducer = NumberReducer(this, context)
-        val evaluationValue = tree.reduce(newReducer)
-        return EvaluationResult(evaluationValue, newReducer.context)
+        val evaluationValue = tree.reduce(context)
+        return EvaluationResult(evaluationValue, context)
     }
 
 }

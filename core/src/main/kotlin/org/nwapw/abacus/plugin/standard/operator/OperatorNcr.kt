@@ -1,11 +1,12 @@
 package org.nwapw.abacus.plugin.standard.operator
 
 import org.nwapw.abacus.context.MutableEvaluationContext
-import org.nwapw.abacus.function.interfaces.NumberOperator
 import org.nwapw.abacus.function.OperatorAssociativity
 import org.nwapw.abacus.function.OperatorType
+import org.nwapw.abacus.function.interfaces.NumberOperator
 import org.nwapw.abacus.number.NumberInterface
-import org.nwapw.abacus.plugin.standard.StandardPlugin.*
+import org.nwapw.abacus.plugin.standard.StandardPlugin.OP_FACTORIAL
+import org.nwapw.abacus.plugin.standard.StandardPlugin.OP_NPR
 
 /**
  * The "N choose R" operator.

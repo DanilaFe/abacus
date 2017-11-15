@@ -1,5 +1,6 @@
 package org.nwapw.abacus.context
 
+import org.nwapw.abacus.Abacus
 import org.nwapw.abacus.number.NumberInterface
 import org.nwapw.abacus.plugin.NumberImplementation
 import org.nwapw.abacus.tree.Reducer
@@ -13,11 +14,11 @@ import org.nwapw.abacus.tree.nodes.TreeNode
  *
  * @property parent the parent of this context.
  * @property numberImplementation the implementation for numbers of this context.
- * @property reducer the reducer used by this context.
+ * @property abacus the abacus instance used by this reducer.
  */
-open class EvaluationContext(val parent: EvaluationContext? = null,
-                             open val numberImplementation: NumberImplementation? = null,
-                             open val reducer: Reducer<NumberInterface>? = null) {
+abstract class EvaluationContext(val parent: EvaluationContext? = null,
+                                 open val numberImplementation: NumberImplementation? = null,
+                                 open val abacus: Abacus? = null): Reducer<NumberInterface> {
 
     /**
      * The map of variables in this context.
@@ -47,10 +48,10 @@ open class EvaluationContext(val parent: EvaluationContext? = null,
             by ChainSearchDelegate { numberImplementation }
 
     /**
-     * The reducer inherited from this context's parent.
+     * The Abacus instance inherited from this context's parent.
      */
-    val inheritedReducer: Reducer<NumberInterface>
-            by ChainSearchDelegate { reducer }
+    val inheritedAbacus: Abacus
+            by ChainSearchDelegate { abacus }
 
     /**
      * The set of all variables in this context and its parents.
