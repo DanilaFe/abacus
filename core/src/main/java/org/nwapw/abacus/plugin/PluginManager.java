@@ -1,7 +1,8 @@
 package org.nwapw.abacus.plugin;
 
 import org.nwapw.abacus.Abacus;
-import org.nwapw.abacus.function.*;
+import org.nwapw.abacus.function.Documentation;
+import org.nwapw.abacus.function.DocumentationType;
 import org.nwapw.abacus.function.interfaces.NumberFunction;
 import org.nwapw.abacus.function.interfaces.NumberOperator;
 import org.nwapw.abacus.function.interfaces.TreeValueFunction;

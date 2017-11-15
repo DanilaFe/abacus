@@ -1,7 +1,7 @@
 package org.nwapw.abacus.lexing;
 
-import org.nwapw.abacus.lexing.pattern.nodes.EndNode;
 import org.nwapw.abacus.lexing.pattern.Pattern;
+import org.nwapw.abacus.lexing.pattern.nodes.EndNode;
 import org.nwapw.abacus.lexing.pattern.nodes.PatternNode;
 
 import java.util.*;

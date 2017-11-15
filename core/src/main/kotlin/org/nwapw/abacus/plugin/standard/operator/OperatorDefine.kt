@@ -22,7 +22,7 @@ class OperatorDefine: TreeValueOperator(OperatorAssociativity.LEFT, OperatorType
     override fun applyInternal(context: MutableEvaluationContext, params: Array<out TreeNode>): NumberInterface {
         val assignTo = (params[0] as VariableNode).variable
         context.setDefinition(assignTo, params[1])
-        return params[1].reduce(context.inheritedReducer)
+        return params[1].reduce(context)
     }
 
 }
