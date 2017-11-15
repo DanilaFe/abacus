@@ -15,7 +15,7 @@ class OperatorFactorial: NumberOperator(OperatorAssociativity.LEFT, OperatorType
 
     override fun matchesParams(context: MutableEvaluationContext, params: Array<out NumberInterface>) =
         params.size == 1
-                && params[0].fractionalPart().signum() == 0
+                && params[0].isInteger()
                 && params[0].signum() >= 0
 
     override fun applyInternal(context: MutableEvaluationContext, params: Array<out NumberInterface>): NumberInterface {
