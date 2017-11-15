@@ -222,6 +222,13 @@ abstract class NumberInterface: Comparable<NumberInterface> {
     }
 
     /**
+     * Checks whether the given number is an integer or not.
+     *
+     * @return whether the number is an integer or not.
+     */
+    fun isInteger() = fractionalPart().signum() == 0
+
+    /**
      * Returns a NumberRangeBuilder object, which is used to create a range.
      * The reason that this returns a builder and not an actual range is that
      * the NumberRange needs to promote values passed to it, which

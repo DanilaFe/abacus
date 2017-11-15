@@ -17,8 +17,8 @@ import org.nwapw.abacus.plugin.standard.StandardPlugin.OP_NPR
 class OperatorNcr: NumberOperator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 0) {
 
     override fun matchesParams(context: MutableEvaluationContext, params: Array<out NumberInterface>) =
-            params.size == 2 && params[0].fractionalPart().signum() == 0
-                    && params[1].fractionalPart().signum() == 0
+            params.size == 2 && params[0].isInteger()
+                    && params[1].isInteger()
 
     override fun applyInternal(context: MutableEvaluationContext, params: Array<out NumberInterface>) =
             OP_NPR.apply(context, *params) / OP_FACTORIAL.apply(context, params[1])
