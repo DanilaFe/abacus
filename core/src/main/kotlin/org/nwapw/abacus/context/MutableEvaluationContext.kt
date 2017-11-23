@@ -9,14 +9,15 @@ import org.nwapw.abacus.tree.nodes.*
 
 /**
  * A reduction context that is mutable.
+ *
  * @param parent the parent of this context.
  * @param numberImplementation the number implementation used in this context.
- * @param reducer the reducer used in this context
+ * @param abacus the abacus instance used.
  */
 class MutableEvaluationContext(parent: EvaluationContext? = null,
                                numberImplementation: NumberImplementation? = null,
                                abacus: Abacus? = null) :
-        EvaluationContext(parent, numberImplementation, abacus) {
+        PluginEvaluationContext(parent, numberImplementation, abacus) {
 
     override var numberImplementation: NumberImplementation? = super.numberImplementation
     override var abacus: Abacus? = super.abacus
@@ -35,42 +36,11 @@ class MutableEvaluationContext(parent: EvaluationContext? = null,
         }
     }
 
-    /**
-     * Sets a variable to a certain [value].
-     * @param name the name of the variable.
-     * @param value the value of the variable.
-     */
-    fun setVariable(name: String, value: NumberInterface) {
-        variableMap[name] = value
-    }
-
-    /**
-     * Set a definition to a certain [value].
-     * @param name the name of the definition.
-     * @param value the value of the definition.
-     */
-    fun setDefinition(name: String, value: TreeNode) {
-        definitionMap[name] = value
-    }
-
-    /**
-     * Clears the variables defined in this context.
-     */
-    fun clearVariables(){
-        variableMap.clear()
-    }
-
-    /**
-     * Clears the definitions defined in this context.
-     */
-    fun clearDefinitions(){
-        definitionMap.clear()
-    }
-
     override fun reduceNode(treeNode: TreeNode, vararg children: Any): NumberInterface {
+        val oldNumberImplementation = numberImplementation
         val abacus = inheritedAbacus
         val promotionManager = abacus.promotionManager
-        return when(treeNode){
+        val toReturn = when(treeNode){
             is NumberNode -> {
                 inheritedNumberImplementation.instanceForString(treeNode.number)
             }
@@ -114,6 +84,8 @@ class MutableEvaluationContext(parent: EvaluationContext? = null,
             }
             else -> throw ReductionException("unrecognized tree node.")
         }
+        numberImplementation = oldNumberImplementation
+        return toReturn
     }
 
 }

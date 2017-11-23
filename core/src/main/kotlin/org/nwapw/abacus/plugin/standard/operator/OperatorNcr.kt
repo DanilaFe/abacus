@@ -1,6 +1,6 @@
 package org.nwapw.abacus.plugin.standard.operator
 
-import org.nwapw.abacus.context.MutableEvaluationContext
+import org.nwapw.abacus.context.PluginEvaluationContext
 import org.nwapw.abacus.function.OperatorAssociativity
 import org.nwapw.abacus.function.OperatorType
 import org.nwapw.abacus.function.interfaces.NumberOperator
@@ -16,11 +16,11 @@ import org.nwapw.abacus.plugin.standard.StandardPlugin.OP_NPR
  */
 class OperatorNcr: NumberOperator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 0) {
 
-    override fun matchesParams(context: MutableEvaluationContext, params: Array<out NumberInterface>) =
+    override fun matchesParams(context: PluginEvaluationContext, params: Array<out NumberInterface>) =
             params.size == 2 && params[0].isInteger()
                     && params[1].isInteger()
 
-    override fun applyInternal(context: MutableEvaluationContext, params: Array<out NumberInterface>) =
+    override fun applyInternal(context: PluginEvaluationContext, params: Array<out NumberInterface>) =
             OP_NPR.apply(context, *params) / OP_FACTORIAL.apply(context, params[1])
 
 }
