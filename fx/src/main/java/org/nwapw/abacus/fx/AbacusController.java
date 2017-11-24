@@ -329,9 +329,11 @@ public class AbacusController implements PluginListener {
                 abacus.applyToContext(result.getResultingContext());
             }
         } catch (AbacusException abacusError) {
-            outputText.setText(ERR_DEFINITION + "(" + abacusError.getMessage() + ")");
+            outputText.setText(ERR_DEFINITION + " (" + abacusError.getMessage() + ")");
+            abacusError.printStackTrace();
         } catch (RuntimeException runtime) {
-            outputText.setText(ERR_DEFINITION + "(" + ERR_EXCEPTION + ")");
+            outputText.setText(ERR_DEFINITION + " (" + ERR_EXCEPTION + ")");
+            runtime.printStackTrace();
         } catch (FileNotFoundException ignored) {}
     }
 
@@ -345,13 +347,13 @@ public class AbacusController implements PluginListener {
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        abacus.reload();
+        reloadAbacus();
     }
 
     @FXML
     public void performReload() {
         alertIfApplyNeeded(true);
-        abacus.reload();
+        reloadAbacus();
     }
 
     @FXML
@@ -391,6 +393,13 @@ public class AbacusController implements PluginListener {
         changesMade = true;
     }
 
+    private void reloadAbacus(){
+        abacus.reload();
+        for(String file : definitionFiles){
+            loadDefinitionFile(file);
+        }
+    }
+
     @Override
     public void onLoad(PluginManager manager) {
         ExtendedConfiguration configuration = (ExtendedConfiguration) abacus.getConfiguration();
@@ -420,9 +429,6 @@ public class AbacusController implements PluginListener {
         }).collect(Collectors.toCollection(ArrayList::new)));
         functionList.sort(Comparator.comparing(Documentation::getCodeName));
         definitionFiles.addAll(configuration.getDefinitionFiles());
-        for(String file : definitionFiles){
-            loadDefinitionFile(file);
-        }
     }
 
     @Override
