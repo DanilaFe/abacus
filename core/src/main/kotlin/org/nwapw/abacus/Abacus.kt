@@ -63,13 +63,13 @@ class Abacus(val configuration: Configuration) {
      * Reloads the Abacus core.
      */
     fun reload(){
-        pluginManager.reload()
-        with(mutableContext) {
-            numberImplementation = pluginManager.numberImplementationFor(configuration.numberImplementation)
-                    ?: StandardPlugin.IMPLEMENTATION_NAIVE
+        with(mutableContext){
             clearVariables()
             clearDefinitions()
         }
+        pluginManager.reload()
+        mutableContext.numberImplementation = pluginManager.numberImplementationFor(configuration.numberImplementation)
+                ?: StandardPlugin.IMPLEMENTATION_NAIVE
     }
     /**
      * Merges the current context with the provided one, updating

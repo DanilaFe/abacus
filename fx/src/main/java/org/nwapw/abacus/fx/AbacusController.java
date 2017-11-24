@@ -325,21 +325,14 @@ public class AbacusController implements PluginListener {
             FileReader fileReader = new FileReader(definitionFile);
             Scanner scanner = new Scanner(fileReader);
             while(scanner.hasNext()){
-                abacus.evaluateTree(abacus.parseString(scanner.nextLine()));
+                EvaluationResult result = abacus.evaluateTree(abacus.parseString(scanner.nextLine()));
+                abacus.applyToContext(result.getResultingContext());
             }
         } catch (AbacusException abacusError) {
             outputText.setText(ERR_DEFINITION + "(" + abacusError.getMessage() + ")");
         } catch (RuntimeException runtime) {
             outputText.setText(ERR_DEFINITION + "(" + ERR_EXCEPTION + ")");
         } catch (FileNotFoundException ignored) {}
-    }
-
-    private void reloadAbacus(){
-        abacus.reload();
-        ExtendedConfiguration abacusConfig = (ExtendedConfiguration) abacus.getConfiguration();
-        for(String fileName: abacusConfig.getDefinitionFiles()) {
-            loadDefinitionFile(fileName);
-        }
     }
 
     @FXML
@@ -352,13 +345,13 @@ public class AbacusController implements PluginListener {
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        reloadAbacus();
+        abacus.reload();
     }
 
     @FXML
     public void performReload() {
         alertIfApplyNeeded(true);
-        reloadAbacus();
+        abacus.reload();
     }
 
     @FXML
@@ -425,6 +418,9 @@ public class AbacusController implements PluginListener {
         }).collect(Collectors.toCollection(ArrayList::new)));
         functionList.sort(Comparator.comparing(Documentation::getCodeName));
         definitionFiles.addAll(configuration.getDefinitionFiles());
+        for(String file : definitionFiles){
+            loadDefinitionFile(file);
+        }
     }
 
     @Override
