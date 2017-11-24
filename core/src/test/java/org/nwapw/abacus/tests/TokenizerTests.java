@@ -1,11 +1,13 @@
 package org.nwapw.abacus.tests;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.nwapw.abacus.Abacus;
 import org.nwapw.abacus.config.Configuration;
 import org.nwapw.abacus.context.MutableEvaluationContext;
+import org.nwapw.abacus.context.PluginEvaluationContext;
 import org.nwapw.abacus.function.OperatorAssociativity;
 import org.nwapw.abacus.function.OperatorType;
 import org.nwapw.abacus.function.interfaces.NumberFunction;
@@ -24,12 +26,12 @@ public class TokenizerTests {
     private static LexerTokenizer lexerTokenizer = new LexerTokenizer();
     private static NumberFunction subtractFunction = new NumberFunction() {
         @Override
-        public boolean matchesParams(MutableEvaluationContext context, NumberInterface[] params) {
+        public boolean matchesParams(PluginEvaluationContext context, NumberInterface[] params) {
             return params.length == 2;
         }
 
         @Override
-        public NumberInterface applyInternal(MutableEvaluationContext context, NumberInterface[] params) {
+        public NumberInterface applyInternal(PluginEvaluationContext context, NumberInterface[] params) {
             return params[0].subtract(params[1]);
         }
     };
@@ -40,12 +42,12 @@ public class TokenizerTests {
                     0) {
 
                 @Override
-                public boolean matchesParams(MutableEvaluationContext context, NumberInterface[] params) {
+                public boolean matchesParams(PluginEvaluationContext context, NumberInterface[] params) {
                     return true;
                 }
 
-                                @Override
-                public NumberInterface applyInternal(MutableEvaluationContext context, NumberInterface[] params) {
+                @Override
+                public NumberInterface applyInternal(PluginEvaluationContext context, NumberInterface[] params) {
                     return subtractFunction.apply(context, params);
                 }
             });
@@ -53,12 +55,12 @@ public class TokenizerTests {
                     0) {
 
                 @Override
-                public boolean matchesParams(MutableEvaluationContext context, NumberInterface[] params) {
+                public boolean matchesParams(PluginEvaluationContext context, NumberInterface[] params) {
                     return true;
                 }
 
-                                @Override
-                public NumberInterface applyInternal(MutableEvaluationContext context, NumberInterface[] params) {
+                @Override
+                public NumberInterface applyInternal(PluginEvaluationContext context, NumberInterface[] params) {
                     return subtractFunction.apply(context, params);
                 }
             });

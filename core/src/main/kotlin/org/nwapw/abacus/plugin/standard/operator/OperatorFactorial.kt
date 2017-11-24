@@ -1,6 +1,6 @@
 package org.nwapw.abacus.plugin.standard.operator
 
-import org.nwapw.abacus.context.MutableEvaluationContext
+import org.nwapw.abacus.context.PluginEvaluationContext
 import org.nwapw.abacus.function.OperatorAssociativity
 import org.nwapw.abacus.function.OperatorType
 import org.nwapw.abacus.function.interfaces.NumberOperator
@@ -13,12 +13,12 @@ import org.nwapw.abacus.number.NumberInterface
  */
 class OperatorFactorial: NumberOperator(OperatorAssociativity.LEFT, OperatorType.UNARY_POSTFIX, 0) {
 
-    override fun matchesParams(context: MutableEvaluationContext, params: Array<out NumberInterface>) =
+    override fun matchesParams(context: PluginEvaluationContext, params: Array<out NumberInterface>) =
         params.size == 1
                 && params[0].isInteger()
                 && params[0].signum() >= 0
 
-    override fun applyInternal(context: MutableEvaluationContext, params: Array<out NumberInterface>): NumberInterface {
+    override fun applyInternal(context: PluginEvaluationContext, params: Array<out NumberInterface>): NumberInterface {
         val implementation = context.inheritedNumberImplementation
         val one = implementation.instanceForString("1")
         if (params[0].signum() == 0) {
