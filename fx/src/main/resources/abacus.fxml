@@ -47,25 +47,33 @@
                     </padding>
                     <Label text="Number Implementation" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
                     <ComboBox fx:id="numberImplementationBox" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                    <Label text="Plugins:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
                     <ListView fx:id="enabledPluginView"
-                              GridPane.rowIndex="1" GridPane.columnIndex="0"
+                              GridPane.rowIndex="2" GridPane.columnIndex="0"
                               GridPane.columnSpan="2" maxHeight="100"/>
-                    <Text GridPane.columnIndex="0" GridPane.rowIndex="2" text="Computation Limit"/>
-                    <TextField fx:id="computationLimitField" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-                    <FlowPane GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="3" hgap="10"
-                              vgap="10">
-                        <Button text="Save" onAction="#performSave"/>
-                        <Button text="Reload Plugins" onAction="#performReload"/>
-                        <Button text="Apply and Reload" onAction="#performSaveAndReload"/>
-                        <Button text="Scan Plugins" onAction="#performScan"/>
-                    </FlowPane>
+
+                    <Label GridPane.columnIndex="0" GridPane.rowIndex="3" text="Computation Limit"/>
+                    <TextField fx:id="computationLimitField" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+
+                    <Label text="Definition Files:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
                     <ListView fx:id="definitionFilesView"
                               GridPane.columnIndex="0" GridPane.columnSpan="2"
-                              GridPane.rowIndex="4" maxHeight="100"/>
-                    <FlowPane GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="5" hgap="10"
+                              GridPane.rowIndex="5" maxHeight="100"/>
+                    <FlowPane GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="6" hgap="10"
                               vgap="10">
                         <Button text="Add" onAction="#performAddDefinitionFile"/>
                         <Button text="Remove" onAction="#performRemoveDefinitionFile"/>
+                    </FlowPane>
+
+                    <Separator GridPane.rowIndex="7"/>
+
+                    <FlowPane GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="8" hgap="10"
+                              vgap="10">
+                        <Button text="Save Settings" onAction="#performSave"/>
+                        <Button text="Reload Plugins And Definitions" onAction="#performReload"/>
+                        <Button text="Save and Reload" onAction="#performSaveAndReload"/>
+                        <Button text="Reload Plugins From Disk" onAction="#performScan"/>
                     </FlowPane>
                 </GridPane>
             </Tab>

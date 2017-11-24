@@ -26,7 +26,7 @@ public class AbacusApplication extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/abacus.fxml"));
         Parent parent = loader.load();
         controller = loader.getController();
-        Scene mainScene = new Scene(parent, 320, 480);
+        Scene mainScene = new Scene(parent, 420, 520);
         primaryStage.setScene(mainScene);
         primaryStage.setTitle("Abacus");
         primaryStage.show();
