@@ -381,12 +381,14 @@ public class AbacusController implements PluginListener {
         if(selectedFile == null) return;
         String absolutePath = selectedFile.getAbsolutePath();
         if(!definitionFiles.contains(absolutePath)) definitionFiles.add(absolutePath);
+        changesMade = true;
     }
 
     @FXML
     public void performRemoveDefinitionFile(){
         String selectedItem = definitionFilesView.getSelectionModel().getSelectedItem();
         if(selectedItem != null) definitionFiles.remove(selectedItem);
+        changesMade = true;
     }
 
     @Override
