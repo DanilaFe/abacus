@@ -17,8 +17,9 @@ import java.io.File
  * @param disabledPlugins the list of plugins that should be disabled, same as [Configuration.disabledPlugins]
  */
 class ExtendedConfiguration(var computationDelay: Double = 0.0,
-                     implementation: String = "<default>",
-                     disabledPlugins: Array<String> = emptyArray())
+                            definitionFiles: Array<String> = emptyArray(),
+                            implementation: String = "<default>",
+                            disabledPlugins: Array<String> = emptyArray())
     : Configuration(implementation, disabledPlugins) {
 
     companion object {
@@ -27,6 +28,7 @@ class ExtendedConfiguration(var computationDelay: Double = 0.0,
          */
         val DEFAULT_TOML_STRING = """
             computationDelay=0.0
+            definitionFiles=[]
             implementation="naive"
             disabledPlugins=[]
             """
@@ -39,6 +41,11 @@ class ExtendedConfiguration(var computationDelay: Double = 0.0,
          */
         val DEFAULT_TOML_WRITER = TomlWriter()
     }
+
+    /**
+     * The set of files that definitions should be loaded from.
+     */
+    val definitionFiles: MutableSet<String> = mutableSetOf(*definitionFiles)
 
     /**
      * Constructs a new configuration from a file on disk.
@@ -59,6 +66,8 @@ class ExtendedConfiguration(var computationDelay: Double = 0.0,
         numberImplementation = config.numberImplementation
         disabledPlugins.clear()
         disabledPlugins.addAll(config.disabledPlugins)
+        definitionFiles.clear()
+        definitionFiles.addAll(config.definitionFiles)
     }
 
     /**

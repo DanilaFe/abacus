@@ -23,9 +23,12 @@ import org.nwapw.abacus.EvaluationResult;
 import org.nwapw.abacus.tree.nodes.TreeNode;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -69,6 +72,7 @@ public class AbacusController implements PluginListener {
      * Constant string that is displayed if the calculations are interrupted by an exception.
      */
     private static final String ERR_EXCEPTION = "Exception Thrown";
+    private static final String ERR_DEFINITION = "Definition Error";
     @FXML
     private TabPane coreTabPane;
     @FXML
@@ -304,6 +308,30 @@ public class AbacusController implements PluginListener {
         reloadAlertShown = false;
     }
 
+    private void loadDefinitionFile(String fileName){
+        File definitionFile = new File(fileName);
+        if(!definitionFile.exists()) return;
+        try {
+            FileReader fileReader = new FileReader(definitionFile);
+            Scanner scanner = new Scanner(fileReader);
+            while(scanner.hasNext()){
+                abacus.evaluateTree(abacus.parseString(scanner.nextLine()));
+            }
+        } catch (AbacusException abacusError) {
+            outputText.setText(ERR_DEFINITION + "(" + abacusError.getMessage() + ")");
+        } catch (RuntimeException runtime) {
+            outputText.setText(ERR_DEFINITION + "(" + ERR_EXCEPTION + ")");
+        } catch (FileNotFoundException ignored) {}
+    }
+
+    private void reloadAbacus(){
+        abacus.reload();
+        ExtendedConfiguration abacusConfig = (ExtendedConfiguration) abacus.getConfiguration();
+        for(String fileName: abacusConfig.getDefinitionFiles()) {
+            loadDefinitionFile(fileName);
+        }
+    }
+
     @FXML
     public void performScan() {
         PluginManager abacusPluginManager = abacus.getPluginManager();
@@ -314,13 +342,13 @@ public class AbacusController implements PluginListener {
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        abacus.reload();
+        reloadAbacus();
     }
 
     @FXML
     public void performReload() {
         alertIfApplyNeeded(true);
-        abacus.reload();
+        reloadAbacus();
     }
 
     @FXML
