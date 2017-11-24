@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import org.nwapw.abacus.Abacus;
@@ -107,6 +108,8 @@ public class AbacusController implements PluginListener {
     private ListView<Documentation> functionListView;
     @FXML
     private TextField functionListSearchField;
+    @FXML
+    private ListView<String> definitionFilesView;
 
     /**
      * The list of history entries, created by the users.
@@ -132,6 +135,10 @@ public class AbacusController implements PluginListener {
      * The filtered list displayed to the user.
      */
     private FilteredList<Documentation> functionFilter;
+    /**
+     * The list of definition files to be loaded.
+     */
+    private ObservableList<String> definitionFiles;
 
     /**
      * The abacus instance used for changing the plugin configuration.
@@ -255,6 +262,9 @@ public class AbacusController implements PluginListener {
             if (oldValue.equals(settingsTab)) alertIfApplyNeeded(true);
         });
 
+        definitionFiles = FXCollections.observableArrayList();
+        definitionFilesView.setItems(definitionFiles);
+
         abacus = new Abacus(new ExtendedConfiguration(CONFIG_FILE));
         PluginManager abacusPluginManager = abacus.getPluginManager();
         abacusPluginManager.addListener(this);
@@ -353,23 +363,42 @@ public class AbacusController implements PluginListener {
 
     @FXML
     public void performSave() {
-        Configuration configuration = abacus.getConfiguration();
+        ExtendedConfiguration configuration = (ExtendedConfiguration) abacus.getConfiguration();
         configuration.setNumberImplementation(numberImplementationBox.getSelectionModel().getSelectedItem());
         Set<String> disabledPlugins = configuration.getDisabledPlugins();
         disabledPlugins.clear();
         for (ToggleablePlugin pluginEntry : enabledPlugins) {
             if (!pluginEntry.isEnabled()) disabledPlugins.add(pluginEntry.getClassName());
         }
+        Set<String> abacusDefinitionFiles = configuration.getDefinitionFiles();
+        abacusDefinitionFiles.clear();
+        abacusDefinitionFiles.addAll(definitionFiles);
         if (computationLimitField.getText().matches("\\d*(\\.\\d+)?") && computationLimitField.getText().length() != 0)
-            ((ExtendedConfiguration) configuration).setComputationDelay(Double.parseDouble(computationLimitField.getText()));
-        ((ExtendedConfiguration) configuration).saveTo(CONFIG_FILE);
+            configuration.setComputationDelay(Double.parseDouble(computationLimitField.getText()));
+        configuration.saveTo(CONFIG_FILE);
         changesMade = false;
         reloadAlertShown = false;
     }
 
+    @FXML
+    public void performAddDefinitionFile(){
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Add definition file");
+        File selectedFile = fileChooser.showOpenDialog(null);
+        if(selectedFile == null) return;
+        String absolutePath = selectedFile.getAbsolutePath();
+        if(!definitionFiles.contains(absolutePath)) definitionFiles.add(absolutePath);
+    }
+
+    @FXML
+    public void performRemoveDefinitionFile(){
+        String selectedItem = definitionFilesView.getSelectionModel().getSelectedItem();
+        if(selectedItem != null) definitionFiles.remove(selectedItem);
+    }
+
     @Override
     public void onLoad(PluginManager manager) {
-        Configuration configuration = abacus.getConfiguration();
+        ExtendedConfiguration configuration = (ExtendedConfiguration) abacus.getConfiguration();
         Set<String> disabledPlugins = configuration.getDisabledPlugins();
         numberImplementationOptions.addAll(abacus.getPluginManager().getAllNumberImplementations());
         String actualImplementation = configuration.getNumberImplementation();
@@ -395,6 +424,7 @@ public class AbacusController implements PluginListener {
             return documentationInstance;
         }).collect(Collectors.toCollection(ArrayList::new)));
         functionList.sort(Comparator.comparing(Documentation::getCodeName));
+        definitionFiles.addAll(configuration.getDefinitionFiles());
     }
 
     @Override
@@ -402,6 +432,7 @@ public class AbacusController implements PluginListener {
         functionList.clear();
         enabledPlugins.clear();
         numberImplementationOptions.clear();
+        definitionFiles.clear();
     }
 
 }
