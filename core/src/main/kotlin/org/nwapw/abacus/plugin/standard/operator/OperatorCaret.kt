@@ -1,6 +1,6 @@
 package org.nwapw.abacus.plugin.standard.operator
 
-import org.nwapw.abacus.context.MutableEvaluationContext
+import org.nwapw.abacus.context.PluginEvaluationContext
 import org.nwapw.abacus.function.OperatorAssociativity
 import org.nwapw.abacus.function.OperatorType
 import org.nwapw.abacus.function.interfaces.NumberOperator
@@ -14,12 +14,12 @@ import org.nwapw.abacus.plugin.standard.StandardPlugin.*
  */
 class OperatorCaret: NumberOperator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 2) {
 
-    override fun matchesParams(context: MutableEvaluationContext, params: Array<out NumberInterface>) =
+    override fun matchesParams(context: PluginEvaluationContext, params: Array<out NumberInterface>) =
             params.size == 2
                     && !(params[0].signum() == 0 && params[1].signum() == 0)
                     && !(params[0].signum() == -1 && !params[1].isInteger())
 
-    override fun applyInternal(context: MutableEvaluationContext, params: Array<out NumberInterface>): NumberInterface {
+    override fun applyInternal(context: PluginEvaluationContext, params: Array<out NumberInterface>): NumberInterface {
         val implementation = context.inheritedNumberImplementation
         if (params[0].signum() == 0)
             return implementation.instanceForString("0")
