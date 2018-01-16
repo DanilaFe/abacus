@@ -14,7 +14,7 @@ import org.nwapw.abacus.plugin.standard.StandardPlugin.OP_NPR
  * This is a standard operator that returns the number of possible combinations, regardless of order,
  * of a certain size can be taken out of a pool of a bigger size.
  */
-class OperatorNcr: NumberOperator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 0) {
+class OperatorNcr: NumberOperator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 1) {
 
     override fun matchesParams(context: PluginEvaluationContext, params: Array<out NumberInterface>) =
             params.size == 2 && params[0].isInteger()

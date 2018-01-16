@@ -11,7 +11,7 @@ import org.nwapw.abacus.number.NumberInterface
  *
  * This is a standard operator that performs subtraction.
  */
-class OperatorSubtract: NumberOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 0) {
+class OperatorSubtract: NumberOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 1) {
 
     override fun matchesParams(context: PluginEvaluationContext, params: Array<out NumberInterface>) =
             params.size == 2

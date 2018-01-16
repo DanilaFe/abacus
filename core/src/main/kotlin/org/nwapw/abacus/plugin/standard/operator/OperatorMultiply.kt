@@ -11,7 +11,7 @@ import org.nwapw.abacus.number.NumberInterface
  *
  * This is a standard operator that simply performs multiplication.
  */
-class OperatorMultiply: NumberOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 1) {
+class OperatorMultiply: NumberOperator(OperatorAssociativity.LEFT, OperatorType.BINARY_INFIX, 2) {
 
     override fun matchesParams(context: PluginEvaluationContext, params: Array<out NumberInterface>) =
             params.size == 2

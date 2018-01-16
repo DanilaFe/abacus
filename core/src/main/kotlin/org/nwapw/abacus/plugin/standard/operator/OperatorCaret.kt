@@ -12,7 +12,7 @@ import org.nwapw.abacus.plugin.standard.StandardPlugin.*
  *
  * This is a standard operator that brings one number to the power of the other.
  */
-class OperatorCaret: NumberOperator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 2) {
+class OperatorCaret: NumberOperator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 3) {
 
     override fun matchesParams(context: PluginEvaluationContext, params: Array<out NumberInterface>) =
             params.size == 2
