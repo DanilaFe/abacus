@@ -12,7 +12,7 @@ import org.nwapw.abacus.number.NumberInterface
  * his is a standard operator that returns the number of possible combinations
  * of a certain size can be taken out of a pool of a bigger size.
  */
-class OperatorNpr: NumberOperator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 0) {
+class OperatorNpr: NumberOperator(OperatorAssociativity.RIGHT, OperatorType.BINARY_INFIX, 1) {
 
     override fun matchesParams(context: PluginEvaluationContext, params: Array<out NumberInterface>) =
             params.size == 2 && params[0].isInteger()
