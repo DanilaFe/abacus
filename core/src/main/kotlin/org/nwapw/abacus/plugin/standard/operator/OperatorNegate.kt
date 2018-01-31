@@ -11,7 +11,7 @@ import org.nwapw.abacus.number.NumberInterface
  *
  * This is a standard operator that negates a number.
  */
-class OperatorNegate: NumberOperator(OperatorAssociativity.LEFT, OperatorType.UNARY_PREFIX, 0) {
+class OperatorNegate: NumberOperator(OperatorAssociativity.LEFT, OperatorType.UNARY_PREFIX, 1) {
 
     override fun matchesParams(context: PluginEvaluationContext, params: Array<out NumberInterface>) =
             params.size == 1
