@@ -1,7 +1,7 @@
 apply plugin: 'application'
 
 dependencies {
-    compile 'com.moandjiezana.toml:toml4j:0.7.1'
+    compile 'com.moandjiezana.toml:toml4j:0.7.2'
     compile project(':core')
 }
 
